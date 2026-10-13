@@ -1,0 +1,5 @@
+node_modules/
+*.local.*
+data/*.tmp.json
+# Ghi chú nội bộ (plan, ledger, brief decision-review, handoff) — không nộp, không công khai
+plans/

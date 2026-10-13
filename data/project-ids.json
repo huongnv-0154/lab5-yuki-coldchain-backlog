@@ -1,0 +1,144 @@
+{
+  "projectId": "PVT_kwHOAHLAcM4Bm3L_",
+  "number": 2,
+  "owner": "huongnv-0154",
+  "url": "https://github.com/users/huongnv-0154/projects/2",
+  "public": false,
+  "fields": {
+    "Title": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhlebEE",
+      "dataType": "TITLE"
+    },
+    "Assignees": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhlebEI",
+      "dataType": "ASSIGNEES"
+    },
+    "Status": {
+      "id": "PVTSSF_lAHOAHLAcM4Bm3L_zhlebEM",
+      "dataType": "SINGLE_SELECT",
+      "options": {
+        "Todo": "f75ad846",
+        "In Progress": "47fc9ee4",
+        "Blocked": "5f8bb70d",
+        "Done": "98236657"
+      }
+    },
+    "Labels": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhlebEQ",
+      "dataType": "LABELS"
+    },
+    "Linked pull requests": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhlebEU",
+      "dataType": "LINKED_PULL_REQUESTS"
+    },
+    "Milestone": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhlebEY",
+      "dataType": "MILESTONE"
+    },
+    "Repository": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhlebEc",
+      "dataType": "REPOSITORY"
+    },
+    "Reviewers": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhlebEs",
+      "dataType": "REVIEWERS"
+    },
+    "Parent issue": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhlebE4",
+      "dataType": "PARENT_ISSUE"
+    },
+    "Sub-issues progress": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhlebFA",
+      "dataType": "SUB_ISSUES_PROGRESS"
+    },
+    "Created": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhlebFQ",
+      "dataType": "CREATED"
+    },
+    "Updated": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhlebFc",
+      "dataType": "UPDATED"
+    },
+    "Closed": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhlebFs",
+      "dataType": "CLOSED"
+    },
+    "Sprint": {
+      "id": "PVTIF_lAHOAHLAcM4Bm3L_zhleoIA",
+      "dataType": "ITERATION",
+      "iterations": {
+        "Sprint 1": {
+          "id": "2eafc397",
+          "startDate": "2026-11-30",
+          "duration": 14
+        },
+        "Sprint 2": {
+          "id": "bc468a3d",
+          "startDate": "2026-12-14",
+          "duration": 14
+        },
+        "Sprint 3": {
+          "id": "d59f16b1",
+          "startDate": "2026-12-28",
+          "duration": 14
+        }
+      }
+    },
+    "Story Point": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhleoJA",
+      "dataType": "NUMBER"
+    },
+    "Estimated time": {
+      "id": "PVTF_lAHOAHLAcM4Bm3L_zhleoJo",
+      "dataType": "NUMBER"
+    },
+    "Owner": {
+      "id": "PVTSSF_lAHOAHLAcM4Bm3L_zhleoJs",
+      "dataType": "SINGLE_SELECT",
+      "options": {
+        "PM": "9e82c165",
+        "BrSE": "2284ebad",
+        "BE-1": "fdd95d38",
+        "BE-2": "df21303d",
+        "FE-1": "9ec8450c",
+        "FE-2": "9594c11e",
+        "QA-1": "924b531f",
+        "QA-Auto": "794456f8",
+        "Infra": "359f74d7",
+        "Design": "ccbf81f5"
+      }
+    },
+    "Item type": {
+      "id": "PVTSSF_lAHOAHLAcM4Bm3L_zhleoXw",
+      "dataType": "SINGLE_SELECT",
+      "options": {
+        "Epic": "6e0331ea",
+        "User Story": "84ffa765",
+        "Task": "d92cf861"
+      }
+    }
+  },
+  "views": [
+    {
+      "id": "PVTV_lAHOAHLAcM4Bm3L_zgMCwW4",
+      "name": "Board",
+      "number": 1,
+      "layout": "BOARD_LAYOUT",
+      "filter": ""
+    },
+    {
+      "id": "PVTV_lAHOAHLAcM4Bm3L_zgMCx4g",
+      "name": "Backlog",
+      "number": 2,
+      "layout": "TABLE_LAYOUT",
+      "filter": null
+    },
+    {
+      "id": "PVTV_lAHOAHLAcM4Bm3L_zgMCx4o",
+      "name": "Sprint 1",
+      "number": 3,
+      "layout": "BOARD_LAYOUT",
+      "filter": "sprint:\"Sprint 1\""
+    }
+  ]
+}
