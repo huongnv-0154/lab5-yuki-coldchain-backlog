@@ -1,15 +1,38 @@
 # PREMISE — khác biệt so với LAB-4 đã nộp
 
-〔TODO-P1: mốc LAB-4 (commit, ngày nộp)〕
+**Mốc:** gói thiết kế LAB-4 tại commit `c3cf20d` (2026-10-13), bản đã nộp. Backlog trên GitHub Project bám nguyên bản này, cộng hoặc trừ các dòng dưới đây. Giả định LAB-4 `A-1`…`A-20` giữ nguyên và không khai lại, trừ A-15 được sửa ở PR-S-01. File này chỉ ghi phần **mới** của LAB-5.
+
+Mã dòng: `PR-S` = spec thêm/bỏ/sửa · `PR-A` = giả định bổ sung · `PR-D` = hướng đã chốt. Issue và task-breakdown trỏ về các mã này. Cột "Issue bị ảnh hưởng" ghi mã nguồn (`L5-xxx` của bảng chênh lệch LAB-4); số issue `#` điền khi backlog lên Project.
 
 ## 1. Spec thêm / bỏ / sửa so với LAB-4
 
-〔TODO-P1: bảng Spec · Thêm/Bỏ/Sửa · Trước → sau · Vì sao · Issue bị ảnh hưởng〕
+| Mã | Spec (mã / file LAB-4) | Thêm / Bỏ / Sửa | Trước → sau | Vì sao | Issue bị ảnh hưởng |
+|---|---|---|---|---|---|
+| PR-S-01 | `DLV_SHIPPING_CHECK_TECH` 5.3, `SHIPPING_PRECHECK_FUNC` 3.3, `ORD_DATE_REVERSAL_TECH` 5.7, `ORDERS_ALLOCATION_DELIVERY_DB` (`deliveries`, `shipping_checks`, `in_transit_lots`), `SHIPPING_CHECKS_POST_API`, `YC_SHIPPING_PRECHECK_SPEC`; giả định LAB-4 A-15 | Sửa | Phạm vi mốc và hành động cố định (gồm chuyến chưa POD, chặn) → tham số có phiên bản: phạm vi mốc (phân bổ và xuất dùng chung), chặn hoặc cảnh báo kèm lý do lúc xuất, giới hạn giờ cho chuyến chưa POD (thêm cột `deliveries.dispatched_at`), lần kiểm ghi phiên bản tham số. Bản sửa: [premise-revisions/shipping-date-reversal-check.md](premise-revisions/shipping-date-reversal-check.md) | Chỗ hở khi break GAP-41: RFP không định nghĩa "đã nhận", phần mô tả luật và phụ lục R-06 dùng hai mức cảnh báo / chặn (RFP D3 tr.25–26, tr.86), khách chưa xác nhận; chuyến mất POD giữ mốc mãi mà `deliveries` không có cột thời điểm xuất (review quyết định DR-02) | L5-068, L5-046, L5-065, L5-067 |
+| PR-S-02 | Bảng chênh lệch, dòng `L5-068` | Sửa | "Chốt mốc so lúc xuất rồi thêm kiểm" → "Dựng kiểm đảo ngày lúc xuất theo PR-D-01 và bản sửa PR-S-01" | Mâu thuẫn trong gói LAB-4: giả định A-15 đã chọn mốc, nhưng task vẫn ghi "chốt mốc" (review độc lập R4-01) | L5-068 |
+| PR-S-03 | Bảng chênh lệch, dòng task `L5-046` | Sửa | Chữ task chỉ ghi kiểm cách ly / quá hạn giao / đảo ngày → thêm điều kiện nghiệm thu: lô có trạng thái NULL bị chặn | Dòng GAP-18 và `ORD_COMMIT_ALLOCATION_TECH` 4a đã ghi "NULL = chặn" cho L5-046, nhưng dòng task L5 bỏ sót; người break theo bảng task sẽ thiếu AC này (review độc lập R4-24) | L5-046 |
+| PR-S-04 | Bảng chênh lệch, dòng task `L5-021`; `DRIVER_HOURS_FUNC` 3.1 | Sửa | "Tra lại nguồn luật rồi mới bổ sung kiểm tuần / tháng / năm" → tách hai việc: (a) dựng kiểm nhiều ngày với bảng tham số đã có ở `DRIVER_HOURS_FUNC` §3, ghi `source_verified = false`; (b) tra lại nguồn luật chính thức, chạy song song. Cổng trước go-live giữ nguyên: chưa xác minh thì không lên production | Gộp hai việc khác vai (BE dựng, BrSE tra nguồn) và khác độ chắc chắn vào một task làm task không chia được dưới 16 giờ; bảng tham số đã có sẵn trong Function Spec nên code không phải chờ (MOCK-09, DEV-014) | L5-021, L5-066 |
+
+Ngoài bốn dòng trên, không sửa spec nào khác. Các chỗ hở chỉ thuộc tài liệu as-built (đếm số cũ, link ngoài gói) không đổi việc phải làm, nên không khai ở đây. Chúng được ghi ở [task-breakdown.md](task-breakdown.md) mục 4.
 
 ## 2. Giả định bổ sung
 
-〔TODO-P1: bảng Giả định · Chỗ spec/RFP để ngỏ · Ảnh hưởng tới issue/estimate〕
+| Mã | Giả định | Chỗ spec / RFP để ngỏ | Ảnh hưởng tới issue / estimate |
+|---|---|---|---|
+| PR-A-01 | Bản LAB-4 làm mốc là commit `c3cf20d` (bản cuối của gói). Không có góp ý review LAB-4 nào của giảng viên tới ngày nộp LAB-5 | Đề không nói bản nộp ứng với commit nào | Toàn bộ backlog bám bản này |
+| PR-A-02 | Sprint dài 2 tuần: Sprint 1 từ 2026-11-30 đến 12-11 (theo lịch LAB-1), Sprint 2 và 3 nối tiếp. Năng lực Sprint 1 khoảng 34 MD ≈ 270 giờ; trừ PM và BrSE còn khoảng 200–220 giờ cho issue | Lịch LAB-1 (`schedule.md`) chỉ có giai đoạn phát triển từ 2026-11-30 và nhân sự theo tháng, không chia sprint | Xếp issue vào Iteration, burndown |
+| PR-A-03 | Đội giả định theo vai LAB-1, mỗi vai một người, riêng BE và FE có hai người: PM · BrSE · BE-1 · BE-2 · FE-1 · FE-2 · QA-1 · QA-Auto · Infra · Design | LAB-1 không nêu tên người | Field `Owner` trên Project |
+| PR-A-04 | Khách chưa trả lời các câu hỏi E-15 trong Sprint 1. Tenant IdP của khách cấp trễ 3 ngày (kịch bản lệch kế hoạch) | RFP không nêu hạn trả lời câu hỏi và ngày cấp môi trường | Issue E-15 ở trạng thái Todo/Blocked; rủi ro trễ ở báo cáo tiến độ |
+| PR-A-05 | Giờ ước lượng = SWP × k, với k hiệu chuẩn từ 6 issue ước trực tiếp (chi tiết ở estimate.md mục 2) | Đề để học viên tự chọn | Field `Estimated time` |
+| PR-A-06 | Giá trị mặc định của kiểm đảo ngày lúc xuất: mốc gồm chuyến chưa POD, chặn khi vi phạm (theo LAB-4 A-15), chuyến chưa POD quá 24 giờ thì không làm mốc nữa. Tất cả là tham số, đổi được khi khách trả lời | RFP không định nghĩa "đã nhận", nêu hai mức khác nhau (cảnh báo / chặn), không nói thời hạn POD | L5-068 làm được ngay, không chờ khách; câu hỏi tách thành issue E-15 |
+| PR-A-07 | Giới hạn giờ lái theo tháng / năm / trung bình 2 tuần trong bảng tham số `DRIVER_HOURS_FUNC` §3 là đúng cho tới khi nguồn luật được tra lại; riêng mốc tính 超勤 năm (960 giờ) chưa kiểm vì chưa có định nghĩa giờ chuẩn | Bảng chênh lệch LAB-4 ghi phải tra lại nguồn luật trước go-live (MOCK-09); Function Spec ghi chưa định nghĩa mốc 超勤 (QA-007 LAB-1) | Issue dựng kiểm nhiều ngày làm được ngay (PR-S-04); issue tra nguồn và câu hỏi 超勤 vào E-15 |
+| PR-A-08 | Trường chuỗi không ghi Max trong Screen Spec thì lấy giới hạn của cột DB đích. Ngày giờ hiển thị theo JST dạng `YYYY/MM/DD HH:mm` qua một hàm dùng chung | Screen Spec LAB-4 để trống cột Max cho kiểu String và chưa thống nhất định dạng hiển thị (review độc lập R4-18) | Điều kiện xong (DoD) của mọi issue màn hình |
 
 ## 3. Hướng đã chốt
 
-〔TODO-P1: bảng Vấn đề · Các phương án ở LAB-4 · Phương án chốt · Vì sao〕
+| Mã | Vấn đề | Các phương án ở LAB-4 | Phương án chốt | Vì sao |
+|---|---|---|---|---|
+| PR-D-01 | Kiểm đảo ngày (BR-DATE-01) lúc xuất hàng — GAP-41 | Task L5-068 nêu hai cách hiểu mốc: chỉ chuyến đã giao xong, hoặc thêm chuyến đã xuất chưa POD; bản review độc lập gói LAB-4 (12/10) xét thêm cách giữ nguyên (chỉ kiểm lúc phân bổ). Giả định LAB-4 A-15 chọn cách thứ hai và chặn | Dựng theo cách hiểu thứ hai của A-15, nhưng **phạm vi mốc và chặn / cảnh báo là tham số**; mặc định giữ đúng A-15 (PR-A-06). Tách issue hỏi khách ở E-15 | Chỉ cách hiểu thứ hai bắt được ca hai đơn cùng khách × SKU khi đơn trước đang trên đường. Khách chưa xác nhận cách hiểu nào. Tham số giúp không phải làm lại code khi khách trả lời khác (review quyết định DR-02, mức standard) |
+| PR-D-02 | Chia backlog theo trục nào | Gói LAB-4 có ba trục: 10 thư mục feature của spec, 12 nhóm chức năng FG của LAB-1, và 73 task `L5-xxx` của bảng chênh lệch | Epic = 12 FG của LAB-1, thêm E-13 外部連携基盤 (nền chung của 6 giao diện ngoài), E-14 環境・運用基盤, E-15 顧客確認. Issue lấy từ task L5, màn / module chỉ thiết kế, yêu cầu chưa đủ và cơ chế NFR. Việc dự án ngoài thiết kế (UAT, đào tạo, hypercare, cutover, quản trị, buffer) không thành issue, trừ các việc kiểm NFR (load test, threat model, SBOM, diễn tập restore, accessibility, observability) | Giữ được phép so với estimate LAB-1 theo từng FG; E-13 và E-14 gom việc nền không thuộc chức năng nào. Đề yêu cầu break **detail design**, mà việc dự án không đến từ detail design (review quyết định DR-03) |
+| PR-D-03 | Đăng nhập SSO và role riêng cho worker phụ thuộc thử nghiệm với hệ thống của khách | ADR-0009: PoC Entra ID 5 điểm trước khi dựng SSO, trượt thì dừng, không dùng `service_role`. ADR-0007: PoC JWT của role `job_worker` | Mỗi PoC là một issue spike trong E-13, chặn issue dựng tương ứng (L5-013 SSO, worker) | Hai ADR đã đặt điều kiện dừng. Đưa PoC lên trước để trễ phía khách lộ sớm (kịch bản PR-A-04) |
+| PR-D-04 | Câu hỏi khách chưa trả lời có chặn issue code không | LAB-4 đặt giả định A-1…A-20 có giá trị mặc định, nhưng không nói thứ tự làm | Issue code làm theo giả định LAB-4 với giá trị là tham số. Câu hỏi thành issue E-15 riêng, liên kết tới issue bị ảnh hưởng. Chỉ chặn khi không có giả định nào dùng được (dữ liệu master thật, mẫu 帳票 thật) | Không để cả sprint chờ khách. Khi khách trả lời khác chỉ phải đổi tham số, đúng cách LAB-4 làm với các giới hạn số (A-14) và cách DR-02 chốt cho GAP-41 |
