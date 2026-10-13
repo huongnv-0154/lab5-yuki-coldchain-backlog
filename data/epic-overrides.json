@@ -1,0 +1,206 @@
+{
+  "L5-003": {
+    "epic": "FG-07",
+    "why": "DEV-007 test alarm FR-TEMP-02"
+  },
+  "L5-006": {
+    "epic": "FG-11",
+    "why": "DEV-013 mật khẩu rò rỉ/MFA Auth"
+  },
+  "L5-008": {
+    "epic": "E-15",
+    "why": "DEV-016 chỉ chốt với khách đảo trạng thái lô"
+  },
+  "L5-009": {
+    "epic": "FG-02",
+    "why": "DEV-018 lưu nháp kiểm hàng E-02-S02"
+  },
+  "L5-010": {
+    "epic": "FG-08",
+    "why": "DEV-021 3 cột truy vết nguồn gốc lô"
+  },
+  "L5-011": {
+    "epic": "FG-05",
+    "why": "DEV-025 evaluateShippingPrecheck E-03-S07"
+  },
+  "L5-013": {
+    "epic": "FG-11",
+    "why": "MOCK-01 SAML/OIDC, map ROLE, MFA"
+  },
+  "L5-014": {
+    "epic": "FG-10",
+    "why": "MOCK-02 API bản đồ, travel_times"
+  },
+  "L5-015": {
+    "epic": "FG-10",
+    "why": "MOCK-03 SFTP ERP order-entry"
+  },
+  "L5-016": {
+    "epic": "FG-10",
+    "why": "MOCK-04 SMTP relay thư cảnh báo"
+  },
+  "L5-017": {
+    "epic": "FG-05",
+    "why": "MOCK-05 POD offline queue NFR-AVL-02"
+  },
+  "L5-018": {
+    "epic": "FG-05",
+    "why": "MOCK-06 bằng chứng giao hàng theo hợp đồng"
+  },
+  "L5-019": {
+    "epic": "FG-12",
+    "why": "MOCK-07 nạp master và logger thật"
+  },
+  "L5-020": {
+    "epic": "E-15",
+    "why": "MOCK-08 xác nhận ngưỡng 30/60 phút với khách"
+  },
+  "L5-023": {
+    "epic": "E-14",
+    "why": "Storage riêng tư + URL có ký dùng chung (ADR-0011), không riêng POD"
+  },
+  "L5-024": {
+    "epic": "FG-02",
+    "why": "MOCK-12 ô nhập 製造日 khi kiểm hàng"
+  },
+  "L5-025": {
+    "epic": "FG-03",
+    "why": "MOCK-13 reason_codes đổi trạng thái lô"
+  },
+  "L5-026": {
+    "epic": "FG-04",
+    "why": "MOCK-14 máy quét handheld pick-scan-form"
+  },
+  "L5-027": {
+    "epic": "E-15",
+    "why": "MOCK-15 hỏi khách sức chứa vị trí kho"
+  },
+  "L5-028": {
+    "epic": "E-15",
+    "why": "MOCK-16 xác nhận chu kỳ HACCP với khách"
+  },
+  "L5-029": {
+    "epic": "E-15",
+    "why": "MOCK-17 xác nhận ngưỡng gần hết hạn"
+  },
+  "L5-030": {
+    "epic": "FG-04",
+    "why": "GAP-01 RATIOS USE_BY delivery-window.ts"
+  },
+  "L5-031": {
+    "epic": "FG-04",
+    "why": "GAP-02 allocation-stages TEMP_BAND"
+  },
+  "L5-033": {
+    "epic": "FG-03",
+    "why": "GAP-04 link receiving-result sang inventory-putaway"
+  },
+  "L5-034": {
+    "epic": "FG-09",
+    "why": "GAP-05 limit 10.000 dòng báo cáo CSV"
+  },
+  "L5-035": {
+    "epic": "FG-06",
+    "why": "GAP-06 link route-check-result sang route-planning"
+  },
+  "L5-039": {
+    "epic": "FG-01",
+    "why": "GAP-10 link business-review sang master-agreement-detail"
+  },
+  "L5-040": {
+    "epic": "FG-04",
+    "why": "GAP-11 outcome từng dòng sau đăng ký đơn"
+  },
+  "L5-041": {
+    "epic": "FG-04",
+    "why": "GAP-12 nút 新規受注 order-list, sửa đơn"
+  },
+  "L5-042": {
+    "epic": "FG-11",
+    "why": "GAP-13 landing theo vai trò, cạnh chuyển màn"
+  },
+  "L5-043": {
+    "epic": "E-15",
+    "why": "GAP-14 chốt tỷ lệ 1/3·1/2 với khách"
+  },
+  "L5-044": {
+    "epic": "FG-02",
+    "why": "GAP-15 vitest guard loadInspectionTickets"
+  },
+  "L5-046": {
+    "epic": "FG-04",
+    "why": "GAP-18 commit_allocation tự kiểm lô BR-DATE-01"
+  },
+  "L5-048": {
+    "epic": "FG-05",
+    "why": "GAP-21 mã vi phạm kiểm xuất sang tiếng Nhật"
+  },
+  "L5-049": {
+    "epic": "FG-04",
+    "why": "GAP-22 cột 理由 allocation-result tiếng Nhật"
+  },
+  "L5-062": {
+    "epic": "FG-07",
+    "why": "GAP-35 ngày review HACCP tháng E-07"
+  },
+  "L5-063": {
+    "epic": "FG-11",
+    "why": "GAP-36 audit_events export/đăng nhập NFR-AUD-01"
+  },
+  "L5-067": {
+    "epic": "FG-05",
+    "why": "GAP-40 reversal event dòng giao DR-HIST-01"
+  },
+  "L5-068": {
+    "epic": "FG-04",
+    "why": "GAP-41 DATE_REVERSAL BR-DATE-01 lúc xuất"
+  },
+  "L5-069": {
+    "epic": "FG-02",
+    "why": "GAP-42 RPC giải policy ghi temp_policy_id"
+  },
+  "L5-070": {
+    "epic": "FG-02",
+    "why": "GAP-43 ticket hết hạn record_inspection YC422"
+  },
+  "L5-071": {
+    "epic": "FG-05",
+    "why": "GAP-44 RPC lỗi đầu vào kiểm xuất"
+  },
+  "L5-072": {
+    "epic": "FG-05",
+    "why": "GAP-45 khoá stock_units bước SHIP"
+  },
+  "L5-073": {
+    "epic": "FG-05",
+    "why": "GAP-46 giả định spec order-shipping/delivery"
+  },
+  "SPEC-YC-413": {
+    "epic": "FG-10",
+    "why": "YC-413 trao đổi file ERP qua SFTP"
+  },
+  "SPEC-YC-419": {
+    "epic": "E-13",
+    "why": "YC-419 worker nền pg_cron, lease, retry"
+  },
+  "SPEC-YC-420": {
+    "epic": "FG-10",
+    "why": "YC-420 mail_outbox gửi thư cảnh báo"
+  },
+  "SPEC-YC-531": {
+    "epic": "E-13",
+    "why": "INTEGRATION_RETRY lịch thử lại A-4"
+  },
+  "SPEC-YC-532": {
+    "epic": "FG-10",
+    "why": "ERP_FILE kiểm file CSV ERP"
+  },
+  "SPEC-YC-540": {
+    "epic": "E-14",
+    "why": "Storage riêng tư + URL có ký dùng chung (ADR-0011), không riêng POD"
+  },
+  "SPEC-YC-242": {
+    "epic": "E-14",
+    "why": "API URL tải lên có ký dùng chung mọi tính năng (ADR-0011)"
+  }
+}
