@@ -51,10 +51,10 @@ Quan hệ cha – con dùng sub-issue có sẵn của GitHub (`Parent issue`, `S
 | E-07 | FG-07 温度監視・逸脱・HACCP | Nhập file logger, cảnh báo, case lệch nhiệt, HACCP | FG-07 | `temperature-quality` |
 | E-08 | FG-08 トレーサビリティ・回収 | Truy xuất, case và thông báo thu hồi | FG-08 | `trace-recall` |
 | E-09 | FG-09 レポート・監査エクスポート | Báo cáo, gói bằng chứng audit, 帳票, thời hạn lưu giữ và purge hai pha (F-069, ADR-0012) | FG-09 | `report-audit` |
-| E-10 | FG-10 外部インターフェース | Phần nghiệp vụ của ERP CSV, bản đồ, mail thông báo, archive | FG-10 | `administration` (ERP, mail, archive), `dispatch` (bản đồ) |
+| E-10 | FG-10 外部インターフェース | Màn giám sát job và phần nghiệp vụ của ERP CSV, bản đồ, mail thông báo (`mail_outbox`), archive | FG-10 | `administration` (ERP, mail, archive), `dispatch` (bản đồ) |
 | E-11 | FG-11 認証・権限・監査ログ | SSO/OIDC, phiên, MFA, RBAC/RLS, ma trận vai trò × màn, audit chỉ thêm | FG-11 | `administration` |
 | E-12 | FG-12 データ移行・カットオーバー | Profiling, lineage, đối chiếu rehearsal, vận hành song song | FG-12 | `administration` |
-| E-13 | 外部連携基盤 | Nền chung của 6 giao diện ngoài: outbox, worker nền, thử lại, tài khoản môi trường thử, PoC IdP và `job_worker`, contract test | trải trong FG-10 / FG-11 | `architecture/` (ADR-0007, 0008, 0009) |
+| E-13 | 外部連携基盤 | Nền chung của 6 giao diện ngoài: outbox giao dịch (bảng `integration_jobs` / `integration_job_attempts`), worker nền, thử lại, tài khoản môi trường thử, PoC IdP, `job_worker` và vai trò DB của công cụ migration, contract test | trải trong FG-10 / FG-11 | `architecture/` (ADR-0007, 0008, 0009) |
 | E-14 | 環境・運用基盤 | 4 môi trường, CI/CD, migration, quan sát (log, correlation ID), backup/PITR, kho tệp đính kèm dùng chung (ADR-0011), hiệu năng, kiểm bảo mật (threat model, SBOM), kiểm NFR, gỡ phần chỉ dành cho prototype | PJ.85–90 + phần NFR rải trong các FG | `architecture/target-architecture.md` |
 | E-15 | 顧客確認 | Câu hỏi làm rõ gửi khách và việc xác minh nguồn bên ngoài | — | bảng chênh lệch, câu hỏi mở của kiến trúc |
 
