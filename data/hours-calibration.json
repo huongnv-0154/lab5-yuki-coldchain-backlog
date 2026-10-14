@@ -1,0 +1,88 @@
+{
+ "k": 1.5,
+ "rule": "giờ lá = SWP × k, làm tròn 0,5 giờ; giờ container = Σ giờ con",
+ "kRaw": 1.484,
+ "sumHours": 46,
+ "sumSWP": 31,
+ "assumption": "Một dev tầm trung đã quen stack (Next.js + Supabase/Postgres), có spec LAB-4; gồm code, tự test, sửa sau review; không gồm thời gian chờ chặn, UAT, hypercare, buffer lịch.",
+ "checks": {
+  "maxDeviationFromK": 0.333,
+  "splitKRule": "lệch > 50% ở ≥ 2 issue thì tách k — không xảy ra",
+  "leafMax": "10 SWP × 1.5 = 15.0 giờ ≤ 16 giờ (luật chia lá)"
+ },
+ "decision": "DR-06 (decision-review quick · bid) — brief plans/…/reports/decision-review-261014-hours-k.md",
+ "calibrationIssues": [
+  {
+   "number": 36,
+   "id": "FG02-06",
+   "title": "入荷予定一覧 — Báo lỗi ô 到着予定 / 有効期限 để trống (L5-056)",
+   "owner": "FE-1",
+   "scope": 1,
+   "complexity": 1,
+   "swp": 1,
+   "hours": 2,
+   "hoursPerSWP": 2.0,
+   "breakdown": "code kiểm ô trống trước khi đổi giờ 1h · test component 0,5h · review/sửa 0,5h"
+  },
+  {
+   "number": 7,
+   "id": "FG01-02.1",
+   "title": "RPC submit_master_change — Chặn SKU_CREATE trùng mã (SKU_ALREADY_EXISTS)",
+   "owner": "BE-1",
+   "scope": 2,
+   "complexity": 1,
+   "swp": 3,
+   "hours": 4,
+   "hoursPerSWP": 1.33,
+   "breakdown": "kiểm tồn tại mã + RAISE YC422 trong RPC 1,5h · map route + cập nhật API spec 1h · assert SQL 2 ca + gọi RPC trực tiếp 1h · review 0,5h"
+  },
+  {
+   "number": 16,
+   "id": "FG01-05.4",
+   "title": "Assert SQL + E2E — Phiên bản SKU, vòng đời, tìm / lọc",
+   "owner": "QA-Auto",
+   "scope": 3,
+   "complexity": 1,
+   "swp": 4,
+   "hours": 6,
+   "hoursPerSWP": 1.5,
+   "breakdown": "seed ~3.600 SKU tổng hợp 1,5h · assert SQL phiên bản 1h · E2E 3 luồng (duyệt, lọc, retired) 3h · ổn định CI 0,5h"
+  },
+  {
+   "number": 166,
+   "id": "E14-12",
+   "title": "Diễn tập quan sát: gây lỗi, cảnh báo tới đúng nơi, tra bằng correlationId (ADR-0014)",
+   "owner": "Infra",
+   "scope": 3,
+   "complexity": 2,
+   "swp": 5,
+   "hours": 8,
+   "hoursPerSWP": 1.6,
+   "breakdown": "dựng 4 tình huống lỗi 3h · kiểm cảnh báo 3 kênh 2h · tra theo correlationId + đo thời gian 2h · ghi điểm hở runbook 1h"
+  },
+  {
+   "number": 13,
+   "id": "FG01-05.1",
+   "title": "DB — Phiên bản SKU: 発効日, vòng đời, khoá phiên bản ở giao dịch, chỉ mục tìm / lọc",
+   "owner": "BE-1",
+   "scope": 5,
+   "complexity": 2,
+   "swp": 8,
+   "hours": 12,
+   "hoursPerSWP": 1.5,
+   "breakdown": "migration tách bảng phiên bản + chuyển dữ liệu 5h · FK ở bảng giao dịch 2h · chỉ mục 1h · chạy dev → test, kiểm không mất dòng 2h · assert không chồng 発効日 2h"
+  },
+  {
+   "number": 251,
+   "id": "FG05-02.2",
+   "title": "RPC sync_pod_item + route /api/pod/sync — idempotency, CONFLICT, SYNCED",
+   "owner": "BE-2",
+   "scope": 5,
+   "complexity": 3,
+   "swp": 10,
+   "hours": 14,
+   "hoursPerSWP": 1.4,
+   "breakdown": "RPC kiểm schema, SHA-256, khoá advisory 5h · nhánh SYNCED / CONFLICT / ROUTE_NOT_ACTIVE 3h · domain POD_OFFLINE_QUEUE 2h · unit test + assert SQL 4h"
+  }
+ ]
+}

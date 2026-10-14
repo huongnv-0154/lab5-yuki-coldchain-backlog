@@ -12,7 +12,7 @@
 | In Progress | 0 | 0 |  |
 | Blocked | 0 | 0 |  |
 | Done | 0 | 0 |  |
-| **Tổng** | **0** | **0** | snapshot 2026-10-14T04:11Z |
+| **Tổng** | **0** | **0** | snapshot 2026-10-14T07:03Z |
 <!-- /GENERATED -->
 
 ## 2. Burndown

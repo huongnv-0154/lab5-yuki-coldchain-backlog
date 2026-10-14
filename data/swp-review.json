@@ -1,0 +1,111 @@
+{
+ "decision": "DR-05 (decision-review standard · bid) — brief plans/…/reports/decision-review-261014-swp-representatives.md (thư mục plans/ không nộp)",
+ "userConfirmation": "Đã xác nhận: 2026-10-14 user chọn \"Đồng ý cả 5\" cho phán quyết DR-05 (một câu hỏi gộp).",
+ "representatives": [
+  {
+   "ref": "huongnv-0154/lab5-yuki-coldchain-backlog#8",
+   "number": 8,
+   "id": "FG01-02.2",
+   "title": "FG01-02.2 Form B YC_MASTER_SKU — Hiện lỗi SKU_ALREADY_EXISTS trên form",
+   "selectionReasons": [
+    "minimum"
+   ],
+   "skillScope": 1,
+   "skillComplexity": 1,
+   "skillSWP": 1,
+   "skillLevel": "rất dễ",
+   "witnessSWP": null,
+   "verdictScope": 1,
+   "verdictComplexity": 1,
+   "verdictSWP": 1,
+   "verdictLevel": "rất dễ",
+   "changed": false,
+   "issueSpecific": false,
+   "reason": "Giữ: một form, map một mã lỗi sang thông báo, một test component — đúng S1 \"một thành phần đơn giản\", C1 \"lỗi/validation thường\"; issue cùng nhóm UI·bugfix cũng 1."
+  },
+  {
+   "ref": "huongnv-0154/lab5-yuki-coldchain-backlog#246",
+   "number": 246,
+   "id": "FG04-12.4",
+   "title": "FG04-12.4 Assert SQL 4 tổ hợp + E2E",
+   "selectionReasons": [
+    "lower-median"
+   ],
+   "skillScope": 3,
+   "skillComplexity": 1,
+   "skillSWP": 4,
+   "skillLevel": "dễ",
+   "witnessSWP": null,
+   "verdictScope": 3,
+   "verdictComplexity": 2,
+   "verdictSWP": 5,
+   "verdictLevel": "dễ",
+   "changed": true,
+   "issueSpecific": true,
+   "reason": "Sửa 4 → 5: 4 tổ hợp tham số luật BR-DATE-01 (đã tham số hoá ở DR-02), fixture chuyến COMPLETED và DISPATCHED chưa POD cho hai đơn cùng khách × SKU, dòng audit và phiên bản luật — là thiết kế test cẩn thận (C2). Chỉ issue này: 11 issue cùng nhóm phần lớn là E2E hồi quy theo màn."
+  },
+  {
+   "ref": "huongnv-0154/lab5-yuki-coldchain-backlog#360",
+   "number": 360,
+   "id": "FG12-06.1",
+   "title": "FG12-06.1 RPC record_migration_signoff + POST signoffs + query đối chiếu (SPEC-YC-240)",
+   "selectionReasons": [
+    "maximum"
+   ],
+   "skillScope": 5,
+   "skillComplexity": 3,
+   "skillSWP": 10,
+   "skillLevel": "vừa",
+   "witnessSWP": null,
+   "verdictScope": 5,
+   "verdictComplexity": 2,
+   "verdictSWP": 8,
+   "verdictLevel": "vừa",
+   "changed": true,
+   "issueSpecific": true,
+   "reason": "Sửa 10 → 8: \"đồng thời\" chỉ là ràng buộc unique (23505) cộng kiểm lại bất biến dưới khoá — mẫu quen, không phải lập luận đồng thời đáng kể (C3); độ khó nằm ở 8 nhánh lỗi (C2). Scope giữ 5 (API + DB behavior). Chỉ issue này: nhóm cùng chữ ký trải 6–10."
+  },
+  {
+   "ref": "huongnv-0154/lab5-yuki-coldchain-backlog#227",
+   "number": 227,
+   "id": "FG07-02.3",
+   "title": "FG07-02.3 RPC import_temp_readings + route — Xác minh tệp, chống trùng, ghi một transaction",
+   "selectionReasons": [
+    "outlier"
+   ],
+   "skillScope": 5,
+   "skillComplexity": 3,
+   "skillSWP": 10,
+   "skillLevel": "vừa",
+   "witnessSWP": null,
+   "verdictScope": 5,
+   "verdictComplexity": 3,
+   "verdictSWP": 10,
+   "verdictLevel": "vừa",
+   "changed": false,
+   "issueSpecific": false,
+   "reason": "Giữ: một route + một RPC trong một transaction, một repo, một DB → Scope 5, không phải 8; khoá theo thiết bị rồi theo hash cho hai request song song là lập luận đồng thời thật (C3). Challenger đề xuất S8 (16 SWP) bị bác."
+  },
+  {
+   "ref": "huongnv-0154/lab5-yuki-coldchain-backlog#9",
+   "number": 9,
+   "id": "FG01-03.1",
+   "title": "FG01-03.1 Spec — Màn quản lý rule_versions, API và DB đích (maker-checker)",
+   "selectionReasons": [
+    "assessor-disagreement"
+   ],
+   "skillScope": 3,
+   "skillComplexity": 1,
+   "skillSWP": 4,
+   "skillLevel": "dễ",
+   "witnessSWP": 5,
+   "verdictScope": 3,
+   "verdictComplexity": 2,
+   "verdictSWP": 5,
+   "verdictLevel": "dễ",
+   "changed": true,
+   "issueSpecific": true,
+   "reason": "Sửa 4 → 5: mẫu BM-2-901 quy định hình thức, không giảm quyết định nội dung — phải chốt vai trò lập/duyệt, hiển thị source_verified, luồng 起票→承認 (C2); assessor 2 cũng chấm 5. Không có issue cùng nhóm."
+  }
+ ]
+}

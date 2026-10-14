@@ -1,0 +1,130 @@
+{
+ "source": "LAB-1 estimate-wbs (06-estimate-wbs.xlsx, sheet 1_WBS×工数, 778,6 MD) và trạng thái chức năng prototype (submission/facts.json, target-map.json) tại repo LAB-3/4 commit c3cf20d. Chỉ lấy số MD theo FG; không chép nội dung đề.",
+ "lab1RoleShareFg": {
+  "Backend": 142.3,
+  "Frontend": 101.4,
+  "QA (Manual)": 64.2,
+  "QA (Auto)": 41.6,
+  "Design": 23.9,
+  "PM": 57.4,
+  "BrSE": 37.2,
+  "Infra": 28.3
+ },
+ "prototype": {
+  "functionsBuilt": 53,
+  "mdBuilt": 356,
+  "functionsMock": 6,
+  "mdMock": 44.4,
+  "functionsOut": 11,
+  "mdOut": 95.9
+ },
+ "rows": [
+  {
+   "part": "FG-01 マスタ管理",
+   "epics": [
+    "FG-01"
+   ],
+   "lab1Md": 29.6,
+   "why": "8/8 chức năng đã chạy ở prototype; còn sửa L5, phiên bản SKU + 発効日 (PR-S-05) và màn rule_versions (ADR-0006)"
+  },
+  {
+   "part": "FG-02 入荷・検品・ロット生成",
+   "epics": [
+    "FG-02"
+   ],
+   "lab1Md": 33.9,
+   "why": "6/7 đã chạy; nhãn lô F-070 ngoài prototype nên làm mới cả máy in và agent (PR-A-11); thêm cột nguồn receipts (PR-S-06)"
+  },
+  {
+   "part": "FG-03 在庫・ロケーション・隔離",
+   "epics": [
+    "FG-03"
+   ],
+   "lab1Md": 35.7,
+   "why": "7/7 đã chạy; còn sửa L5 và màn chỉ có thiết kế"
+  },
+  {
+   "part": "FG-04 受注・アロケーション・ピッキング",
+   "epics": [
+    "FG-04"
+   ],
+   "lab1Md": 79.4,
+   "why": "9/9 đã chạy (phần lớn nhất của prototype); còn sửa L5, kiểm đảo ngày lúc xuất GAP-41 (PR-S-01, PR-S-02, PR-D-01, PR-A-06), máy quét SDK (PR-A-12)"
+  },
+  {
+   "part": "FG-05 配送・POD・クレーム",
+   "epics": [
+    "FG-05"
+   ],
+   "lab1Md": 30.1,
+   "why": "5/6 đã chạy, 1 mock; POD offline (PWA, đồng bộ, xung đột) làm thật"
+  },
+  {
+   "part": "FG-06 ルート計画・拘束時間",
+   "epics": [
+    "FG-06"
+   ],
+   "lab1Md": 43.0,
+   "why": "4/5 đã chạy, 1 ngoài prototype; giới hạn giờ lái 2024 tách thành issue riêng (PR-S-04, PR-A-07)"
+  },
+  {
+   "part": "FG-07 温度監視・逸脱・HACCP",
+   "epics": [
+    "FG-07"
+   ],
+   "lab1Md": 64.7,
+   "why": "8/8 đã chạy; còn nạp file logger thật (IF-LOG-01) và sửa L5"
+  },
+  {
+   "part": "FG-08 トレーサビリティ・回収",
+   "epics": [
+    "FG-08"
+   ],
+   "lab1Md": 45.7,
+   "why": "2/4 đã chạy, 2 ngoài prototype → case thu hồi, thông báo, 3 lane truy xuất làm mới theo spec đích"
+  },
+  {
+   "part": "FG-09 レポート・監査エクスポート",
+   "epics": [
+    "FG-09"
+   ],
+   "lab1Md": 34.2,
+   "why": "2/4 đã chạy, 2 ngoài prototype → 8 mẫu 帳票, gói xuất audit, retention / purge làm mới; tỷ lệ còn lại cao nhất trong 12 FG"
+  },
+  {
+   "part": "FG-10 外部インターフェース",
+   "epics": [
+    "FG-10"
+   ],
+   "lab1Md": 28.8,
+   "why": "3 mock + 1 ngoài prototype → ERP, bản đồ, mail, archive làm thật; khung job chung tách sang E-13 (PR-A-11)"
+  },
+  {
+   "part": "FG-11 認証・権限・監査ログ",
+   "epics": [
+    "FG-11"
+   ],
+   "lab1Md": 30.6,
+   "why": "2 đã chạy, 2 mock → SSO Entra sau PoC (PR-D-03); nền tích hợp IdP tách sang E-13"
+  },
+  {
+   "part": "FG-12 データ移行・カットオーバー",
+   "epics": [
+    "FG-12"
+   ],
+   "lab1Md": 40.6,
+   "why": "4/4 ngoài prototype → làm mới công cụ di trú; diễn tập và cutover thật (PJ.78–80) vẫn là việc dự án ngoài backlog"
+  },
+  {
+   "part": "PJ ngoài chức năng ↔ E-13 + E-14 + E-15",
+   "epics": [
+    "E-13",
+    "E-14",
+    "E-15"
+   ],
+   "lab1Md": 282.3,
+   "why": "PJ của LAB-1 gồm buffer 20% (129,8), UAT (21), hypercare (26), đào tạo (14), diễn tập di trú + cutover (43), quản trị (12), danh sách ngoại lệ (2) — ngoài backlog (PR-D-02); chỉ PJ.85–90 (34,5) vào E-14; E-13 là nền tích hợp tách từ FG-10/11; E-15 là 42 câu hỏi khách (BrSE), việc mới"
+  }
+ ],
+ "totalWhy": "(a) prototype đã chạy 53 chức năng = 356/496,3 MD chức năng; (b) LAB-1 tính cả PM 57,4 + BrSE 37,2 + QA thủ công 64,2 MD trong FG, backlog chỉ có việc của issue; (c) việc dự án và buffer ở PJ nằm ngoài backlog; (d) PREMISE thêm việc (PR-S-05/06, PR-S-04, kiểm đảo ngày lúc xuất PR-S-01, PR-D-01) và tách nền E-13/E-14"
+}
