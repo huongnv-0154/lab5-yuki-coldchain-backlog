@@ -1,0 +1,82 @@
+{
+ "note": "Cấu hình giả lập Sprint (DR-07, PREMISE PR-A-13). Năng lực: 34 MD/sprint (PR-A-02) chia đều 10 người theo vai (PR-A-03) → 27 giờ/người/sprint; PM không nhận issue lá. Câu hỏi E-15 tính vào giờ của BrSE. pinned: chuỗi đường găng nhận trước mọi ưu tiên khác (môi trường → yêu cầu tài khoản thử → tenant Entra thử → spike PoC SSO, ADR-0009). focusFactor: giả lập chỉ dùng 80% giờ danh nghĩa cho issue (họp, review, khởi động sprint đầu); kế hoạch vẫn lập theo giờ danh nghĩa.",
+ "sprints": {
+  "Sprint 1": {
+   "start": "2026-11-30",
+   "workdays": [
+    "2026-11-30",
+    "2026-12-01",
+    "2026-12-02",
+    "2026-12-03",
+    "2026-12-04",
+    "2026-12-07",
+    "2026-12-08",
+    "2026-12-09",
+    "2026-12-10",
+    "2026-12-11"
+   ]
+  },
+  "Sprint 2": {
+   "start": "2026-12-14"
+  }
+ },
+ "roleHoursPerSprint": {
+  "BE-1": 27,
+  "BE-2": 27,
+  "FE-1": 27,
+  "FE-2": 27,
+  "QA-1": 27,
+  "QA-Auto": 27,
+  "Infra": 27,
+  "Design": 27,
+  "BrSE": 27
+ },
+ "focusFactor": 0.8,
+ "pinned": {
+  "Sprint 1": [
+   "E14-01.1",
+   "E13-06.1",
+   "E13-06.2",
+   "E13-01.2",
+   "E13-01.1"
+  ]
+ },
+ "epicPriority": [
+  "E-14",
+  "E-13",
+  "FG-11",
+  "FG-02",
+  "FG-03",
+  "FG-10",
+  "FG-04",
+  "FG-05",
+  "FG-08",
+  "FG-01",
+  "FG-06",
+  "FG-07",
+  "FG-09",
+  "FG-12"
+ ],
+ "questionEpics": [
+  "FG-11",
+  "FG-02",
+  "FG-03"
+ ],
+ "maxQuestionsPerSprint": 5,
+ "planSprints": [
+  "Sprint 1",
+  "Sprint 2"
+ ],
+ "milestones": {
+  "source": "lịch LAB-1 (schedule.md, M-01…M-09)",
+  "M-01": "2026-11-13",
+  "M-02": "2026-11-27",
+  "M-03": "2027-04-02",
+  "M-04": "2027-02-26",
+  "M-05": "2027-04-02",
+  "M-06": "2027-05-14",
+  "M-07": "2027-05-31",
+  "M-08": "2027-06-01",
+  "M-09": "2027-06-28"
+ }
+}

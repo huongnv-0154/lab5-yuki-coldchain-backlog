@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+<title id="t">Burndown Sprint 1 (giả lập)</title>
+<desc id="d">SWP còn lại theo ngày: kế hoạch tuyến tính từ 139 về 0, thực tế còn 39 ở ngày 10; phạm vi giảm từ 139 xuống 129.</desc>
+<rect width="760" height="400" fill="#ffffff"/>
+<text x="56" y="26" font-size="16" font-weight="600" fill="#1f2328">Burndown Sprint 1 — giả lập 2026-11-30 → 2026-12-11</text>
+<rect x="192" y="64" width="204" height="280" fill="#fff4e5"/>
+<text x="196" y="92" font-size="11" fill="#9a6700">#384, #368 Blocked: tenant IdP trễ</text>
+<line x1="464" y1="64" x2="464" y2="344" stroke="#8250df" stroke-dasharray="3 3"/>
+<text x="460" y="110" font-size="11" text-anchor="end" fill="#8250df">#181 mở lại (lỗi hồi quy)</text>
+<line x1="668" y1="64" x2="668" y2="344" stroke="#8250df" stroke-dasharray="3 3"/>
+<text x="664" y="126" font-size="11" text-anchor="end" fill="#8250df">#253 → Sprint 2</text>
+<line x1="56" y1="344" x2="736" y2="344" stroke="#d0d7de" stroke-width="1"/>
+<text x="48" y="348" font-size="11" text-anchor="end" fill="#57606a">0</text>
+<line x1="56" y1="304" x2="736" y2="304" stroke="#d0d7de" stroke-width="0.6"/>
+<text x="48" y="308" font-size="11" text-anchor="end" fill="#57606a">20</text>
+<line x1="56" y1="264" x2="736" y2="264" stroke="#d0d7de" stroke-width="0.6"/>
+<text x="48" y="268" font-size="11" text-anchor="end" fill="#57606a">40</text>
+<line x1="56" y1="224" x2="736" y2="224" stroke="#d0d7de" stroke-width="0.6"/>
+<text x="48" y="228" font-size="11" text-anchor="end" fill="#57606a">60</text>
+<line x1="56" y1="184" x2="736" y2="184" stroke="#d0d7de" stroke-width="0.6"/>
+<text x="48" y="188" font-size="11" text-anchor="end" fill="#57606a">80</text>
+<line x1="56" y1="144" x2="736" y2="144" stroke="#d0d7de" stroke-width="0.6"/>
+<text x="48" y="148" font-size="11" text-anchor="end" fill="#57606a">100</text>
+<line x1="56" y1="104.00000000000001" x2="736" y2="104.00000000000001" stroke="#d0d7de" stroke-width="0.6"/>
+<text x="48" y="108.00000000000001" font-size="11" text-anchor="end" fill="#57606a">120</text>
+<line x1="56" y1="64" x2="736" y2="64" stroke="#d0d7de" stroke-width="0.6"/>
+<text x="48" y="68" font-size="11" text-anchor="end" fill="#57606a">140</text>
+<text x="56" y="362" font-size="11" text-anchor="middle" fill="#57606a">0</text>
+<text x="124" y="362" font-size="11" text-anchor="middle" fill="#57606a">1</text>
+<text x="192" y="362" font-size="11" text-anchor="middle" fill="#57606a">2</text>
+<text x="260" y="362" font-size="11" text-anchor="middle" fill="#57606a">3</text>
+<text x="328" y="362" font-size="11" text-anchor="middle" fill="#57606a">4</text>
+<text x="396" y="362" font-size="11" text-anchor="middle" fill="#57606a">5</text>
+<text x="464" y="362" font-size="11" text-anchor="middle" fill="#57606a">6</text>
+<text x="532" y="362" font-size="11" text-anchor="middle" fill="#57606a">7</text>
+<text x="600" y="362" font-size="11" text-anchor="middle" fill="#57606a">8</text>
+<text x="668" y="362" font-size="11" text-anchor="middle" fill="#57606a">9</text>
+<text x="736" y="362" font-size="11" text-anchor="middle" fill="#57606a">10</text>
+<text x="396" y="386" font-size="12" text-anchor="middle" fill="#57606a">Ngày làm việc</text>
+<text x="16" y="204" font-size="12" text-anchor="middle" fill="#57606a" transform="rotate(-90 16 204)">SWP còn lại</text>
+<path d="M56.0,66.0 L124.0,66.0 L192.0,66.0 L260.0,66.0 L328.0,66.0 L396.0,66.0 L464.0,66.0 L532.0,66.0 L600.0,66.0 L668.0,86.0 L736.0,86.0" fill="none" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="2 4"/>
+<path d="M56.0,66.0 L124.0,93.8 L192.0,121.6 L260.0,149.4 L328.0,177.2 L396.0,205.0 L464.0,232.8 L532.0,260.6 L600.0,288.4 L668.0,316.2 L736.0,344.0" fill="none" stroke="#8c959f" stroke-width="2" stroke-dasharray="6 4"/>
+<path d="M56.0,66.0 L124.0,66.0 L192.0,70.0 L260.0,108.0 L328.0,108.0 L396.0,162.0 L464.0,166.0 L532.0,178.0 L600.0,204.0 L668.0,236.0 L736.0,266.0" fill="none" stroke="#0969da" stroke-width="2.5"/>
+<circle cx="56" cy="66" r="3.5" fill="#0969da"><title>Ngày 0: còn 139 SWP</title></circle>
+<circle cx="124" cy="66" r="3.5" fill="#0969da"><title>Ngày 1: còn 139 SWP</title></circle>
+<circle cx="192" cy="70.00000000000001" r="3.5" fill="#0969da"><title>Ngày 2: còn 137 SWP</title></circle>
+<circle cx="260" cy="108" r="3.5" fill="#0969da"><title>Ngày 3: còn 118 SWP</title></circle>
+<circle cx="328" cy="108" r="3.5" fill="#0969da"><title>Ngày 4: còn 118 SWP</title></circle>
+<circle cx="396" cy="162" r="3.5" fill="#0969da"><title>Ngày 5: còn 91 SWP</title></circle>
+<circle cx="464" cy="166" r="3.5" fill="#0969da"><title>Ngày 6: còn 89 SWP</title></circle>
+<circle cx="532" cy="178" r="3.5" fill="#0969da"><title>Ngày 7: còn 83 SWP</title></circle>
+<circle cx="600" cy="204" r="3.5" fill="#0969da"><title>Ngày 8: còn 70 SWP</title></circle>
+<circle cx="668" cy="236" r="3.5" fill="#0969da"><title>Ngày 9: còn 54 SWP</title></circle>
+<circle cx="736" cy="266" r="3.5" fill="#0969da"><title>Ngày 10: còn 39 SWP</title></circle>
+<text x="728" y="284" font-size="12" font-weight="600" text-anchor="end" fill="#0969da">còn 39</text>
+<line x1="56" y1="44" x2="84" y2="44" stroke="#0969da" stroke-width="2.5"/>
+<text x="90" y="48" font-size="12" fill="#1f2328">Thực tế</text>
+<line x1="236" y1="44" x2="264" y2="44" stroke="#8c959f" stroke-width="2.5" stroke-dasharray="6 4"/>
+<text x="270" y="48" font-size="12" fill="#1f2328">Kế hoạch tuyến tính</text>
+<line x1="416" y1="44" x2="444" y2="44" stroke="#bf8700" stroke-width="2.5" stroke-dasharray="2 4"/>
+<text x="450" y="48" font-size="12" fill="#1f2328">Phạm vi sprint</text>
+</svg>

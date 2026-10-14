@@ -1,0 +1,29 @@
+{
+ "note": "Kịch bản lệch kế hoạch Sprint 1 (DR-07, PREMISE PR-A-04, PR-A-13). Đúng 3 sự kiện.",
+ "block": [
+  {
+   "ids": [
+    "E13-06.2",
+    "E13-01.1"
+   ],
+   "fromDay": 3,
+   "toDay": 5,
+   "note": "Tenant Entra thử của khách chưa cấp (PR-A-04); chờ 3 ngày"
+  }
+ ],
+ "reopen": [
+  {
+   "id": "FG02-13",
+   "day": 6,
+   "reworkRatio": 0.5,
+   "note": "QA chạy E2E hồi quy nhập hàng: ô 受入数量 nhập 0 bị coi như trống → mở lại sửa"
+  }
+ ],
+ "carry": [
+  {
+   "id": "FG05-02.4",
+   "day": 9,
+   "note": "PWA offline (15 giờ) còn dở, không kịp ngày 10 → chuyển Sprint 2, giữ mục tiêu sprint cho chuỗi IdP và môi trường"
+  }
+ ]
+}

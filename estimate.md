@@ -54,7 +54,7 @@ Bộ hiệu chuẩn không có vai Design và BrSE, nên mình kiểm nhanh thê
 
 **Không tính:** giờ chỉ gồm việc nằm trong issue. Không gồm UAT, đào tạo, hypercare, diễn tập di trú + cutover, quản trị dự án và buffer lịch — đó là việc dự án ngoài backlog (PREMISE PR-D-02), so riêng ở mục 4.
 
-**Lưu ý:** báo cáo HTML có khung đổi SWP ↔ giờ cho người đọc tự chỉnh hệ số — chỉ để tham khảo; k ở đây là quy ước riêng của estimate này (PREMISE PR-A-05). Giờ hiệu chuẩn do AI ước, chưa có số thực tế của đội; sẽ so lại với giờ giả lập Sprint 1 (progress-report.md).
+**Lưu ý:** báo cáo HTML có khung đổi SWP ↔ giờ cho người đọc tự chỉnh hệ số — chỉ để tham khảo; k ở đây là quy ước riêng của estimate này (PREMISE PR-A-05). Giờ hiệu chuẩn do AI ước, chưa có số thực tế của đội. Giả lập Sprint 1 lấy giờ ước làm giờ thực tế nên không kiểm được k (progress-report.md mục 2); phải có giờ đo của đội thật mới so được.
 
 ## 3. Tổng theo epic
 

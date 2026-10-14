@@ -1,0 +1,79 @@
+[
+  {
+    "day": 0,
+    "date": null,
+    "planned": 139,
+    "actual": 139,
+    "scope": 139
+  },
+  {
+    "day": 1,
+    "date": "2026-11-30",
+    "planned": 125.1,
+    "actual": 139,
+    "scope": 139
+  },
+  {
+    "day": 2,
+    "date": "2026-12-01",
+    "planned": 111.2,
+    "actual": 137,
+    "scope": 139
+  },
+  {
+    "day": 3,
+    "date": "2026-12-02",
+    "planned": 97.3,
+    "actual": 118,
+    "scope": 139
+  },
+  {
+    "day": 4,
+    "date": "2026-12-03",
+    "planned": 83.4,
+    "actual": 118,
+    "scope": 139
+  },
+  {
+    "day": 5,
+    "date": "2026-12-04",
+    "planned": 69.5,
+    "actual": 91,
+    "scope": 139
+  },
+  {
+    "day": 6,
+    "date": "2026-12-07",
+    "planned": 55.6,
+    "actual": 89,
+    "scope": 139
+  },
+  {
+    "day": 7,
+    "date": "2026-12-08",
+    "planned": 41.7,
+    "actual": 83,
+    "scope": 139
+  },
+  {
+    "day": 8,
+    "date": "2026-12-09",
+    "planned": 27.8,
+    "actual": 70,
+    "scope": 139
+  },
+  {
+    "day": 9,
+    "date": "2026-12-10",
+    "planned": 13.9,
+    "actual": 54,
+    "scope": 129
+  },
+  {
+    "day": 10,
+    "date": "2026-12-11",
+    "planned": 0,
+    "actual": 39,
+    "scope": 129
+  }
+]

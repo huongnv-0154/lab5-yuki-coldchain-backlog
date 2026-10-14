@@ -1,0 +1,1104 @@
+{
+  "sprint": "Sprint 1",
+  "events": [
+    {
+      "day": 1,
+      "date": "2026-11-30",
+      "number": 369,
+      "id": "E13-01.2",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 1,
+      "date": "2026-11-30",
+      "number": 398,
+      "id": "E14-02.3",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 1,
+      "date": "2026-11-30",
+      "number": 350,
+      "id": "FG11-09.2",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 1,
+      "date": "2026-11-30",
+      "number": 47,
+      "id": "FG03-02",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 1,
+      "date": "2026-11-30",
+      "number": 420,
+      "id": "E14-10.1",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 1,
+      "date": "2026-11-30",
+      "number": 392,
+      "id": "E14-01.1",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 1,
+      "date": "2026-11-30",
+      "number": 210,
+      "id": "FG02-10.7",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 1,
+      "date": "2026-11-30",
+      "number": 383,
+      "id": "E13-06.1",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 2,
+      "date": "2026-12-01",
+      "number": 210,
+      "id": "FG02-10.7",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 2,
+      "date": "2026-12-01",
+      "number": 223,
+      "id": "FG03-05.4",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 384,
+      "id": "E13-06.2",
+      "from": "Todo",
+      "to": "Blocked",
+      "note": "Tenant Entra thử của khách chưa cấp (PR-A-04); chờ 3 ngày"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 368,
+      "id": "E13-01.1",
+      "from": "Todo",
+      "to": "Blocked",
+      "note": "Tenant Entra thử của khách chưa cấp (PR-A-04); chờ 3 ngày"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 398,
+      "id": "E14-02.3",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 400,
+      "id": "E14-03.1",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 350,
+      "id": "FG11-09.2",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 36,
+      "id": "FG02-06",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 36,
+      "id": "FG02-06",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 181,
+      "id": "FG02-13",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 47,
+      "id": "FG03-02",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 48,
+      "id": "FG03-03",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 420,
+      "id": "E14-10.1",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 389,
+      "id": "E13-06.7",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 223,
+      "id": "FG03-05.4",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 318,
+      "id": "FG10-01.4",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 383,
+      "id": "E13-06.1",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 43,
+      "id": "E15-FG02-01",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Soạn câu hỏi gửi khách"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 43,
+      "id": "E15-FG02-01",
+      "from": "In Progress",
+      "to": "Blocked",
+      "note": "Đã gửi câu hỏi (giả lập); hỏi lại 2026-12-07 nếu chưa có trả lời"
+    },
+    {
+      "day": 3,
+      "date": "2026-12-02",
+      "number": 44,
+      "id": "E15-FG02-02",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Soạn câu hỏi gửi khách"
+    },
+    {
+      "day": 4,
+      "date": "2026-12-03",
+      "number": 421,
+      "id": "E14-10.2",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 4,
+      "date": "2026-12-03",
+      "number": 44,
+      "id": "E15-FG02-02",
+      "from": "In Progress",
+      "to": "Blocked",
+      "note": "Đã gửi câu hỏi (giả lập); hỏi lại 2026-12-08 nếu chưa có trả lời"
+    },
+    {
+      "day": 4,
+      "date": "2026-12-03",
+      "number": 45,
+      "id": "E15-FG02-03",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Soạn câu hỏi gửi khách"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 369,
+      "id": "E13-01.2",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 371,
+      "id": "E13-02.1",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 400,
+      "id": "E14-03.1",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 401,
+      "id": "E14-03.2",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 181,
+      "id": "FG02-13",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 67,
+      "id": "FG04-04",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 48,
+      "id": "FG03-03",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 253,
+      "id": "FG05-02.4",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 389,
+      "id": "E13-06.7",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 130,
+      "id": "FG11-04",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 392,
+      "id": "E14-01.1",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 393,
+      "id": "E14-01.2",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 318,
+      "id": "FG10-01.4",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 255,
+      "id": "FG05-02.6",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 45,
+      "id": "E15-FG02-03",
+      "from": "In Progress",
+      "to": "Blocked",
+      "note": "Đã gửi câu hỏi (giả lập); hỏi lại 2026-12-09 nếu chưa có trả lời"
+    },
+    {
+      "day": 5,
+      "date": "2026-12-04",
+      "number": 52,
+      "id": "E15-FG03-01",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Soạn câu hỏi gửi khách"
+    },
+    {
+      "day": 6,
+      "date": "2026-12-07",
+      "number": 43,
+      "id": "E15-FG02-01",
+      "from": "Blocked",
+      "to": "Blocked",
+      "note": "Đã hỏi lại (giả lập); khách chưa trả lời, giữ Blocked",
+      "kind": "followup"
+    },
+    {
+      "day": 6,
+      "date": "2026-12-07",
+      "number": 181,
+      "id": "FG02-13",
+      "from": "Done",
+      "to": "In Progress",
+      "note": "QA chạy E2E hồi quy nhập hàng: ô 受入数量 nhập 0 bị coi như trống → mở lại sửa"
+    },
+    {
+      "day": 6,
+      "date": "2026-12-07",
+      "number": 384,
+      "id": "E13-06.2",
+      "from": "Blocked",
+      "to": "Todo",
+      "note": "Hết chặn, làm tiếp"
+    },
+    {
+      "day": 6,
+      "date": "2026-12-07",
+      "number": 368,
+      "id": "E13-01.1",
+      "from": "Blocked",
+      "to": "Todo",
+      "note": "Hết chặn, làm tiếp"
+    },
+    {
+      "day": 6,
+      "date": "2026-12-07",
+      "number": 421,
+      "id": "E14-10.2",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 6,
+      "date": "2026-12-07",
+      "number": 255,
+      "id": "FG05-02.6",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 6,
+      "date": "2026-12-07",
+      "number": 282,
+      "id": "FG08-01.6",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 6,
+      "date": "2026-12-07",
+      "number": 52,
+      "id": "E15-FG03-01",
+      "from": "In Progress",
+      "to": "Blocked",
+      "note": "Đã gửi câu hỏi (giả lập); hỏi lại 2026-12-10 nếu chưa có trả lời"
+    },
+    {
+      "day": 6,
+      "date": "2026-12-07",
+      "number": 53,
+      "id": "E15-FG03-02",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Soạn câu hỏi gửi khách"
+    },
+    {
+      "day": 7,
+      "date": "2026-12-08",
+      "number": 44,
+      "id": "E15-FG02-02",
+      "from": "Blocked",
+      "to": "Blocked",
+      "note": "Đã hỏi lại (giả lập); khách chưa trả lời, giữ Blocked",
+      "kind": "followup"
+    },
+    {
+      "day": 7,
+      "date": "2026-12-08",
+      "number": 401,
+      "id": "E14-03.2",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 7,
+      "date": "2026-12-08",
+      "number": 394,
+      "id": "E14-01.3",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 7,
+      "date": "2026-12-08",
+      "number": 181,
+      "id": "FG02-13",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 7,
+      "date": "2026-12-08",
+      "number": 53,
+      "id": "E15-FG03-02",
+      "from": "In Progress",
+      "to": "Blocked",
+      "note": "Đã gửi câu hỏi (giả lập); hỏi lại 2026-12-11 nếu chưa có trả lời"
+    },
+    {
+      "day": 7,
+      "date": "2026-12-08",
+      "number": 349,
+      "id": "FG11-09.1",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 8,
+      "date": "2026-12-09",
+      "number": 45,
+      "id": "E15-FG02-03",
+      "from": "Blocked",
+      "to": "Blocked",
+      "note": "Đã hỏi lại (giả lập); khách chưa trả lời, giữ Blocked",
+      "kind": "followup"
+    },
+    {
+      "day": 8,
+      "date": "2026-12-09",
+      "number": 371,
+      "id": "E13-02.1",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 8,
+      "date": "2026-12-09",
+      "number": 202,
+      "id": "FG02-07.1",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 8,
+      "date": "2026-12-09",
+      "number": 393,
+      "id": "E14-01.2",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 8,
+      "date": "2026-12-09",
+      "number": 384,
+      "id": "E13-06.2",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 8,
+      "date": "2026-12-09",
+      "number": 282,
+      "id": "FG08-01.6",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 8,
+      "date": "2026-12-09",
+      "number": 288,
+      "id": "FG08-02.5",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 9,
+      "date": "2026-12-10",
+      "number": 52,
+      "id": "E15-FG03-01",
+      "from": "Blocked",
+      "to": "Blocked",
+      "note": "Đã hỏi lại (giả lập); khách chưa trả lời, giữ Blocked",
+      "kind": "followup"
+    },
+    {
+      "day": 9,
+      "date": "2026-12-10",
+      "number": 202,
+      "id": "FG02-07.1",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 9,
+      "date": "2026-12-10",
+      "number": 130,
+      "id": "FG11-04",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 9,
+      "date": "2026-12-10",
+      "number": 372,
+      "id": "E13-02.2",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 9,
+      "date": "2026-12-10",
+      "number": 253,
+      "id": "FG05-02.4",
+      "from": "Sprint 1",
+      "to": "Sprint 2",
+      "note": "PWA offline (15 giờ) còn dở, không kịp ngày 10 → chuyển Sprint 2, giữ mục tiêu sprint cho chuỗi IdP và môi trường",
+      "field": "Sprint"
+    },
+    {
+      "day": 10,
+      "date": "2026-12-11",
+      "number": 53,
+      "id": "E15-FG03-02",
+      "from": "Blocked",
+      "to": "Blocked",
+      "note": "Đã hỏi lại (giả lập); khách chưa trả lời, giữ Blocked",
+      "kind": "followup"
+    },
+    {
+      "day": 10,
+      "date": "2026-12-11",
+      "number": 394,
+      "id": "E14-01.3",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 10,
+      "date": "2026-12-11",
+      "number": 408,
+      "id": "E14-05.3",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 10,
+      "date": "2026-12-11",
+      "number": 67,
+      "id": "FG04-04",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 10,
+      "date": "2026-12-11",
+      "number": 203,
+      "id": "FG02-07.2",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 10,
+      "date": "2026-12-11",
+      "number": 288,
+      "id": "FG08-02.5",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 10,
+      "date": "2026-12-11",
+      "number": 292,
+      "id": "FG08-03.3",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 10,
+      "date": "2026-12-11",
+      "number": 349,
+      "id": "FG11-09.1",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 10,
+      "date": "2026-12-11",
+      "number": 33,
+      "id": "FG02-03",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    },
+    {
+      "day": 10,
+      "date": "2026-12-11",
+      "number": 33,
+      "id": "FG02-03",
+      "from": "In Progress",
+      "to": "Done",
+      "note": "Xong, đạt DoD"
+    },
+    {
+      "day": 10,
+      "date": "2026-12-11",
+      "number": 89,
+      "id": "FG05-09",
+      "from": "Todo",
+      "to": "In Progress",
+      "note": "Bắt đầu"
+    }
+  ],
+  "final": {
+    "33": {
+      "id": "FG02-03",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 1,
+      "hoursLeft": 0
+    },
+    "34": {
+      "id": "FG02-04",
+      "status": "Todo",
+      "sprint": "Sprint 1",
+      "swp": 1,
+      "hoursLeft": 1.5
+    },
+    "36": {
+      "id": "FG02-06",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 1,
+      "hoursLeft": 0
+    },
+    "43": {
+      "id": "E15-FG02-01",
+      "status": "Blocked",
+      "sprint": "Sprint 1",
+      "swp": 1,
+      "hoursLeft": 0
+    },
+    "44": {
+      "id": "E15-FG02-02",
+      "status": "Blocked",
+      "sprint": "Sprint 1",
+      "swp": 1,
+      "hoursLeft": 0
+    },
+    "45": {
+      "id": "E15-FG02-03",
+      "status": "Blocked",
+      "sprint": "Sprint 1",
+      "swp": 2,
+      "hoursLeft": 0
+    },
+    "47": {
+      "id": "FG03-02",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 3,
+      "hoursLeft": 0
+    },
+    "48": {
+      "id": "FG03-03",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 3,
+      "hoursLeft": 0
+    },
+    "52": {
+      "id": "E15-FG03-01",
+      "status": "Blocked",
+      "sprint": "Sprint 1",
+      "swp": 1,
+      "hoursLeft": 0
+    },
+    "53": {
+      "id": "E15-FG03-02",
+      "status": "Blocked",
+      "sprint": "Sprint 1",
+      "swp": 2,
+      "hoursLeft": 0
+    },
+    "67": {
+      "id": "FG04-04",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 5,
+      "hoursLeft": 0
+    },
+    "89": {
+      "id": "FG05-09",
+      "status": "In Progress",
+      "sprint": "Sprint 1",
+      "swp": 2,
+      "hoursLeft": 2.4
+    },
+    "130": {
+      "id": "FG11-04",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 5,
+      "hoursLeft": 0
+    },
+    "181": {
+      "id": "FG02-13",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 3,
+      "hoursLeft": 0
+    },
+    "202": {
+      "id": "FG02-07.1",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 1,
+      "hoursLeft": 0
+    },
+    "203": {
+      "id": "FG02-07.2",
+      "status": "In Progress",
+      "sprint": "Sprint 1",
+      "swp": 1,
+      "hoursLeft": 0.4
+    },
+    "210": {
+      "id": "FG02-10.7",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 2,
+      "hoursLeft": 0
+    },
+    "223": {
+      "id": "FG03-05.4",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 2,
+      "hoursLeft": 0
+    },
+    "253": {
+      "id": "FG05-02.4",
+      "status": "In Progress",
+      "sprint": "Sprint 2",
+      "swp": 10,
+      "hoursLeft": 4.56
+    },
+    "255": {
+      "id": "FG05-02.6",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 2,
+      "hoursLeft": 0
+    },
+    "270": {
+      "id": "FG06-04.5",
+      "status": "Todo",
+      "sprint": "Sprint 1",
+      "swp": 2,
+      "hoursLeft": 3
+    },
+    "282": {
+      "id": "FG08-01.6",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 3,
+      "hoursLeft": 0
+    },
+    "288": {
+      "id": "FG08-02.5",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 2,
+      "hoursLeft": 0
+    },
+    "292": {
+      "id": "FG08-03.3",
+      "status": "In Progress",
+      "sprint": "Sprint 1",
+      "swp": 2,
+      "hoursLeft": 0.9
+    },
+    "318": {
+      "id": "FG10-01.4",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 2,
+      "hoursLeft": 0
+    },
+    "349": {
+      "id": "FG11-09.1",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 3,
+      "hoursLeft": 0
+    },
+    "350": {
+      "id": "FG11-09.2",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 3,
+      "hoursLeft": 0
+    },
+    "351": {
+      "id": "FG11-09.3",
+      "status": "Todo",
+      "sprint": "Sprint 1",
+      "swp": 4,
+      "hoursLeft": 6
+    },
+    "368": {
+      "id": "E13-01.1",
+      "status": "Todo",
+      "sprint": "Sprint 1",
+      "swp": 6,
+      "hoursLeft": 9
+    },
+    "369": {
+      "id": "E13-01.2",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 6,
+      "hoursLeft": 0
+    },
+    "371": {
+      "id": "E13-02.1",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 5,
+      "hoursLeft": 0
+    },
+    "372": {
+      "id": "E13-02.2",
+      "status": "In Progress",
+      "sprint": "Sprint 1",
+      "swp": 5,
+      "hoursLeft": 3.9
+    },
+    "383": {
+      "id": "E13-06.1",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 3,
+      "hoursLeft": 0
+    },
+    "384": {
+      "id": "E13-06.2",
+      "status": "In Progress",
+      "sprint": "Sprint 1",
+      "swp": 5,
+      "hoursLeft": 2.4
+    },
+    "388": {
+      "id": "E13-06.6",
+      "status": "Todo",
+      "sprint": "Sprint 1",
+      "swp": 1,
+      "hoursLeft": 1.5
+    },
+    "389": {
+      "id": "E13-06.7",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 3,
+      "hoursLeft": 0
+    },
+    "392": {
+      "id": "E14-01.1",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 6,
+      "hoursLeft": 0
+    },
+    "393": {
+      "id": "E14-01.2",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 5,
+      "hoursLeft": 0
+    },
+    "394": {
+      "id": "E14-01.3",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 4,
+      "hoursLeft": 0
+    },
+    "398": {
+      "id": "E14-02.3",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 3,
+      "hoursLeft": 0
+    },
+    "400": {
+      "id": "E14-03.1",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 4,
+      "hoursLeft": 0
+    },
+    "401": {
+      "id": "E14-03.2",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 3,
+      "hoursLeft": 0
+    },
+    "408": {
+      "id": "E14-05.3",
+      "status": "In Progress",
+      "sprint": "Sprint 1",
+      "swp": 3,
+      "hoursLeft": 3.9
+    },
+    "420": {
+      "id": "E14-10.1",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 4,
+      "hoursLeft": 0
+    },
+    "421": {
+      "id": "E14-10.2",
+      "status": "Done",
+      "sprint": "Sprint 1",
+      "swp": 3,
+      "hoursLeft": 0
+    }
+  },
+  "idleHoursByRole": {
+    "BE-1": 3.6,
+    "BE-2": 0,
+    "FE-1": 0,
+    "FE-2": 2.16,
+    "QA-1": 17.1,
+    "QA-Auto": 0,
+    "Infra": 0,
+    "Design": 0,
+    "BrSE": 0
+  }
+}
