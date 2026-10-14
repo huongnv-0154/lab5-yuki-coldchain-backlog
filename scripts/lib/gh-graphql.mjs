@@ -1,7 +1,8 @@
 // Gọi GitHub GraphQL qua `gh api graphql` (token do gh giữ, script không đọc/in token).
-// Thử lại 3 lần, nghỉ 1s giữa các lần; lỗi GraphQL trả về được ném ra kèm thông điệp.
+// Thử tối đa 3 lần (đổi bằng { retries }), nghỉ 1s giữa các lần; lỗi dữ liệu (UNPROCESSABLE / NOT_FOUND / FORBIDDEN / INVALID)
+// ném ngay không thử lại; lỗi GraphQL trả về được ném ra kèm thông điệp. Kèm paginate, readJson, writeJson (ghi nguyên tử), parseArgs.
 import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, renameSync, writeFileSync } from 'node:fs';
 
 const sleep = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 
@@ -44,8 +45,13 @@ export function paginate(fetchPage) {
 }
 
 export const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'));
-export const writeJson = (path, data) => writeFileSync(path, `${JSON.stringify(data, null, 2)}\n`);
+// Ghi qua tệp tạm rồi đổi tên: bị ngắt giữa chừng cũng không để lại JSON cụt
+export const writeJson = (path, data) => {
+  writeFileSync(`${path}.tmp`, `${JSON.stringify(data, null, 2)}\n`);
+  renameSync(`${path}.tmp`, path);
+};
 
+// `--cờ giá trị` → out.cờ = giá trị; cờ đứng cuối hoặc ngay trước một cờ khác → true; còn lại vào out._
 export function parseArgs(argv = process.argv.slice(2)) {
   const out = { _: [] };
   for (let i = 0; i < argv.length; i++) {
