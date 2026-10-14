@@ -4,6 +4,7 @@
 
 import { table } from './markdown-table.mjs';
 import { breakdownRenderers } from './breakdown-renderers.mjs';
+import { estimateRenderers } from './estimate-renderers.mjs';
 
 const STATUS_ORDER = ['Todo', 'In Progress', 'Blocked', 'Done'];
 const sum = (xs) => xs.reduce((a, b) => a + (b ?? 0), 0);
@@ -16,6 +17,7 @@ export const leaves = (items) => items.filter((i) => i.subIssueNumbers.length ==
 
 export const renderers = {
   ...breakdownRenderers,
+  ...estimateRenderers,
   // Trạng thái theo snapshot (progress-report §1); --sprint lọc theo iteration
   'status-summary': ({ snapshot, options }) => {
     const pool = leaves(snapshot.items).filter((i) => !options.sprint || i.sprint === options.sprint);

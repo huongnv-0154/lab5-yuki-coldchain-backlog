@@ -1,13 +1,19 @@
 #!/usr/bin/env node
 // Ghi giá trị một field của Project cho nhiều issue — bước riêng của agent, skill chấm SWP không ghi.
-// --from: JSON dạng { "<số issue>": giá trị } hoặc [{ "number": n, "value": v }]
+// --from: JSON dạng { "<số issue>": giá trị } hoặc [{ "number": n, "<value-key>": v }]
+// --value-key: tên khoá chứa giá trị khi --from là mảng, mặc định value (vd finalSWP, hours)
 //   NUMBER → số · SINGLE_SELECT → tên option · ITERATION → tên sprint · null → xoá giá trị
-// Dùng: node scripts/set-field.mjs --field "Story Point" --from data/swp-scores.final.json [--dry-run]
-import { graphql, readJson, parseArgs } from './lib/gh-graphql.mjs';
+// --delay: mili-giây nghỉ sau mỗi lần ghi, mặc định 300; hạn mức / lỗi mạng thì chờ rồi thử lại (lib/github-mutation.mjs)
+// Dùng: node scripts/set-field.mjs --field "Story Point" --from data/swp-scores.final.json --value-key finalSWP [--delay 300] [--dry-run]
+import { readJson, parseArgs } from './lib/gh-graphql.mjs';
+import { createMutator } from './lib/github-mutation.mjs';
 import { fetchSnapshot, FIELD_KEYS } from './snapshot-project.mjs';
 
 const args = parseArgs();
 const dry = Boolean(args['dry-run']);
+const delayMs = Number(args.delay ?? 300);
+if (!(delayMs >= 0)) throw new Error('--delay phải là số mili-giây ≥ 0');
+const mutate = createMutator({ delayMs });
 const fieldName = args.field;
 if (!fieldName || !args.from) {
   console.error('cần --field <tên field> --from <file json>');
@@ -19,7 +25,8 @@ const field = ids.fields[fieldName];
 if (!field) throw new Error(`Project không có field "${fieldName}"`);
 
 const raw = readJson(args.from);
-const entries = Array.isArray(raw) ? raw.map((r) => [String(r.number), r.value]) : Object.entries(raw);
+const valueKey = args['value-key'] || 'value';
+const entries = Array.isArray(raw) ? raw.map((r) => [String(r.number), r[valueKey]]) : Object.entries(raw);
 
 const snapshot = fetchSnapshot();
 const itemByNumber = new Map(snapshot.items.map((i) => [String(i.number), i]));
@@ -43,22 +50,25 @@ function toValue(v) {
 }
 
 // Ghi (hoặc xoá khi value = null) giá trị field của một item trên Project
-function writeValue(item, value) {
+async function writeValue(item, value) {
   if (value === null) {
-    graphql(`mutation($p:ID!,$i:ID!,$f:ID!){ clearProjectV2ItemFieldValue(input:{projectId:$p,itemId:$i,fieldId:$f}){ clientMutationId } }`,
+    await mutate(`mutation($p:ID!,$i:ID!,$f:ID!){ clearProjectV2ItemFieldValue(input:{projectId:$p,itemId:$i,fieldId:$f}){ clientMutationId } }`,
       { p: ids.projectId, i: item.itemId, f: field.id });
     return;
   }
-  graphql(`mutation($p:ID!,$i:ID!,$f:ID!,$v:ProjectV2FieldValue!){ updateProjectV2ItemFieldValue(input:{projectId:$p,itemId:$i,fieldId:$f,value:$v}){ clientMutationId } }`,
+  await mutate(`mutation($p:ID!,$i:ID!,$f:ID!,$v:ProjectV2FieldValue!){ updateProjectV2ItemFieldValue(input:{projectId:$p,itemId:$i,fieldId:$f,value:$v}){ clientMutationId } }`,
     { p: ids.projectId, i: item.itemId, f: field.id, v: toValue(value) });
 }
 
 const snapshotKey = FIELD_KEYS[fieldName];
-// Kiểm hết trước khi ghi: issue có trên Project và giá trị hợp lệ → không có lần chạy ghi dở dang
+// Kiểm hết trước khi ghi: issue có trên Project, không lặp số, giá trị hợp lệ → không có lần chạy ghi dở dang
+const seen = new Set();
 const planned = entries.map(([number, value]) => {
+  if (seen.has(number)) throw new Error(`#${number} xuất hiện hai lần trong ${args.from}`);
+  seen.add(number);
   const item = itemByNumber.get(number);
   if (!item) throw new Error(`issue #${number} không có trên Project`);
-  if (value === undefined) throw new Error(`#${number}: thiếu giá trị (input cần { "<số>": v } hoặc [{ number, value }])`);
+  if (value === undefined) throw new Error(`#${number}: thiếu giá trị (input cần { "<số>": v } hoặc [{ number, ${valueKey} }])`);
   if (value !== null) toValue(value);
   return { number, item, value };
 });
@@ -67,7 +77,7 @@ let same = 0;
 for (const { number, item, value } of planned) {
   if (snapshotKey && item[snapshotKey] === value) { same++; continue; }
   if (dry) console.log(`[dry] #${number} ${fieldName}: ${item[snapshotKey] ?? '∅'} → ${value ?? '∅'}`);
-  else writeValue(item, value);
+  else await writeValue(item, value);
   changed++;
 }
 console.log(`${dry ? '[dry] ' : ''}${fieldName}: ${changed} đổi, ${same} giữ nguyên`);
