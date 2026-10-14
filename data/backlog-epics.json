@@ -1,0 +1,392 @@
+[
+  {
+    "id": "EP-FG-01",
+    "kind": "epic",
+    "epicId": "FG-01",
+    "parentId": null,
+    "title": "FG-01 マスタ管理",
+    "body": {
+      "goal": "Master SKU, đối tác, vị trí và thiết bị, quy tắc hợp đồng theo khách × SKU, chính sách 3 dải nhiệt có phiên bản, tách người lập / người duyệt master",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: master-data"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "FG-01: 8 story, 29.6 MD (LAB-1 WBS)"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-01"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-FG-02",
+    "kind": "epic",
+    "epicId": "FG-02",
+    "parentId": null,
+    "title": "FG-02 入荷・検品・ロット生成",
+    "body": {
+      "goal": "Lịch hẹn nhập, kiểm hàng nhập (nhiệt, hạn, số lượng, ảnh), sinh lô bất biến, nhãn lô GS1-128",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: receiving"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "FG-02: 7 story, 33.9 MD (LAB-1 WBS)"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-02"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-FG-03",
+    "kind": "epic",
+    "epicId": "FG-03",
+    "parentId": null,
+    "title": "FG-03 在庫・ロケーション・隔離",
+    "body": {
+      "goal": "Tồn theo ô và dải nhiệt, cất hàng, di chuyển bằng quét mã, kiểm kê mù, cách ly",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: inventory"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "FG-03: 7 story, 35.7 MD (LAB-1 WBS)"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-03"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-FG-04",
+    "kind": "epic",
+    "epicId": "FG-04",
+    "parentId": null,
+    "title": "FG-04 受注・アロケーション・ピッキング",
+    "body": {
+      "goal": "Đơn hàng, phân bổ (FEFO, hạn dùng, cửa sổ giao, đảo ngày), soạn hàng, huỷ soạn",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: order-shipping"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "FG-04: 12 story, 79.4 MD (LAB-1 WBS)"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-04"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-FG-05",
+    "kind": "epic",
+    "epicId": "FG-05",
+    "parentId": null,
+    "title": "FG-05 配送・POD・クレーム",
+    "body": {
+      "goal": "Kiểm hàng xuất, bốc hàng, POD (cả hàng đợi offline), sửa dòng giao bằng reversal, khiếu nại",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: delivery"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "FG-05: 6 story, 30.1 MD (LAB-1 WBS)"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-05"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-FG-06",
+    "kind": "epic",
+    "epicId": "FG-06",
+    "parentId": null,
+    "title": "FG-06 ルート計画・拘束時間",
+    "body": {
+      "goal": "Lập tuyến, công bố và 改版 tuyến, kiểm giờ lái theo giới hạn năm 2024 (ràng buộc đặc thù Product B)",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: dispatch"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "FG-06: 6 story, 43.0 MD (LAB-1 WBS)"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-06"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-FG-07",
+    "kind": "epic",
+    "epicId": "FG-07",
+    "parentId": null,
+    "title": "FG-07 温度監視・逸脱・HACCP",
+    "body": {
+      "goal": "Nhập file logger, cảnh báo nhiệt, case lệch nhiệt và quyết định, review HACCP",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: temperature-quality"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "FG-07: 10 story, 64.7 MD (LAB-1 WBS)"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-07"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-FG-08",
+    "kind": "epic",
+    "epicId": "FG-08",
+    "parentId": null,
+    "title": "FG-08 トレーサビリティ・回収",
+    "body": {
+      "goal": "Truy xuất lô theo nhiều trục, case và thông báo thu hồi có duyệt",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: trace-recall"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "FG-08: 6 story, 45.7 MD (LAB-1 WBS)"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-08"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-FG-09",
+    "kind": "epic",
+    "epicId": "FG-09",
+    "parentId": null,
+    "title": "FG-09 レポート・監査エクスポート",
+    "body": {
+      "goal": "Danh mục báo cáo, gói bằng chứng audit có manifest SHA-256, 帳票 theo mẫu hiện hành, thời hạn lưu giữ và purge hai pha",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: report-audit"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "FG-09: 5 story, 34.2 MD (LAB-1 WBS)"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-09"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-FG-10",
+    "kind": "epic",
+    "epicId": "FG-10",
+    "parentId": null,
+    "title": "FG-10 外部インターフェース",
+    "body": {
+      "goal": "Phần nghiệp vụ của ERP CSV, dịch vụ bản đồ, mail thông báo, giao gói archive",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: administration, dispatch"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "FG-10: 4 story, 28.8 MD (LAB-1 WBS)"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-10"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-FG-11",
+    "kind": "epic",
+    "epicId": "FG-11",
+    "parentId": null,
+    "title": "FG-11 認証・権限・監査ログ",
+    "body": {
+      "goal": "SSO OIDC, phiên, MFA, RBAC/RLS, ma trận vai trò × màn, audit chỉ thêm",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: administration"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "FG-11: 5 story, 30.6 MD (LAB-1 WBS)"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-11"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-FG-12",
+    "kind": "epic",
+    "epicId": "FG-12",
+    "parentId": null,
+    "title": "FG-12 データ移行・カットオーバー",
+    "body": {
+      "goal": "Profiling dữ liệu cũ, lineage, đối chiếu rehearsal, vận hành song song (chức năng; buổi rehearsal và cutover là việc dự án)",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: administration"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "FG-12: 6 story, 40.6 MD (LAB-1 WBS)"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-12"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-E-13",
+    "kind": "epic",
+    "epicId": "E-13",
+    "parentId": null,
+    "title": "E-13 外部連携基盤",
+    "body": {
+      "goal": "Nền chung của 6 giao diện ngoài: PoC IdP và job_worker, outbox, worker nền, thử lại, tài khoản môi trường thử, contract test",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: architecture (ADR-0007, 0008, 0009)"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "không có dòng LAB-1 tương ứng"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-13"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-E-14",
+    "kind": "epic",
+    "epicId": "E-14",
+    "parentId": null,
+    "title": "E-14 環境・運用基盤",
+    "body": {
+      "goal": "4 môi trường, CI/CD, migration, quan sát, backup/PITR, kho tệp đính kèm, hiệu năng, kiểm NFR, gỡ phần chỉ dành cho prototype",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: architecture/target-architecture.md"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "không có dòng LAB-1 tương ứng"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-14"
+    ],
+    "owner": "PM"
+  },
+  {
+    "id": "EP-E-15",
+    "kind": "epic",
+    "epicId": "E-15",
+    "parentId": null,
+    "title": "E-15 顧客確認",
+    "body": {
+      "goal": "Câu hỏi làm rõ gửi khách và việc xác minh nguồn bên ngoài; mỗi issue ghi issue bị ảnh hưởng và giả định dùng tạm",
+      "sources": [],
+      "specRefs": [
+        "LAB-4: bảng chênh lệch, câu hỏi mở của kiến trúc"
+      ],
+      "scope": [],
+      "outOfScope": [],
+      "dod": [
+        "Mọi issue con ở trạng thái Done",
+        "Không còn issue E-15 Blocked trỏ tới epic này, hoặc giả định thay thế đã ghi ở PREMISE"
+      ],
+      "lab1": "không có dòng LAB-1 tương ứng"
+    },
+    "labels": [
+      "type:epic",
+      "epic:E-15"
+    ],
+    "owner": "PM"
+  }
+]

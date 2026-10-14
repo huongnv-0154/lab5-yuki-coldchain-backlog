@@ -1,0 +1,3417 @@
+{
+ "job": "J2",
+ "epics": [
+  "FG-04",
+  "FG-05",
+  "FG-06"
+ ],
+ "items": [
+  {
+   "id": "FG04-01",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "ピッキング — Tích hợp SDK máy quét handheld, đọc nhãn GS1-128/QR (L5-026)",
+   "body": {
+    "goal": "Màn soạn hàng đọc được mã quét từ máy handheld thật, gồm nhãn GS1-128 và QR, thay cho ô nhập chỉ nhận bàn phím giả lập.",
+    "sources": [
+     {
+      "id": "L5-026",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-026, MOCK-14)",
+     "specs/order-shipping/screen-specification/YC_PICKING_VERIFY_SPEC.md"
+    ],
+    "scope": [
+     "Tích hợp SDK máy quét của thiết bị kho vào ô quét lô ở màn soạn / kiểm soạn",
+     "Dùng bộ giải GS1-128 dùng chung của FG03-07; thêm giải mã QR, trả về cùng đường kiểm hiện có",
+     "Giữ đường nhập bằng bàn phím cho thiết bị không có SDK"
+    ],
+    "outOfScope": [
+     "Quét offline cho giao dịch kho (RFP loại, chỉ POD có hàng đợi — FG05-02)",
+     "Đổi định dạng nhãn lô (FG-02)"
+    ],
+    "dod": [
+     "Unit test giải mã QR hợp lệ / sai; GS1-128 dùng bộ test của FG03-07",
+     "Thử trên một thiết bị handheld mẫu hoặc trình giả lập SDK: quét đúng lô, quét nhãn lạ hiện lỗi",
+     "Đường bàn phím vẫn chạy (không hồi quy FG04-14)"
+    ],
+    "premise": [
+     "PR-A-08",
+     "PR-A-12"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-04",
+    "src:l5"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG04-02",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "納品期限ルール — Áp đáp án khách về tỷ lệ 1/3・1/2 với lô USE_BY (L5-030)",
+   "body": {
+    "goal": "Phân bổ stage 4 (cửa sổ giao) xử lý lô 消費期限 đúng theo đáp án khách, thay vì áp tỷ lệ cho mọi loại hạn.",
+    "sources": [
+     {
+      "id": "L5-030",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-030, GAP-01)",
+     "specs/order-shipping/function-specifications/DELIVERY_WINDOW_FUNC.md",
+     "specs/order-shipping/technical-design/ORD_DELIVERY_WINDOW_TECH.md"
+    ],
+    "scope": [
+     "Theo đáp án E15-FG04-01: nếu USE_BY không áp tỷ lệ thì bỏ USE_BY khỏi nhánh RATIOS trong evaluateDeliveryWindow",
+     "Thêm unit test lô USE_BY và BEST_BEFORE ở cả hai đáp án",
+     "Cập nhật spec DELIVERY_WINDOW nếu code khác spec"
+    ],
+    "outOfScope": [
+     "Kiểm đảo ngày BR-DATE-01 (stage 5) — FG04-12",
+     "Gửi câu hỏi cho khách — E15-FG04-01"
+    ],
+    "dod": [
+     "Test domain xanh cho ca USE_BY với đáp án đã chốt",
+     "Không đổi kết quả của lô BEST_BEFORE (test hồi quy stage 4)",
+     "Spec và code khớp nhau sau khi đóng"
+    ],
+    "blockedBy": [
+     "E15-FG04-01"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-04",
+    "src:l5",
+    "src:clarify"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-03",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "引当 stage 2 — Dùng reference band (gồm ticket đã duyệt) khi so dải nhiệt (L5-031)",
+   "body": {
+    "goal": "Lô đang hợp lệ nhờ ticket 一時温度帯 đã duyệt không bị loại nhầm khỏi ứng viên FEFO ở stage 2.",
+    "sources": [
+     {
+      "id": "L5-031",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-031, GAP-02)",
+     "specs/order-shipping/function-specifications/ALLOCATION_STAGES_FUNC.md"
+    ],
+    "scope": [
+     "Theo đáp án E15-FG04-02: stage 2 TEMP_BAND gọi resolveReferenceBand thay vì so thẳng skuBand",
+     "Test lô có ticket đã duyệt, hết hiệu lực, chưa duyệt",
+     "Ghi rõ lý do loại lô trong allocation_candidates"
+    ],
+    "outOfScope": [
+     "Kiểm nhiệt lúc kiểm hàng nhập / xuất (FG-02, FG05-01)",
+     "Câu hỏi cho khách — E15-FG04-02"
+    ],
+    "dod": [
+     "Test domain: lô có ticket đã duyệt qua stage 2, ticket hết hạn thì bị loại",
+     "Test hồi quy 5 bước loại lô vẫn xanh"
+    ],
+    "blockedBy": [
+     "E15-FG04-02"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-04",
+    "src:l5",
+    "src:clarify",
+    "graded:br-temp-02"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-04",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "受注行作成 — Hiện outcome từng dòng và số đơn sau 登録, khoá nút gửi lặp (L5-040, L5-050)",
+   "body": {
+    "goal": "Sau khi bấm 登録, người dùng thấy đơn nào vừa tạo và kết quả phân bổ từng dòng, bấm lại không sinh đơn trùng.",
+    "sources": [
+     {
+      "id": "L5-040",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "L5-050",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-040, L5-050, GAP-11, GAP-23)",
+     "specs/order-shipping/screen-specification/YC_ORDER_ENTRY_SPEC.md"
+    ],
+    "scope": [
+     "Client giữ body 201 của POST /api/orders (run-write-request) thay vì bỏ",
+     "Hiện outcome từng dòng: ALLOCATED / 除外 / BUSINESS_REVIEW kèm link tới allocation-result, allocation-failed-queue, business-review-queue",
+     "Dòng phân bổ lỗi (vd. STOCK_CHANGED) hiện ngay trên màn",
+     "Sau 201: xoá form, hiện số đơn; khoá nút tới khi người dùng sửa form"
+    ],
+    "outOfScope": [
+     "Nút 新規受注 ở order-list — FG04-05"
+    ],
+    "dod": [
+     "Test component: 201 hiện số đơn và outcome từng dòng, form được xoá",
+     "Bấm 登録 hai lần liên tiếp không tạo hai đơn",
+     "E2E luồng nhập đơn → xem kết quả phân bổ (thêm vào FG04-14)"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG04-05",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "受注一覧 — Nút 新規受注 từ order-list, nhánh sửa 要求日・数量 từ hàng đợi (L5-041)",
+   "body": {
+    "goal": "Người dùng vào được màn nhập đơn từ danh sách đơn mà không phải đi qua menu.",
+    "sources": [
+     {
+      "id": "L5-041",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-041, GAP-12)",
+     "specs/order-shipping/screen-specification/YC_ORDER_LIST_SPEC.md",
+     "specs/order-shipping/screen-specification/YC_ALLOCATION_FAILED_QUEUE_SPEC.md"
+    ],
+    "scope": [
+     "Thêm nút 新規受注 ở order-list trỏ tới order-entry",
+     "Nhánh sửa 要求日・数量 từ allocation-failed-queue: chỉ làm khi phương án (sửa dòng cũ hay tạo đơn mới) đã chốt bằng ADR"
+    ],
+    "outOfScope": [
+     "RPC sửa dòng đơn (chưa có, chờ quyết định phương án)"
+    ],
+    "dod": [
+     "Test component: nút có ở order-list và mở đúng màn",
+     "Nếu làm nhánh sửa: có ADR và test cho phương án đã chốt, nếu chưa chốt thì ghi rõ phần chưa làm trong issue"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-04",
+    "src:l5"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG04-06",
+   "kind": "story",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "引当確定 — commit_allocation tự kiểm lô ứng viên, gồm đảo ngày và trạng thái NULL (L5-046)",
+   "body": {
+    "goal": "Gọi thẳng RPC commit_allocation cũng không chốt được lô cách ly, quá hạn giao, đảo ngày hoặc lô chưa có trạng thái, không phụ thuộc kết quả client gửi.",
+    "sources": [
+     {
+      "id": "L5-046",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-DATE-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-046, GAP-18)",
+     "specs/order-shipping/technical-design/ORD_COMMIT_ALLOCATION_TECH.md §4a",
+     "specs/order-shipping/technical-design/ORD_DATE_REVERSAL_TECH.md §5.7",
+     "premise-revisions/shipping-date-reversal-check.md",
+     "specs/../architecture/adr/ADR-0003-rules-in-domain-invariants-in-db.md"
+    ],
+    "scope": [
+     "Trong RPC: loại lô QUARANTINE / HOLD / SCRAPPED, lô quá hạn giao và lô đảo ngày BR-DATE-01",
+     "Đọc cùng phạm vi mốc date_reversal (lần giao COMPLETED + chuyến chưa POD trong giới hạn giờ) với FG04-12",
+     "Đọc lot_current_status: lô không có trạng thái (NULL) bị chặn",
+     "Bộ ca dùng chung giữa test domain và SQL assert để hai bản luật không lệch"
+    ],
+    "outOfScope": [
+     "Kiểm đảo ngày lúc xuất — FG04-12",
+     "Reversal event đổi mốc — FG05-06"
+    ],
+    "dod": [
+     "SQL assert RED gọi thẳng RPC: lô cách ly, quá hạn giao, đảo ngày đều bị từ chối",
+     "Lô có trạng thái NULL bị chặn (điều kiện nghiệm thu PR-S-03)",
+     "Cùng bộ ca chạy ở vitest và SQL assert cho kết quả giống nhau"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-S-03",
+     "PR-A-06",
+     "PR-D-01"
+    ],
+    "blockedBy": [
+     "FG05-06",
+     "FG04-12"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-06.1",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "FG04-06",
+   "title": "RPC commit_allocation — tự kiểm 5 bước loại lô + trạng thái NULL (SQL)",
+   "body": {
+    "goal": "RPC tự giữ bất biến loại lô, không tin lô và số lượng client gửi.",
+    "sources": [
+     {
+      "id": "L5-046",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-046, GAP-18)",
+     "specs/order-shipping/technical-design/ORD_COMMIT_ALLOCATION_TECH.md §4a"
+    ],
+    "scope": [
+     "Thêm kiểm cách ly, quá hạn giao, đảo ngày trong thân RPC dưới khoá hợp lý",
+     "Lô không có dòng lot_current_status bị chặn",
+     "Đọc tham số date_reversal từ rule_versions"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy qua dev và test",
+     "Gọi thẳng RPC với lô vi phạm trả lỗi nghiệp vụ, không ghi allocation"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-S-03",
+     "PR-A-06",
+     "PR-D-01"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-06.2",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "FG04-06",
+   "title": "Bộ ca dùng chung domain ↔ SQL và assert RED gọi thẳng RPC",
+   "body": {
+    "goal": "Hai bản luật (TS và SQL) kiểm cùng bộ ca nên không lệch.",
+    "sources": [
+     {
+      "id": "L5-046",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-046, GAP-18)",
+     "specs/order-shipping/technical-design/ORD_COMMIT_ALLOCATION_TECH.md §4a"
+    ],
+    "scope": [
+     "Bộ ca JSON: cách ly, quá hạn giao, đảo ngày, trạng thái NULL",
+     "Chạy bộ ca ở vitest và ở SQL assert",
+     "Ca GAP-41 với chuyến chưa POD trong và ngoài giới hạn giờ"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert RED trên code trước khi sửa, xanh sau khi sửa",
+     "CI chạy cả hai bản và so kết quả"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-S-03",
+     "PR-A-06",
+     "PR-D-01"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG04-07",
+   "kind": "story",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "引当結果確認 — Lý do loại lô dạng mã + tham số, màn dịch sang tiếng Nhật (L5-049)",
+   "body": {
+    "goal": "Cột 理由 của bảng ứng viên hiện câu tiếng Nhật dễ hiểu, còn DB giữ chuỗi gốc cho audit.",
+    "sources": [
+     {
+      "id": "L5-049",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-049, GAP-22)",
+     "specs/order-shipping/screen-specification/YC_ALLOCATION_RESULT_SPEC.md",
+     "specs/order-shipping/function-specifications/ALLOCATION_STAGES_FUNC.md"
+    ],
+    "scope": [
+     "Domain trả mã lý do và tham số thay vì câu tiếng Anh",
+     "Màn dịch mã sang câu tiếng Nhật kèm ngày hạn",
+     "allocation_candidates.reason vẫn lưu chuỗi gốc"
+    ],
+    "outOfScope": [
+     "Dịch mã vi phạm màn kiểm xuất — FG05-05"
+    ],
+    "dod": [
+     "Unit test mỗi mã lý do có câu tiếng Nhật tương ứng",
+     "Dữ liệu cũ trong allocation_candidates.reason vẫn hiển thị được"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-07.1",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "FG04-07",
+   "title": "Domain allocation-stages — trả mã lý do + tham số (BE)",
+   "body": {
+    "goal": "Domain không sinh câu tiếng Anh nữa.",
+    "sources": [
+     {
+      "id": "L5-049",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-049, GAP-22)",
+     "specs/order-shipping/screen-specification/YC_ALLOCATION_RESULT_SPEC.md"
+    ],
+    "scope": [
+     "Đổi 5 bước loại lô trả {code, params}",
+     "Ghi chuỗi gốc vào allocation_candidates.reason"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test mã + tham số cho từng bước loại lô",
+     "Không còn chuỗi tiếng Anh sinh trong domain"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-07.2",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "FG04-07",
+   "title": "Màn 引当結果確認 — dịch mã lý do sang tiếng Nhật (FE)",
+   "body": {
+    "goal": "Cột 理由 hiện câu tiếng Nhật.",
+    "sources": [
+     {
+      "id": "L5-049",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-049, GAP-22)",
+     "specs/order-shipping/screen-specification/YC_ALLOCATION_RESULT_SPEC.md"
+    ],
+    "scope": [
+     "Bảng ánh xạ mã → câu tiếng Nhật kèm tham số",
+     "Ngày theo JST YYYY/MM/DD (PR-A-08)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component với từng mã lý do",
+     "Lô cũ chỉ có chuỗi gốc vẫn hiện, không lỗi"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG04-08",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "ピッキング — record_pick kiểm tồn ô đủ qty_on_hand - qty_allocated (L5-057)",
+   "body": {
+    "goal": "Soạn hàng thiếu tồn ở ô trả lỗi nghiệp vụ YC409 thay vì làm bước SHIP lỗi 500 và kẹt đơn ở LOADED.",
+    "sources": [
+     {
+      "id": "L5-057",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-057, GAP-30)",
+     "specs/order-shipping/technical-design/ORD_RECORD_PICK_TECH.md"
+    ],
+    "scope": [
+     "record_pick kiểm qty_on_hand - qty_allocated đủ so với số lượng soạn",
+     "Trả YC409 STOCK_SHORT_AT_LOCATION khi thiếu",
+     "Cập nhật spec ORD_RECORD_PICK"
+    ],
+    "outOfScope": [
+     "Luồng huỷ soạn cho đơn đã kẹt — FG04-13"
+    ],
+    "dod": [
+     "SQL assert: soạn thiếu tồn trả YC409, không ghi PICK",
+     "SQL assert: đủ tồn vẫn PASS (hồi quy)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-04",
+    "src:l5"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-09",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "BR-DATE-01 — referenceDelivery gom theo deliveryId, không theo deliveredAt (L5-058)",
+   "body": {
+    "goal": "Hai chuyến giao cùng thời điểm không bị gộp thành một lần giao khi chọn mốc so đảo ngày.",
+    "sources": [
+     {
+      "id": "L5-058",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-058, GAP-31)",
+     "specs/order-shipping/technical-design/ORD_ALLOCATE_LINE_TECH.md",
+     "specs/order-shipping/technical-design/ORD_DATE_REVERSAL_TECH.md §4.2"
+    ],
+    "scope": [
+     "Gom theo deliveryId, chọn lần giao có deliveredAt lớn nhất",
+     "Thêm unit test hai chuyến trùng giờ"
+    ],
+    "outOfScope": [
+     "Mốc gồm chuyến chưa POD — FG04-12"
+    ],
+    "dod": [
+     "Unit test hai chuyến trùng deliveredAt cho ra hai lần giao riêng",
+     "Test BR-DATE-01 hiện có vẫn xanh"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-10",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "ピッキング — Chỉ xoá ô quét khi thành công, lọc lô đã PICK khỏi task list (L5-059)",
+   "body": {
+    "goal": "Quét sai không phải quét lại từ đầu, và danh sách task không liệt kê lô đã soạn.",
+    "sources": [
+     {
+      "id": "L5-059",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-059, GAP-32)",
+     "specs/order-shipping/screen-specification/YC_PICKING_VERIFY_SPEC.md",
+     "specs/order-shipping/screen-specification/YC_PICKING_TASK_SPEC.md"
+    ],
+    "scope": [
+     "pick-scan-form chỉ xoá ô khi kết quả thành công",
+     "Lọc lô đã có PICK khỏi ピッキングタスク一覧 tới khi cả dòng PICKED"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component: lỗi / bị chặn giữ nguyên ô quét, thành công xoá ô",
+     "Test: lô đã PICK không hiện trong task list"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-04",
+    "src:l5"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG04-11",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "Form ghi — runWriteRequest bắt lỗi mạng, hiện thông báo tiếng Nhật (L5-060)",
+   "body": {
+    "goal": "Mất mạng lúc bấm ghi thì mọi form ghi hiện thông báo lỗi và nút bật lại, không còn promise bị từ chối âm thầm.",
+    "sources": [
+     {
+      "id": "L5-060",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-060, GAP-33)",
+     "specs/order-shipping/screen-specification/YC_ORDER_ENTRY_SPEC.md"
+    ],
+    "scope": [
+     "runWriteRequest bắt lỗi fetch và trả {error: \"network\"}",
+     "useWriteAction không để reject lọt ra, khớp JSDoc",
+     "Các form gọi submit hiện thông báo lỗi mạng tiếng Nhật"
+    ],
+    "outOfScope": [
+     "Hàng đợi offline cho POD — FG05-02"
+    ],
+    "dod": [
+     "Unit test với fetchFn ném lỗi: trả {error: \"network\"}, form hiện thông báo",
+     "Không còn unhandled rejection khi mất mạng (test ở các form ghi chính)"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-04",
+    "src:l5"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG04-12",
+   "kind": "story",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "出荷検品 — Kiểm đảo ngày lúc xuất theo tham số (L5-068)",
+   "body": {
+    "goal": "Khi xuất, lô hạn sớm hơn mốc của khách × SKU bị chặn hoặc cảnh báo kèm lý do, kể cả khi đơn trước còn trên đường (GAP-41).",
+    "sources": [
+     {
+      "id": "L5-068",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-DATE-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/delivery/technical-design/DLV_SHIPPING_CHECK_TECH.md §5.3",
+     "specs/delivery/function-specifications/SHIPPING_PRECHECK_FUNC.md §3.3",
+     "specs/order-shipping/technical-design/ORD_DATE_REVERSAL_TECH.md §5.7",
+     "premise-revisions/shipping-date-reversal-check.md"
+    ],
+    "scope": [
+     "Tham số date_reversal (phạm vi mốc, hành động, giới hạn giờ chuyến chưa POD) trong rule_versions",
+     "Kiểm 6 SHIP_DATE_REVERSAL ở domain + RPC record_shipping_check nhánh PASS, khoá (khách, SKU)",
+     "Phân bổ (5.7) đọc cùng phạm vi mốc",
+     "Màn kiểm xuất: ô lý do khi ở chế độ cảnh báo"
+    ],
+    "outOfScope": [
+     "Huỷ soạn để phân bổ lại khi bị chặn — FG04-13 (L5-065)",
+     "Reversal event đổi mốc — FG05-06 (L5-067)"
+    ],
+    "dod": [
+     "Assert SQL ca GAP-41 đạt cả 4 tổ hợp tham số",
+     "Chuyến chưa POD quá in_transit_max_hours không làm mốc, có cảnh báo",
+     "shipping_checks ghi date_reversal_rule_version_id"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-S-02",
+     "PR-D-01",
+     "PR-A-06"
+    ],
+    "blockedBy": [
+     "FG05-06"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-12.1",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "FG04-12",
+   "title": "DB — cột dispatched_at, date_reversal_rule_version_id, view in_transit_lots",
+   "body": {
+    "goal": "Có dữ liệu để biết chuyến chưa POD xuất lúc nào và lần kiểm dùng phiên bản tham số nào.",
+    "sources": [
+     {
+      "id": "L5-068",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/order-shipping/ORDERS_ALLOCATION_DELIVERY_DB.md",
+     "premise-revisions/shipping-date-reversal-check.md"
+    ],
+    "scope": [
+     "Thêm deliveries.dispatched_at, ghi khi PASS tạo dòng deliveries PENDING",
+     "Thêm shipping_checks.date_reversal_rule_version_id (FK rule_versions)",
+     "View in_transit_lots bỏ chuyến quá in_transit_max_hours",
+     "Seed rule_key = date_reversal với mặc định PR-A-06"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy qua dev và test",
+     "Assert SQL: view bỏ chuyến dispatched_at cũ hơn giới hạn"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-S-02",
+     "PR-D-01",
+     "PR-A-06"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-12.2",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "FG04-12",
+   "title": "RPC + domain kiểm 6 SHIP_DATE_REVERSAL (BE)",
+   "body": {
+    "goal": "Kiểm xuất chặn hoặc cảnh báo theo tham số, an toàn khi hai đơn song song.",
+    "sources": [
+     {
+      "id": "L5-068",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/delivery/technical-design/DLV_SHIPPING_CHECK_TECH.md §5.3",
+     "specs/system-design/api-design/delivery/SHIPPING_CHECKS_POST_API.md"
+    ],
+    "scope": [
+     "Domain kiểm 6 theo date_reversal_reference và date_reversal_action",
+     "record_shipping_check nhánh PASS khoá advisory (khách, SKU)",
+     "WARN_WITH_REASON: nhận dateReversalReason, ghi audit_events",
+     "Phân bổ 5.7 đọc cùng phạm vi mốc"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test domain 4 tổ hợp tham số",
+     "Hai đơn PASS song song cùng (khách, SKU): đơn sau thấy chuyến của đơn trước"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-S-02",
+     "PR-D-01",
+     "PR-A-06"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-12.3",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "FG04-12",
+   "title": "Màn kiểm xuất — ô lý do, cảnh báo chuyến quá hạn",
+   "body": {
+    "goal": "Người kiểm nhập được lý do khi ở chế độ cảnh báo và thấy chuyến bị bỏ do quá hạn.",
+    "sources": [
+     {
+      "id": "L5-068",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/delivery/screen-specification/YC_SHIPPING_PRECHECK_SPEC.md"
+    ],
+    "scope": [
+     "Ô lý do hiện khi có vi phạm ở WARN_WITH_REASON",
+     "Cảnh báo khi có chuyến bị bỏ vì quá in_transit_max_hours",
+     "Thông báo YC422 khi thiếu lý do"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component: ô lý do chỉ hiện khi cần, thiếu lý do không gửi được",
+     "Cảnh báo chuyến quá hạn hiện đúng"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG04-12.4",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "FG04-12",
+   "title": "Assert SQL 4 tổ hợp + E2E",
+   "body": {
+    "goal": "Ca GAP-41 được chứng minh ở mọi tổ hợp tham số.",
+    "sources": [
+     {
+      "id": "L5-068",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/delivery/technical-design/DLV_SHIPPING_CHECK_TECH.md §5.3",
+     "specs/delivery/function-specifications/SHIPPING_PRECHECK_FUNC.md §3.3"
+    ],
+    "scope": [
+     "Assert SQL: COMPLETED_AND_IN_TRANSIT + BLOCK → YC422",
+     "COMPLETED_ONLY → cho qua",
+     "WARN_WITH_REASON thiếu lý do → YC422, có lý do → qua kèm một dòng audit_events",
+     "E2E hai đơn cùng khách × SKU"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert chạy xanh trong CI cho cả 4 tổ hợp",
+     "shipping_checks của lần PASS có date_reversal_rule_version_id khớp phiên bản hiệu lực"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-S-02",
+     "PR-D-01",
+     "PR-A-06"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG04-13",
+   "kind": "story",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "ピッキング検証 — Luồng huỷ soạn trả tồn cho đơn kẹt ở LOADED (L5-065)",
+   "body": {
+    "goal": "Đơn kẹt vì lô bị cách ly sau khi soạn hoặc bị chặn SHIP_DATE_REVERSAL được huỷ soạn, trả tồn và phân bổ lại lô khác.",
+    "sources": [
+     {
+      "id": "L5-065",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-065, GAP-38)",
+     "specs/order-shipping/screen-specification/YC_PICKING_VERIFY_SPEC.md",
+     "specs/order-shipping/technical-design/ORD_RECORD_PICK_TECH.md",
+     "premise-revisions/shipping-date-reversal-check.md"
+    ],
+    "scope": [
+     "RPC huỷ soạn ghi stock_movements bù cho PICK và trả qty_allocated",
+     "Dòng đơn về ALLOCATED để phân bổ lại",
+     "Màn YC_PICKING_VERIFY: nút huỷ soạn cho đơn bị chặn",
+     "Phân quyền theo vai và ghi audit_events"
+    ],
+    "outOfScope": [
+     "Chặn SHIP_DATE_REVERSAL — FG04-12"
+    ],
+    "dod": [
+     "Assert SQL: đơn có lô QUARANTINE → huỷ soạn → phân bổ lô khác → PASS",
+     "Assert SQL: tồn và qty_allocated về đúng sau huỷ soạn"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-13.1",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "FG04-13",
+   "title": "RPC huỷ soạn (un-pick) — stock_movements bù, trả qty_allocated",
+   "body": {
+    "goal": "Có đường ra cho đơn kẹt LOADED ở tầng dữ liệu.",
+    "sources": [
+     {
+      "id": "L5-065",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-065, GAP-38)",
+     "specs/order-shipping/screen-specification/YC_PICKING_VERIFY_SPEC.md"
+    ],
+    "scope": [
+     "RPC mới: ghi stock_movements bù cho PICK",
+     "Trả qty_allocated, dòng đơn về ALLOCATED",
+     "Chặn khi đơn đã SHIP"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL tồn / qty_allocated đúng sau huỷ soạn",
+     "Gọi trên đơn đã SHIP bị từ chối"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG04-13.2",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "FG04-13",
+   "title": "Màn kiểm soạn — nút huỷ soạn cho đơn bị chặn",
+   "body": {
+    "goal": "Người vận hành bấm huỷ soạn từ màn kiểm soạn.",
+    "sources": [
+     {
+      "id": "L5-065",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-065, GAP-38)",
+     "specs/order-shipping/screen-specification/YC_PICKING_VERIFY_SPEC.md"
+    ],
+    "scope": [
+     "Nút và hộp xác nhận kèm lý do",
+     "Hiện trạng thái đơn sau khi huỷ"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component: nút chỉ hiện với đơn bị chặn / lô cách ly",
+     "Lỗi từ RPC hiện thông báo tiếng Nhật"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG04-13.3",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "FG04-13",
+   "title": "Assert SQL kịch bản huỷ soạn → phân bổ lại → PASS",
+   "body": {
+    "goal": "Kịch bản kẹt đơn chứng minh được đường ra.",
+    "sources": [
+     {
+      "id": "L5-065",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-065, GAP-38)",
+     "specs/order-shipping/screen-specification/YC_PICKING_VERIFY_SPEC.md"
+    ],
+    "scope": [
+     "Đơn có lô QUARANTINE → huỷ soạn → phân bổ lô khác → PASS",
+     "Ca bị chặn SHIP_DATE_REVERSAL → huỷ soạn"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert chạy xanh trong CI",
+     "Cả hai ca có assert tồn trước / sau"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-04",
+    "src:l5",
+    "graded:br-date-01"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG04-14",
+   "kind": "task",
+   "epicId": "FG-04",
+   "parentId": "EP-FG-04",
+   "title": "Hồi quy E2E FG-04 — 7 màn order-shipping đã dựng (DR-03)",
+   "body": {
+    "goal": "Luồng chính của 7 màn đã dựng ở prototype chạy được tự động, bắt hồi quy khi sửa tiếp.",
+    "sources": [
+     {
+      "id": "DR-03",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/order-shipping/README.md",
+     "task-breakdown.md §1.2"
+    ],
+    "scope": [
+     "Kịch bản E2E cho YC_ORDER_ENTRY, YC_ORDER_LIST, YC_ALLOCATION_RESULT, YC_ALLOCATION_FAILED_QUEUE, YC_BUSINESS_REVIEW_QUEUE, YC_PICKING_TASK, YC_PICKING_VERIFY",
+     "Luồng nhập đơn → kết quả phân bổ → soạn hàng theo AC của Screen Spec"
+    ],
+    "outOfScope": [
+     "Test cho màn mới thêm ở các issue khác"
+    ],
+    "dod": [
+     "Kịch bản chạy xanh trong CI, phủ luồng chính 7 màn",
+     "Mỗi màn có ít nhất một AC của Screen Spec được assert"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-04",
+    "src:l5"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E15-FG04-01",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Tỷ lệ 1/3・1/2 có áp cho lô 消費期限 (USE_BY) không (L5-030)",
+   "body": {
+    "goal": "Có đáp án của khách về việc áp tỷ lệ cửa sổ giao cho lô USE_BY để chốt code stage 4.",
+    "sources": [
+     {
+      "id": "L5-030",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-030, GAP-01)",
+     "specs/order-shipping/function-specifications/DELIVERY_WINDOW_FUNC.md"
+    ],
+    "scope": [
+     "Gửi câu hỏi (giả lập) kèm ví dụ lô USE_BY và BEST_BEFORE",
+     "Ghi đáp án vào spec hoặc PREMISE"
+    ],
+    "outOfScope": [
+     "Sửa code — FG04-02"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi; khi khách trả lời: ghi vào spec/PREMISE và đóng issue",
+     "Còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "affects": [
+     "FG04-02"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-FG04-02",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Stage 2 phân bổ có dùng reference band theo ticket đã duyệt không (L5-031)",
+   "body": {
+    "goal": "Có đáp án của khách về cách so dải nhiệt ở stage 2 khi lô có ticket 一時温度帯.",
+    "sources": [
+     {
+      "id": "L5-031",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-031, GAP-02)",
+     "specs/order-shipping/function-specifications/ALLOCATION_STAGES_FUNC.md"
+    ],
+    "scope": [
+     "Gửi câu hỏi (giả lập) kèm ví dụ lô hợp lệ nhờ ticket bị loại",
+     "Ghi đáp án vào spec hoặc PREMISE"
+    ],
+    "outOfScope": [
+     "Sửa code — FG04-03"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi; khi khách trả lời: ghi vào spec/PREMISE và đóng issue",
+     "Còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "affects": [
+     "FG04-03"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify",
+    "graded:br-temp-02"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-FG04-03",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — \"Đã nhận\" gồm chuyến chưa POD không, chặn hay cảnh báo, hạn giờ POD (BR-DATE-01)",
+   "body": {
+    "goal": "Khách chốt phạm vi mốc đảo ngày, hành động khi vi phạm lúc xuất và giới hạn giờ chuyến chưa POD để đổi tham số date_reversal nếu khác mặc định.",
+    "sources": [
+     {
+      "id": "L5-068",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-DATE-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "premise-revisions/shipping-date-reversal-check.md",
+     "specs/order-shipping/technical-design/ORD_DATE_REVERSAL_TECH.md §5.7"
+    ],
+    "scope": [
+     "Hỏi: chuyến đã xuất chưa POD có là mốc không; vi phạm lúc xuất chặn hay cảnh báo kèm lý do; giới hạn giờ chuyến chưa POD",
+     "Khi có đáp án: đổi giá trị trong rule_versions, không đổi code",
+     "Ghi đáp án vào PREMISE"
+    ],
+    "outOfScope": [
+     "Dựng kiểm theo tham số — FG04-12"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi kèm các giá trị mặc định đang dùng",
+     "Khi khách trả lời: cập nhật tham số, PREMISE và đóng issue; còn chờ thì Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-D-01",
+     "PR-D-04",
+     "PR-A-06"
+    ],
+    "affects": [
+     "FG04-12",
+     "FG04-06",
+     "FG04-13",
+     "FG05-06"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify",
+    "graded:br-date-01"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "FG05-01",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "EP-FG-05",
+   "title": "出荷前チェック — Test, sửa evaluateShippingPrecheck cho đơn nhiều SKU khác dải (L5-011)",
+   "body": {
+    "goal": "Kiểm xuất xử lý đúng ca nhiều SKU khác dải nhiệt trên cùng một khoang xe theo đáp án của khách về cách map dải.",
+    "sources": [
+     {
+      "id": "L5-011",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-011, DEV-025)",
+     "specs/delivery/function-specifications/SHIPPING_PRECHECK_FUNC.md",
+     "specs/delivery/technical-design/DLV_SHIPPING_CHECK_TECH.md"
+    ],
+    "scope": [
+     "Thêm test ca nhiều SKU khác dải chung khoang theo cách map hiện hành (hai phép so của AC-9)",
+     "Nếu E15-FG05-01 đáp khác: sửa evaluateShippingPrecheck theo đáp án",
+     "Cập nhật spec nếu đáp án làm code và spec lệch"
+    ],
+    "outOfScope": [
+     "Câu hỏi cho khách — E15-FG05-01"
+    ],
+    "dod": [
+     "Test domain có tên ca và số SKU / dải kỳ vọng, xanh trong CI",
+     "Spec và code khớp sau khi có đáp án"
+    ],
+    "blockedBy": [
+     "E15-FG05-01"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-05",
+    "src:l5",
+    "src:clarify",
+    "graded:br-temp-02"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG05-02",
+   "kind": "story",
+   "epicId": "FG-05",
+   "parentId": "EP-FG-05",
+   "title": "POD オフラインキュー — Hàng đợi POD offline mã hoá 8 giờ và đồng bộ sync_pod_item (L5-017)",
+   "body": {
+    "goal": "Tài xế chụp POD khi mất mạng, mục được mã hoá lưu trên thiết bị tối đa 8 giờ và gửi lại idempotent khi có mạng, xung đột chuyển cho điều phối viên.",
+    "sources": [
+     {
+      "id": "L5-017",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-137",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-415",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-534",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-257",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-317",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-035",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "ADR-0010",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/delivery/technical-design/DLV_POD_OFFLINE_SYNC_TECH.md",
+     "specs/delivery/function-specifications/POD_OFFLINE_QUEUE_FUNC.md",
+     "specs/delivery/screen-specification/YC_POD_QUEUE_SPEC.md",
+     "specs/system-design/api-design/delivery/POD_SYNC_POST_API.md",
+     "specs/system-design/database-design/delivery/POD_OFFLINE_SYNC_DB.md",
+     "architecture/adr/ADR-0010-pod-offline-pwa-encrypted-queue.md",
+     "submission/lab3/feature-list.md (F-035)"
+    ],
+    "scope": [
+     "Nhật ký đồng bộ pod_sync_events và migration",
+     "RPC sync_pod_item: khoá advisory, idempotency theo queueItemKey, nhánh SYNCED / CONFLICT / REJECTED",
+     "PWA: service worker + IndexedDB, mã hoá AES-GCM theo khoá thiết bị, cờ quá 8 giờ",
+     "Màn YC_POD_QUEUE (hàng đợi, trạng thái, gửi lại, xem mục bị từ chối)",
+     "Mail ROLE-004 khi CONFLICT / REJECTED"
+    ],
+    "outOfScope": [
+     "Quét mã offline cho giao dịch kho (RFP loại) — FG04-01",
+     "Hạ tầng outbox và worker mail — E-13"
+    ],
+    "dod": [
+     "Assert SQL: gửi lại cùng queueItemKey không ghi trùng, chuyến không còn PENDING sinh CONFLICT",
+     "Kịch bản E2E mất mạng → chụp POD → có mạng → đồng bộ thành công",
+     "Mục quá 8 giờ hiện cảnh báo và không bị xoá"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG05-02.1",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "FG05-02",
+   "title": "DB — pod_sync_events và liên kết tệp đính kèm (migration)",
+   "body": {
+    "goal": "Có nơi ghi nhật ký đồng bộ và bản gửi bị từ chối.",
+    "sources": [
+     {
+      "id": "L5-017",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/delivery/POD_OFFLINE_SYNC_DB.md"
+    ],
+    "scope": [
+     "Bảng pod_sync_events, trạng thái SYNCED / CONFLICT / REJECTED / DUPLICATE",
+     "Cột rejected_submission và tham chiếu tệp",
+     "Chính sách RLS cho ROLE-004 đọc bản gửi đã lưu"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy qua dev và test",
+     "Assert SQL RLS: ROLE-004 đọc được, vai khác bị chặn"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG05-02.2",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "FG05-02",
+   "title": "RPC sync_pod_item + route /api/pod/sync — idempotency, CONFLICT, SYNCED",
+   "body": {
+    "goal": "Gửi lại an toàn, xung đột được ghi nhận.",
+    "sources": [
+     {
+      "id": "L5-017",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/delivery/technical-design/DLV_POD_OFFLINE_SYNC_TECH.md §4.3–4.8",
+     "specs/system-design/api-design/delivery/POD_SYNC_POST_API.md"
+    ],
+    "scope": [
+     "Kiểm schema từng mục, băm SHA-256, khoá advisory theo queueItemKey",
+     "Nhánh SYNCED khi chuyến PENDING, CONFLICT khi không còn PENDING",
+     "Mã ROUTE_NOT_ACTIVE theo trạng thái tuyến",
+     "Domain POD_OFFLINE_QUEUE: tuổi mục, cờ quá 8 giờ, phân loại trạng thái"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test domain POD_OFFLINE_QUEUE theo FUNC",
+     "Assert SQL idempotency và CONFLICT"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG05-02.3",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "FG05-02",
+   "title": "Nhánh REJECTED vĩnh viễn — lưu bản gửi, gắn tệp, mail ROLE-004",
+   "body": {
+    "goal": "Mục bị từ chối vĩnh viễn không mất và điều phối viên được báo.",
+    "sources": [
+     {
+      "id": "L5-017",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/delivery/technical-design/DLV_POD_OFFLINE_SYNC_TECH.md §4.5, §4.9"
+    ],
+    "scope": [
+     "Lưu bản gửi và tham chiếu tệp vào pod_sync_events.rejected_submission",
+     "Tải lại một lần khi lệch băm trước khi lưu",
+     "enqueue_mail cho mọi ROLE-004 mẫu POD_SYNC_CONFLICT với link /pod-queue"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL: mỗi mã từ chối vĩnh viễn trả stored = true",
+     "Mail vào outbox với link đúng"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG05-02.4",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "FG05-02",
+   "title": "PWA — service worker, IndexedDB mã hoá, gửi lại khi có mạng",
+   "body": {
+    "goal": "Thiết bị giữ POD offline an toàn tối đa 8 giờ.",
+    "sources": [
+     {
+      "id": "L5-017",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0010-pod-offline-pwa-encrypted-queue.md",
+     "specs/delivery/technical-design/DLV_POD_OFFLINE_SYNC_TECH.md §4.1–4.2"
+    ],
+    "scope": [
+     "Service worker và hàng đợi IndexedDB với queueItemKey",
+     "Mã hoá AES-GCM bằng khoá theo thiết bị, giữ khi đăng xuất",
+     "Tải tệp qua upload-urls rồi gửi mục, xử lý phản hồi",
+     "Cảnh báo khi đăng xuất còn mục chưa gửi"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test mã hoá / giải mã và vòng đời mục",
+     "Thử trên thiết bị mẫu: tắt mạng, chụp, bật mạng, mục được gửi"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG05-02.5",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "FG05-02",
+   "title": "Màn YC_POD_QUEUE — danh sách hàng đợi, gửi lại, mục bị từ chối",
+   "body": {
+    "goal": "Tài xế và điều phối viên xem trạng thái từng mục.",
+    "sources": [
+     {
+      "id": "L5-017",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/delivery/screen-specification/YC_POD_QUEUE_SPEC.md"
+    ],
+    "scope": [
+     "Khối danh sách, trạng thái hiển thị theo displayQueueStatus",
+     "Nút 再送する, banner theo spec",
+     "Khối ROLE-004 đọc bản gửi đã lưu qua link /pod-queue?event="
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component theo AC của Screen Spec",
+     "Ngày giờ JST YYYY/MM/DD HH:mm"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG05-02.6",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "FG05-02",
+   "title": "Design UI YC_POD_QUEUE theo wireframe LAB-4",
+   "body": {
+    "goal": "Màn mới có thiết kế UI cho FE dựng.",
+    "sources": [
+     {
+      "id": "L5-017",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/delivery/screen-specification/YC_POD_QUEUE_SPEC.md",
+     "specs/_common/wireframe/ia-spec.json"
+    ],
+    "scope": [
+     "Thiết kế màn theo wireframe và Screen Spec",
+     "Trạng thái rỗng, lỗi, quá 8 giờ, CONFLICT"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Bản thiết kế được FE-2 và BrSE duyệt",
+     "Đủ các trạng thái trong Screen Spec"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG05-02.7",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "FG05-02",
+   "title": "E2E offline → đồng bộ, CONFLICT, REJECTED",
+   "body": {
+    "goal": "Luồng POD offline được kiểm tự động.",
+    "sources": [
+     {
+      "id": "L5-017",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/delivery/technical-design/DLV_POD_OFFLINE_SYNC_TECH.md"
+    ],
+    "scope": [
+     "Mất mạng → chụp → có mạng → SYNCED",
+     "Chuyến đã không còn PENDING → CONFLICT",
+     "Mục quá 8 giờ và gửi lại cùng queueItemKey"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Kịch bản chạy xanh trong CI",
+     "Assert dữ liệu pod_sync_events cho từng nhánh"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG05-03",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "EP-FG-05",
+   "title": "POD — Cấu hình bằng chứng bắt buộc theo agreement thay vì 2 mẫu cứng (L5-018)",
+   "body": {
+    "goal": "Danh sách bằng chứng POD bắt buộc lấy từ cấu hình theo từng hợp đồng, đổi được khi khách cung cấp danh sách thật.",
+    "sources": [
+     {
+      "id": "L5-018",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-018, MOCK-06)",
+     "specs/delivery/function-specifications/POD_EVIDENCE_FUNC.md",
+     "specs/delivery/screen-specification/YC_POD_CAPTURE_SPEC.md"
+    ],
+    "scope": [
+     "evidence_requirements gắn theo agreement, bỏ hai mẫu hard-code",
+     "Giữ hai mẫu hiện có làm giá trị mặc định (giả định LAB-4)",
+     "POD_EVIDENCE đọc cấu hình theo agreement của chuyến"
+    ],
+    "outOfScope": [
+     "Màn quản lý agreement (FG-01)",
+     "Danh sách thật từ khách — E15-FG05-02"
+    ],
+    "dod": [
+     "Unit test: hai agreement có yêu cầu khác nhau cho kết quả kiểm khác nhau",
+     "Assert SQL migration giữ nguyên hành vi với dữ liệu cũ"
+    ],
+    "premise": [
+     "PR-D-04"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-05",
+    "src:l5",
+    "src:clarify"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG05-04",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "EP-FG-05",
+   "title": "クレーム — create_claim kiểm deliveries.status = COMPLETED trong RPC (L5-036)",
+   "body": {
+    "goal": "Không tạo được claim cho chuyến chưa hoàn tất kể cả khi gọi thẳng RPC.",
+    "sources": [
+     {
+      "id": "L5-036",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-036, GAP-07)",
+     "specs/system-design/api-design/delivery/CLAIMS_POST_API.md",
+     "specs/system-design/database-design/delivery/TIER2_QUALITY_CLAIMS_DB.md"
+    ],
+    "scope": [
+     "create_claim kiểm trạng thái chuyến trong thân RPC",
+     "Trả lỗi nghiệp vụ có mã khi chuyến chưa COMPLETED",
+     "Cập nhật CLAIMS_POST_API với mã lỗi"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "SQL assert: chuyến PENDING / EXCEPTION bị từ chối, COMPLETED tạo được",
+     "Test route trả đúng mã lỗi"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-05",
+    "src:l5"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG05-05",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "EP-FG-05",
+   "title": "出荷前チェック — Dịch mã vi phạm sang câu tiếng Nhật kèm dải và nhiệt đo (L5-048)",
+   "body": {
+    "goal": "Banner chặn của kiểm xuất hiện câu giải thích tiếng Nhật thay cho mã kỹ thuật, mã gốc vẫn lưu cho audit.",
+    "sources": [
+     {
+      "id": "L5-048",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-048, GAP-21)",
+     "specs/delivery/screen-specification/YC_SHIPPING_PRECHECK_SPEC.md"
+    ],
+    "scope": [
+     "Ánh xạ PRODUCT_TEMP_OUT_OF_BAND, VEHICLE_BAND_MISMATCH, VEHICLE_TEMP_OUT_OF_BAND, SEAL_NOT_OK, USE_BY_EXPIRED sang câu tiếng Nhật kèm dải / nhiệt đo",
+     "Giống cách reasonFor của kiểm hàng nhập",
+     "shipping_checks.reason giữ mã gốc"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component: mỗi mã có câu tiếng Nhật, không hiện mã thô",
+     "shipping_checks.reason vẫn lưu mã gốc (assert)"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-05",
+    "src:l5",
+    "graded:br-temp-02"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG05-06",
+   "kind": "story",
+   "epicId": "FG-05",
+   "parentId": "EP-FG-05",
+   "title": "配送履歴の訂正 — Reversal event cho dòng giao đã nhận, đổi mốc BR-DATE-01 (L5-067)",
+   "body": {
+    "goal": "Dòng giao nhận sai được gỡ khỏi mốc đảo ngày bằng reversal có lý do, người lập và người duyệt khác nhau.",
+    "sources": [
+     {
+      "id": "L5-067",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-261",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-262",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-067, GAP-40)",
+     "specs/system-design/api-design/order-shipping/DELIVERY_REVERSALS_POST_API.md",
+     "specs/system-design/api-design/order-shipping/DELIVERY_REVERSALS_BY_ID_DECIDE_POST_API.md",
+     "specs/order-shipping/technical-design/ORD_DATE_REVERSAL_TECH.md §5.1–5.5",
+     "specs/system-design/database-design/order-shipping/ORDERS_ALLOCATION_DELIVERY_DB.md"
+    ],
+    "scope": [
+     "Bảng delivery_reversal_events (lý do, người lập ROLE-004, người duyệt ROLE-003 khác người lập)",
+     "RPC request_delivery_reversal và decide_delivery_reversal",
+     "delivered_lots loại dòng đã reversal được duyệt",
+     "Nút xin gỡ ở khối chi tiết tuyến YC_ROUTE_PUBLISH, nút duyệt ở YC_INVENTORY_LOT_DETAIL"
+    ],
+    "outOfScope": [
+     "Kiểm đảo ngày lúc xuất — FG04-12",
+     "commit_allocation tự kiểm — FG04-06"
+    ],
+    "dod": [
+     "Assert SQL: người duyệt trùng người lập bị từ chối (SELF_APPROVAL)",
+     "Assert SQL: sau duyệt, delivered_lots không còn dòng đó và test BR-DATE-01 đổi mốc đúng",
+     "Hai reversal mở cùng một dòng bị từ chối (REVERSAL_ALREADY_OPEN)"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG05-06.1",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "FG05-06",
+   "title": "DB — delivery_reversal_events, CHECK approved_by <> requested_by, delivered_lots",
+   "body": {
+    "goal": "Lưu reversal bất biến và loại dòng khỏi mốc.",
+    "sources": [
+     {
+      "id": "L5-067",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-067, GAP-40)",
+     "specs/system-design/api-design/order-shipping/DELIVERY_REVERSALS_POST_API.md"
+    ],
+    "scope": [
+     "Bảng và trạng thái REQUESTED / APPROVED / REJECTED",
+     "CHECK người duyệt khác người lập",
+     "Sửa view delivered_lots theo reversal đã duyệt"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy qua dev và test",
+     "Assert SQL CHECK và view"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG05-06.2",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "FG05-06",
+   "title": "RPC request / decide + route API delivery-reversals",
+   "body": {
+    "goal": "Lập và duyệt reversal qua API đúng vai.",
+    "sources": [
+     {
+      "id": "L5-067",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/api-design/order-shipping/DELIVERY_REVERSALS_POST_API.md",
+     "specs/system-design/api-design/order-shipping/DELIVERY_REVERSALS_BY_ID_DECIDE_POST_API.md"
+    ],
+    "scope": [
+     "request_delivery_reversal: chỉ dòng SHIP của chuyến COMPLETED",
+     "decide_delivery_reversal: APPROVED / REJECTED, ghi audit_events",
+     "Mã lỗi theo spec: REVERSAL_ALREADY_OPEN, REVERSAL_NOT_PENDING, SELF_APPROVAL"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL từng mã lỗi",
+     "Test route 400 / 401 / 403 / 404 / 409 / 422"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only",
+    "graded:br-date-01"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG05-06.3",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "FG05-06",
+   "title": "FE — nút xin gỡ ở route-publish, khối duyệt ở inventory-lot-detail",
+   "body": {
+    "goal": "Hai vai thao tác được reversal trên màn có sẵn.",
+    "sources": [
+     {
+      "id": "L5-067",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/screen-specification/YC_ROUTE_PUBLISH_SPEC.md",
+     "specs/inventory/screen-specification/YC_INVENTORY_LOT_DETAIL_SPEC.md"
+    ],
+    "scope": [
+     "ROLE-004: chọn lô, nhập 理由, gửi ở khối chi tiết tuyến",
+     "ROLE-003: duyệt / từ chối ở dòng 出荷 của lịch sử lô",
+     "Vị trí là [INFERRED] theo ORD_DATE_REVERSAL_TECH 5.5, xác nhận khi dựng"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component theo vai: ROLE-004 thấy nút xin gỡ, ROLE-003 thấy nút duyệt",
+     "Hiện lỗi SELF_APPROVAL bằng tiếng Nhật"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only",
+    "graded:br-date-01"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG05-06.4",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "FG05-06",
+   "title": "Assert SQL + E2E — reversal đổi mốc BR-DATE-01",
+   "body": {
+    "goal": "Reversal làm đổi mốc đúng ở phân bổ và kiểm xuất.",
+    "sources": [
+     {
+      "id": "L5-067",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-067, GAP-40)",
+     "specs/system-design/api-design/order-shipping/DELIVERY_REVERSALS_POST_API.md"
+    ],
+    "scope": [
+     "Lập → duyệt → phân bổ lại với mốc mới",
+     "Từ chối reversal giữ nguyên mốc"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test BR-DATE-01 với mốc bị reversal xanh trong CI",
+     "Assert SQL phân quyền theo vai"
+    ],
+    "premise": [
+     "PR-S-01",
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-05",
+    "src:l5",
+    "src:design-only",
+    "graded:br-date-01"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG05-07",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "EP-FG-05",
+   "title": "出荷・POD — RPC cast trong khối exception, REASON_REQUIRED cho BLOCKED (L5-071)",
+   "body": {
+    "goal": "Gọi thẳng RPC với dữ liệu sai cú pháp trả lỗi 4xx có mã thay vì 500.",
+    "sources": [
+     {
+      "id": "L5-071",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-071, GAP-44)",
+     "specs/system-design/api-design/delivery/SHIPPING_CHECKS_POST_API.md",
+     "specs/../architecture/adr/ADR-0005-read-rsc-write-route-handler-rpc.md"
+    ],
+    "scope": [
+     "Cast enum / uuid / ngày trong khối exception when invalid_text_representation",
+     "Mã DECISION_REQUIRED, RESULT_REQUIRED, REASON_REQUIRED",
+     "BLOCKED bắt buộc có reason như kiểm hàng nhập"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "SQL assert: enum / uuid / ngày sai và decision / result null trả mã lỗi có tên",
+     "Kiểm vai trò chạy trước cast (assert)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-05",
+    "src:l5"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG05-08",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "EP-FG-05",
+   "title": "出荷 — Khoá stock_units theo (lot_id, from_location_code) tránh deadlock (L5-072)",
+   "body": {
+    "goal": "Hai đơn SHIP đồng thời cùng lô ở hai ô không còn deadlock 40P01.",
+    "sources": [
+     {
+      "id": "L5-072",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-072, GAP-45)",
+     "specs/order-shipping/technical-design/ORD_RECORD_PICK_TECH.md"
+    ],
+    "scope": [
+     "order by lot_id, from_location_code ở bước SHIP",
+     "Sửa comment của RPC cho khớp"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "SQL assert hai phiên SHIP đồng thời cùng lô khác ô không deadlock",
+     "Comment RPC khớp thứ tự khoá thật"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-05",
+    "src:l5"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG05-09",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "EP-FG-05",
+   "title": "Spec order-shipping / delivery — Ghi 4 giả định thiết kế vào tài liệu (L5-073)",
+   "body": {
+    "goal": "Bốn giới hạn đang nhất quán ở 3 tầng được ghi rõ trong spec để người sau không đoán.",
+    "sources": [
+     {
+      "id": "L5-073",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-073, GAP-46)",
+     "specs/order-shipping/README.md",
+     "specs/delivery/README.md"
+    ],
+    "scope": [
+     "Ghi: BEST_BEFORE quá ngày vẫn xuất, chỉ USE_BY chặn",
+     "Ghi: đơn nhiều dải nhiệt chỉ BLOCKED, không PASS",
+     "Ghi: không 分納, đơn LOADED khi mọi dòng PICKED",
+     "Ghi: một đơn một điều kiện giao (delivery_condition lấy dòng đầu)"
+    ],
+    "outOfScope": [
+     "Câu hỏi 分納 và đơn trộn dải — E15-FG05-03"
+    ],
+    "dod": [
+     "Cả 4 giả định có mặt trong spec order-shipping hoặc delivery, kèm mã nguồn",
+     "Review chéo với code xác nhận từng giả định"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-05",
+    "src:l5",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "FG05-10",
+   "kind": "task",
+   "epicId": "FG-05",
+   "parentId": "EP-FG-05",
+   "title": "Hồi quy E2E FG-05 — 4 màn delivery đã dựng (DR-03)",
+   "body": {
+    "goal": "Luồng chính của 4 màn giao hàng đã dựng chạy được tự động.",
+    "sources": [
+     {
+      "id": "DR-03",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/delivery/README.md",
+     "task-breakdown.md §1.2"
+    ],
+    "scope": [
+     "E2E cho YC_SHIPPING_PRECHECK, YC_POD_CAPTURE, YC_CLAIM_LIST, YC_CLAIM_DETAIL",
+     "Luồng kiểm xuất → POD → tạo và xử lý claim"
+    ],
+    "outOfScope": [
+     "Màn YC_POD_QUEUE chỉ thiết kế — FG05-02"
+    ],
+    "dod": [
+     "Kịch bản chạy xanh trong CI, phủ luồng chính 4 màn",
+     "Mỗi màn có ít nhất một AC của Screen Spec được assert"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-05",
+    "src:l5"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E15-FG05-01",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Dải vị trí có luôn là dải khoang xe với đơn nhiều SKU khác dải (L5-011)",
+   "body": {
+    "goal": "Có đáp án của khách về cách map dải nhiệt khi nhiều SKU khác dải chung một khoang.",
+    "sources": [
+     {
+      "id": "L5-011",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-011, DEV-025)",
+     "specs/delivery/function-specifications/SHIPPING_PRECHECK_FUNC.md"
+    ],
+    "scope": [
+     "Gửi câu hỏi (giả lập) kèm ví dụ đơn hai SKU khác dải",
+     "Ghi đáp án vào spec hoặc PREMISE"
+    ],
+    "outOfScope": [
+     "Sửa code và test — FG05-01"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi; khi khách trả lời: ghi vào spec/PREMISE và đóng issue",
+     "Còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "affects": [
+     "FG05-01"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify",
+    "graded:br-temp-02"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-FG05-02",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Danh sách bằng chứng POD bắt buộc theo từng hợp đồng (L5-018)",
+   "body": {
+    "goal": "Có danh sách bằng chứng thật cho từng loại giao hàng để thay hai mẫu giả định.",
+    "sources": [
+     {
+      "id": "L5-018",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-018, MOCK-06)",
+     "specs/delivery/function-specifications/POD_EVIDENCE_FUNC.md"
+    ],
+    "scope": [
+     "Hỏi danh sách bằng chứng theo 車上渡し / 軒先渡し và theo hợp đồng",
+     "Khi có đáp án: nạp vào cấu hình agreement, không đổi code"
+    ],
+    "outOfScope": [
+     "Cấu hình theo agreement — FG05-03"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi; khi khách trả lời: cập nhật cấu hình mẫu và đóng issue",
+     "Còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "affects": [
+     "FG05-03"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-FG05-03",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Giao một phần (分納) và đơn trộn nhiều dải nhiệt (L5-073)",
+   "body": {
+    "goal": "Khách xác nhận hoặc đổi hai giả định: không 分納 và đơn trộn dải không PASS.",
+    "sources": [
+     {
+      "id": "L5-073",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-073, GAP-46)"
+    ],
+    "scope": [
+     "Hỏi về 分納 và đơn nhiều dải nhiệt",
+     "Ghi đáp án vào spec và PREMISE"
+    ],
+    "outOfScope": [
+     "Ghi giả định vào spec — FG05-09"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi; khi khách trả lời: ghi vào spec/PREMISE và đóng issue",
+     "Nếu đáp khác giả định: mở issue code mới và ghi vào affects"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "affects": [
+     "FG05-09"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "FG06-01",
+   "kind": "story",
+   "epicId": "FG-06",
+   "parentId": "EP-FG-06",
+   "title": "拘束時間 — Kiểm giờ lái nhiều ngày theo bảng tham số, source_verified=false (L5-021a)",
+   "body": {
+    "goal": "Kiểm tuần / tháng / năm và trung bình 2 ngày / 2 tuần chạy được với bảng tham số DRIVER_HOURS_FUNC §3, ghi rõ nguồn luật chưa xác minh.",
+    "sources": [
+     {
+      "id": "L5-021",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "FR-SCH-02",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "OPS-LAW-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/function-specifications/DRIVER_HOURS_FUNC.md §3",
+     "specs/dispatch/technical-design/DSP_DRIVER_HOURS_TECH.md §5",
+     "specs/_common/deviation-table.md (L5-021, L5-007, MOCK-09, DEV-014)",
+     "specs/system-design/database-design/dispatch/ROUTING_DRIVER_HOURS_DB.md"
+    ],
+    "scope": [
+     "Nạp lịch sử nhiều ngày của tài xế và dựng windows (tháng, năm, 2 tuần, cặp 2 ngày)",
+     "checkMultiDayLimits: MONTHLY_RESTRAINT, ANNUAL_RESTRAINT, TWO_DAY_AVG_DRIVING, TWO_WEEK_AVG_DRIVING, mức BLOCKED",
+     "Thiếu lịch sử: INCOMPLETE_HISTORY ở notEvaluated, không coi là đạt",
+     "Hiện vi phạm mới ở route-check-result và danh sách blockers của công bố",
+     "rule_versions giữ source_verified = false"
+    ],
+    "outOfScope": [
+     "Tra lại nguồn luật và mốc 超勤 960 giờ — E15-FG06-01 (không chặn issue này, nhưng chặn go-live)",
+     "record_route_check tự tính lại — FG06-02"
+    ],
+    "dod": [
+     "Unit test theo DRIVER_HOURS_FUNC §3.1: đúng ngưỡng là đạt, vượt là BLOCKED, thiếu ngày là INCOMPLETE_HISTORY",
+     "Đổi tham số trong rule_versions đổi kết quả kiểm",
+     "Mốc 超勤 960 giờ vẫn ở notEvaluated; cổng go-live giữ nguyên (chưa xác minh nguồn thì không lên production)"
+    ],
+    "premise": [
+     "PR-S-04",
+     "PR-A-07"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-06",
+    "src:l5",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG06-01.1",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-01",
+   "title": "DB — nguồn lịch sử nhiều ngày của tài xế (driving_logs hoặc routes + shifts)",
+   "body": {
+    "goal": "Có dữ liệu tổng theo ngày của cùng tài xế để kiểm nhiều ngày.",
+    "sources": [
+     {
+      "id": "L5-021",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/dispatch/ROUTING_DRIVER_HOURS_DB.md",
+     "specs/dispatch/function-specifications/DRIVER_HOURS_FUNC.md §3.1"
+    ],
+    "scope": [
+     "Chốt nguồn lịch sử (câu hỏi mở Q2 của DB) và tạo bảng / view tổng theo ngày",
+     "Ngày nghỉ có dòng giá trị 0, ngày không có dòng là chưa biết",
+     "Dựng windows theo giả định cắt kỳ ghi trong PR-A-07 (tháng lịch, năm lịch)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy qua dev và test",
+     "Assert SQL: ngày nghỉ có dòng 0, ngày thiếu không có dòng"
+    ],
+    "premise": [
+     "PR-S-04",
+     "PR-A-07"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-06",
+    "src:l5",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG06-01.2",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-01",
+   "title": "Domain checkMultiDayLimits + sửa checkDriverHours, resolveRuleVersion",
+   "body": {
+    "goal": "Luật nhiều ngày chạy ở domain, thay kiểm 1 ngày khi đủ lịch sử.",
+    "sources": [
+     {
+      "id": "L5-021",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/function-specifications/DRIVER_HOURS_FUNC.md §3.1–3.2"
+    ],
+    "scope": [
+     "checkMultiDayLimits theo §3.1",
+     "checkDriverHours nhận history và windows tuỳ chọn, TWO_DAY_AVG_DRIVING thay DAILY_DRIVING khi kiểm được",
+     "4 mã luật mới vào DriverHoursRule và route_checks.violations"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test theo danh sách ca của §3.1 (đúng ngưỡng, vượt, thiếu ngày, ngày nghỉ, đổi tham số)",
+     "Không có history thì hành vi như bản cũ (test hồi quy)"
+    ],
+    "premise": [
+     "PR-S-04",
+     "PR-A-07"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-06",
+    "src:l5",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG06-01.3",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-01",
+   "title": "Màn route-check-result — hiện vi phạm nhiều ngày và INCOMPLETE_HISTORY",
+   "body": {
+    "goal": "Điều phối viên thấy vi phạm mới và luật chưa kiểm được.",
+    "sources": [
+     {
+      "id": "L5-021",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/screen-specification/YC_ROUTE_CHECK_RESULT_SPEC.md"
+    ],
+    "scope": [
+     "Hiện 4 mã vi phạm mới kèm span và giá trị thực",
+     "Hiện danh sách luật chưa kiểm (notEvaluated) và lý do"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component với từng mã vi phạm mới",
+     "Test: INCOMPLETE_HISTORY không hiện như đạt"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-06",
+    "src:l5",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "E15-FG06-01",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Tra lại nguồn luật giờ lái 2024 và định nghĩa mốc 超勤 (L5-021b)",
+   "body": {
+    "goal": "Ngưỡng giờ lái được đối chiếu với nguồn pháp luật chính thức và có định nghĩa giờ chuẩn để kiểm 超勤 960 giờ / năm, làm điều kiện go-live.",
+    "sources": [
+     {
+      "id": "L5-021",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "OPS-LAW-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "FR-SCH-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-021, MOCK-09)",
+     "specs/dispatch/function-specifications/DRIVER_HOURS_FUNC.md §3 (Q1, Q3, Q4)"
+    ],
+    "scope": [
+     "Tra 改善基準告示 (SRC-EXT-03/04) cho ngưỡng 30/10 phút lái liên tục và các giới hạn tháng / năm / trung bình",
+     "Chốt cách cắt kỳ: tháng lịch hay kỳ lương, năm lịch hay năm tài chính, điểm bắt đầu kỳ 2 tuần, cặp 2 ngày",
+     "Hỏi khách định nghĩa giờ chuẩn cho 超勤 và việc kiểm trung bình 2 ngày thay kiểm 1 ngày",
+     "Cập nhật rule_versions: source_verified = true khi xác nhận"
+    ],
+    "outOfScope": [
+     "Dựng kiểm nhiều ngày — FG06-01 (không chờ issue này)"
+    ],
+    "dod": [
+     "Ghi kết quả tra nguồn kèm ngày tra vào spec; ngưỡng sai thì đổi tham số trong rule_versions",
+     "Cổng go-live: chưa đóng issue này thì không lên production",
+     "Câu hỏi 超勤 đã gửi; còn chờ thì Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-S-04",
+     "PR-A-07",
+     "PR-D-04"
+    ],
+    "affects": [
+     "FG06-01",
+     "FG06-02"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "FG06-02",
+   "kind": "story",
+   "epicId": "FG-06",
+   "parentId": "EP-FG-06",
+   "title": "ルートチェック — record_route_check tự tính lại luật giờ lái chặn cứng (L5-066)",
+   "body": {
+    "goal": "Gọi thẳng RPC không ghi được kết quả PASS giả để công bố tuyến vi phạm giờ lái.",
+    "sources": [
+     {
+      "id": "L5-066",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-066, GAP-39)",
+     "specs/dispatch/technical-design/DSP_DRIVER_HOURS_TECH.md §5",
+     "specs/system-design/api-design/dispatch/ROUTES_BY_ID_CHECK_POST_API.md",
+     "architecture/adr/ADR-0003-rules-in-domain-invariants-in-db.md"
+    ],
+    "scope": [
+     "private.evaluate_driver_hours(route_id, rule_version_id): luật trong ngày trước, luật nhiều ngày sau FG06-01",
+     "Bỏ result và violations do client gửi",
+     "Chọn phiên bản luật hiệu lực cho bản nháp, lệch thì 409 RULE_VERSION_MISMATCH",
+     "Bộ ca chung dạng JSON chạy ở vitest và SQL assert"
+    ],
+    "outOfScope": [
+     "Dựng kiểm nhiều ngày ở domain — FG06-01"
+    ],
+    "dod": [
+     "SQL assert: gọi thẳng RPC với result = PASS giả vẫn ghi kết quả đúng",
+     "Cùng bộ ca JSON cho cùng kết quả ở vitest và SQL",
+     "Không ghi được PASS cho tuyến vi phạm ngày / tháng / năm"
+    ],
+    "premise": [
+     "PR-S-04"
+    ],
+    "blockedBy": [
+     "FG06-01"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-06",
+    "src:l5",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG06-02.1",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-02",
+   "title": "RPC record_route_check + private.evaluate_driver_hours (SQL)",
+   "body": {
+    "goal": "Luật chặn cứng tính ở DB, không tin client.",
+    "sources": [
+     {
+      "id": "L5-066",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-066, GAP-39)",
+     "specs/dispatch/technical-design/DSP_DRIVER_HOURS_TECH.md §5"
+    ],
+    "scope": [
+     "Hàm SQL tính luật ngày và nhiều ngày",
+     "RPC dùng kết quả của hàm, bỏ tham số result và violations",
+     "Mã lỗi RULE_VERSION_MISMATCH"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy qua dev và test",
+     "Assert SQL từng luật chặn"
+    ],
+    "premise": [
+     "PR-S-04"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-06",
+    "src:l5",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG06-02.2",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-02",
+   "title": "Bộ ca chung TS ↔ SQL cho luật giờ lái + assert RED gọi thẳng RPC",
+   "body": {
+    "goal": "Hai bản luật không lệch nhau.",
+    "sources": [
+     {
+      "id": "L5-066",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-066, GAP-39)",
+     "specs/dispatch/technical-design/DSP_DRIVER_HOURS_TECH.md §5"
+    ],
+    "scope": [
+     "Bộ ca JSON cho luật ngày, tháng, năm, trung bình",
+     "Chạy ở vitest và SQL assert",
+     "Ca PASS giả gửi từ client"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert RED trước khi sửa, xanh sau khi sửa",
+     "CI chạy cả hai bản và so kết quả"
+    ],
+    "premise": [
+     "PR-S-04"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-06",
+    "src:l5",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG06-03",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "EP-FG-06",
+   "title": "ルートチェック結果 — Link sang route-planning để replan khi vi phạm FR-SCH-02/03 (L5-035)",
+   "body": {
+    "goal": "Điều phối viên bấm từ kết quả kiểm sang màn lập tuyến để sửa ngay khi báo vi phạm giờ lái.",
+    "sources": [
+     {
+      "id": "L5-035",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (L5-035, GAP-06)",
+     "specs/dispatch/screen-specification/YC_ROUTE_CHECK_RESULT_SPEC.md",
+     "specs/dispatch/screen-specification/YC_ROUTE_PLANNING_SPEC.md"
+    ],
+    "scope": [
+     "Thêm link ở route-check-panel và route-check-result sang route-planning của đúng tuyến",
+     "Chỉ hiện khi có vi phạm"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component: có vi phạm thì hiện link đúng tuyến, đạt thì không hiện",
+     "E2E mở route-planning từ kết quả kiểm (thêm vào FG06-06)"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-06",
+    "src:l5",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG06-04",
+   "kind": "story",
+   "epicId": "FG-06",
+   "parentId": "EP-FG-06",
+   "title": "ルート公開・版管理 — Công bố tuyến, phiên bản luật và 改版 (L5-054)",
+   "body": {
+    "goal": "Tuyến đã công bố không bị hạ trạng thái, và 改版 tạo phiên bản n+1 có lý do, kiểm lại, công bố với bản chụp điểm dừng và phiên bản luật.",
+    "sources": [
+     {
+      "id": "L5-054",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "SPEC-YC-141",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-423",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-538",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-259",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-260",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-319",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/screen-specification/YC_ROUTE_PUBLISH_SPEC.md",
+     "specs/dispatch/technical-design/DSP_ROUTE_REVISION_TECH.md",
+     "specs/dispatch/function-specifications/ROUTE_VERSION_FUNC.md",
+     "specs/system-design/api-design/dispatch/ROUTES_BY_ID_REVISIONS_POST_API.md",
+     "specs/system-design/api-design/dispatch/ROUTES_BY_ID_STOPS_PUT_API.md",
+     "specs/system-design/database-design/dispatch/ROUTE_VERSIONING_DB.md",
+     "specs/_common/deviation-table.md (L5-054, GAP-27)"
+    ],
+    "scope": [
+     "Bảng route_versions, thay đổi routes / route_checks / travel_times (ROUTE_VERSIONING_DB, ROUTING_DRIVER_HOURS_DB T1, T4, T5)",
+     "Domain ROUTE_VERSION; record_route_check chặn phiên bản đã công bố (YC409 / ROUTE_VERSION_NOT_DRAFT)",
+     "RPC start_route_revision, replace_route_stops, publish: bản chụp điểm dừng, ghim rule_version_id",
+     "Màn YC_ROUTE_PUBLISH: danh sách phiên bản, 改版 với lý do bắt buộc, ẩn nút kiểm ở trạng thái đã công bố"
+    ],
+    "outOfScope": [
+     "Nút xin gỡ reversal ở khối chi tiết tuyến — FG05-06",
+     "Kiểm giờ lái nhiều ngày — FG06-01"
+    ],
+    "dod": [
+     "SQL assert: kiểm lại tuyến PUBLISHED trả lỗi, trạng thái tuyến không đổi",
+     "Assert SQL 改版: n+1 tạo, sửa điểm dừng, kiểm, công bố, bản cũ SUPERSEDED",
+     "E2E 改版 tuyến đã công bố, lý do bắt buộc"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-06",
+    "src:l5",
+    "src:design-only",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG06-04.1",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-04",
+   "title": "DB — route_versions, route_version_status và thay đổi routes (migration)",
+   "body": {
+    "goal": "Có nơi lưu phiên bản tuyến và bản chụp lúc công bố.",
+    "sources": [
+     {
+      "id": "L5-054",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/dispatch/ROUTE_VERSIONING_DB.md",
+     "specs/system-design/database-design/dispatch/ROUTING_DRIVER_HOURS_DB.md"
+    ],
+    "scope": [
+     "route_versions: trạng thái, revision_reason, stops_snapshot, rule_version_id",
+     "Backfill v1 cho tuyến hiện có",
+     "Thay đổi routes, route_checks (route_version), travel_times"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy qua dev và test, backfill giữ nguyên dữ liệu cũ",
+     "Assert SQL ràng buộc trạng thái phiên bản"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-06",
+    "src:l5",
+    "src:design-only",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG06-04.2",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-04",
+   "title": "Domain ROUTE_VERSION + guard kiểm / công bố theo trạng thái phiên bản (GAP-27)",
+   "body": {
+    "goal": "Trạng thái phiên bản đi đúng cạnh cho phép, tuyến đã công bố không bị hạ.",
+    "sources": [
+     {
+      "id": "L5-054",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/function-specifications/ROUTE_VERSION_FUNC.md",
+     "specs/dispatch/technical-design/DSP_DRIVER_HOURS_TECH.md §5"
+    ],
+    "scope": [
+     "applyRouteVersionEvent, ruleVersionIdForEvaluation",
+     "record_route_check chặn phiên bản không phải bản nháp",
+     "Giữ trạng thái routes khi tuyến PUBLISHED / IN_PROGRESS"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test theo FUNC cho từng cạnh trạng thái",
+     "SQL assert YC409 khi kiểm tuyến PUBLISHED (L5-054)"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-06",
+    "src:l5",
+    "src:design-only",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG06-04.3",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-04",
+   "title": "RPC start_route_revision, replace_route_stops và công bố bản chụp",
+   "body": {
+    "goal": "Luồng 改版 chạy được qua API.",
+    "sources": [
+     {
+      "id": "L5-054",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/api-design/dispatch/ROUTES_BY_ID_REVISIONS_POST_API.md",
+     "specs/system-design/api-design/dispatch/ROUTES_BY_ID_STOPS_PUT_API.md",
+     "specs/dispatch/technical-design/DSP_ROUTE_REVISION_TECH.md"
+    ],
+    "scope": [
+     "start_route_revision với lý do bắt buộc",
+     "replace_route_stops giữ phần điểm dừng đã tới (ROUTE_STOP_ALREADY_VISITED)",
+     "Công bố: SUPERSEDED bản cũ, chụp stops_snapshot, ghim phiên bản luật, RULE_VERSION_CHANGED"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL các nhánh lỗi theo API spec",
+     "Test route 400 / 401 / 403 / 409 / 422"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-06",
+    "src:l5",
+    "src:design-only",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG06-04.4",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-04",
+   "title": "Màn YC_ROUTE_PUBLISH — phiên bản, 改版, ẩn nút kiểm khi đã công bố",
+   "body": {
+    "goal": "Điều phối viên công bố và 改版 tuyến trên một màn.",
+    "sources": [
+     {
+      "id": "L5-054",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/screen-specification/YC_ROUTE_PUBLISH_SPEC.md"
+    ],
+    "scope": [
+     "Danh sách phiên bản và trạng thái",
+     "Form 改版 với lý do bắt buộc, sửa điểm dừng",
+     "Ẩn nút チェック実行 ở phiên bản đã công bố"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component theo AC của Screen Spec",
+     "Nút kiểm bị ẩn khi tuyến PUBLISHED"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-06",
+    "src:l5",
+    "src:design-only",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG06-04.5",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-04",
+   "title": "Design UI YC_ROUTE_PUBLISH (phần 改版, phiên bản) theo wireframe LAB-4",
+   "body": {
+    "goal": "Phần màn mới có thiết kế cho FE dựng.",
+    "sources": [
+     {
+      "id": "L5-054",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/screen-specification/YC_ROUTE_PUBLISH_SPEC.md",
+     "specs/_common/wireframe/ia-spec.json"
+    ],
+    "scope": [
+     "Khối phiên bản, form 改版, trạng thái lỗi",
+     "Trạng thái bản nháp n+1 và bản đang công bố"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Bản thiết kế được FE-1 và BrSE duyệt",
+     "Đủ các trạng thái trong Screen Spec"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-06",
+    "src:l5",
+    "src:design-only",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG06-04.6",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-04",
+   "title": "E2E 改版 tuyến — kiểm lại, công bố, SUPERSEDED",
+   "body": {
+    "goal": "Luồng 改版 được kiểm tự động.",
+    "sources": [
+     {
+      "id": "L5-054",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/screen-specification/YC_ROUTE_PUBLISH_SPEC.md",
+     "specs/dispatch/technical-design/DSP_ROUTE_REVISION_TECH.md"
+    ],
+    "scope": [
+     "Công bố v1, 改版 v2 có lý do, kiểm, công bố",
+     "Kiểm lại tuyến đã công bố bị chặn"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Kịch bản chạy xanh trong CI",
+     "Assert trạng thái phiên bản sau mỗi bước"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-06",
+    "src:l5",
+    "src:design-only",
+    "constraint:driver-hours-2024"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG06-05",
+   "kind": "story",
+   "epicId": "FG-06",
+   "parentId": "EP-FG-06",
+   "title": "不測事象の記録 — Ghi sự kiện bất khả kháng tách khỏi kết quả giờ lái (F-041)",
+   "body": {
+    "goal": "Điều phối viên ghi sự kiện tai nạn, hỏng xe, thiên tai kèm chứng cứ, tách khỏi kết quả tuân thủ giờ lái.",
+    "sources": [
+     {
+      "id": "SPEC-YC-140",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-258",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-318",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-041",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "FR-SCH-05",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/screen-specification/YC_INCIDENT_RECORD_SPEC.md",
+     "specs/system-design/api-design/dispatch/INCIDENT_RECORDS_POST_API.md",
+     "specs/system-design/database-design/dispatch/INCIDENT_RECORD_DB.md",
+     "submission/lab3/feature-list.md (F-041)",
+     "specs/_common/traceability.md (FR-SCH-05)"
+    ],
+    "scope": [
+     "Bảng incident_records, incident_record_stops (append-only), kiểu incident_type",
+     "RPC record_incident: gắn phiên bản tuyến đang công bố, điểm dừng theo seq trong stops_snapshot, chứng cứ 1–10 tệp",
+     "Màn YC_INCIDENT_RECORD",
+     "Không ảnh hưởng kết quả kiểm giờ lái"
+    ],
+    "outOfScope": [
+     "Phiên bản tuyến — FG06-04",
+     "Kho tệp đính kèm dùng chung — E-14"
+    ],
+    "dod": [
+     "Assert SQL: bản ghi append-only, ROUTE_VERSION_CHANGED khi phiên bản đổi",
+     "Test route 400 / 401 / 403 / 409 / 422 theo API spec",
+     "E2E ghi sự kiện kèm chứng cứ và xem recordNo"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "blockedBy": [
+     "FG06-04"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-06",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG06-05.1",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-05",
+   "title": "DB — incident_records, incident_record_stops (migration, append-only)",
+   "body": {
+    "goal": "Có nơi lưu sự kiện bất khả kháng.",
+    "sources": [
+     {
+      "id": "SPEC-YC-140",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/dispatch/INCIDENT_RECORD_DB.md"
+    ],
+    "scope": [
+     "Hai bảng và kiểu incident_type",
+     "Khoá ghép (route_version_id, stop_seq)",
+     "Chặn UPDATE / DELETE"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy qua dev và test",
+     "Assert SQL append-only"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-06",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG06-05.2",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-05",
+   "title": "RPC record_incident + route POST /api/incident-records",
+   "body": {
+    "goal": "Ghi sự kiện đúng hợp đồng API.",
+    "sources": [
+     {
+      "id": "SPEC-YC-140",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/api-design/dispatch/INCIDENT_RECORDS_POST_API.md"
+    ],
+    "scope": [
+     "Kiểm schema: occurredAt không ở tương lai, description / place ≤ 500, evidence 1–10",
+     "affectedStopSeqs theo stops_snapshot của phiên bản đang công bố",
+     "Sinh recordNo, ghi audit"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL từng mã lỗi",
+     "Test route theo API spec"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-06",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG06-05.3",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-05",
+   "title": "Màn YC_INCIDENT_RECORD — form ghi sự kiện, chứng cứ, recordNo",
+   "body": {
+    "goal": "Người dùng ghi sự kiện trên màn.",
+    "sources": [
+     {
+      "id": "SPEC-YC-140",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/screen-specification/YC_INCIDENT_RECORD_SPEC.md"
+    ],
+    "scope": [
+     "Form loại sự kiện, giờ xảy ra, điểm dừng ảnh hưởng, mô tả",
+     "Tải chứng cứ qua upload-urls",
+     "Banner recordNo sau khi ghi"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component theo AC của Screen Spec",
+     "Lỗi 409 ROUTE_VERSION_CHANGED hiện thông báo tiếng Nhật"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-06",
+    "src:design-only"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG06-05.4",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-05",
+   "title": "Design UI YC_INCIDENT_RECORD theo wireframe LAB-4",
+   "body": {
+    "goal": "Màn mới có thiết kế cho FE dựng.",
+    "sources": [
+     {
+      "id": "SPEC-YC-140",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/screen-specification/YC_INCIDENT_RECORD_SPEC.md",
+     "specs/_common/wireframe/ia-spec.json"
+    ],
+    "scope": [
+     "Form, khối chứng cứ, banner kết quả",
+     "Trạng thái lỗi và tệp quá giới hạn"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Bản thiết kế được FE-1 và BrSE duyệt",
+     "Đủ các trạng thái trong Screen Spec"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-06",
+    "src:design-only"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG06-05.5",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "FG06-05",
+   "title": "E2E ghi sự kiện bất khả kháng kèm chứng cứ",
+   "body": {
+    "goal": "Luồng ghi sự kiện được kiểm tự động.",
+    "sources": [
+     {
+      "id": "SPEC-YC-140",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/screen-specification/YC_INCIDENT_RECORD_SPEC.md",
+     "specs/system-design/api-design/dispatch/INCIDENT_RECORDS_POST_API.md"
+    ],
+    "scope": [
+     "Ghi sự kiện hợp lệ, xem recordNo",
+     "Phiên bản tuyến đổi giữa chừng → 409"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Kịch bản chạy xanh trong CI",
+     "Assert bản ghi và điểm dừng liên quan"
+    ],
+    "premise": [
+     "PR-A-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-06",
+    "src:design-only"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG06-06",
+   "kind": "task",
+   "epicId": "FG-06",
+   "parentId": "EP-FG-06",
+   "title": "Hồi quy E2E FG-06 — 3 màn dispatch đã dựng (DR-03)",
+   "body": {
+    "goal": "Luồng chính của 3 màn lập tuyến đã dựng chạy được tự động.",
+    "sources": [
+     {
+      "id": "DR-03",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/README.md",
+     "task-breakdown.md §1.2"
+    ],
+    "scope": [
+     "E2E cho YC_ROUTE_PLANNING, YC_ROUTE_CHECK_RESULT, YC_DRIVER_ITINERARY",
+     "Luồng lập tuyến → kiểm giờ lái → xem lịch trình tài xế"
+    ],
+    "outOfScope": [
+     "Màn YC_ROUTE_PUBLISH và YC_INCIDENT_RECORD chỉ thiết kế — FG06-04, FG06-05"
+    ],
+    "dod": [
+     "Kịch bản chạy xanh trong CI, phủ luồng chính 3 màn",
+     "Mỗi màn có ít nhất một AC của Screen Spec được assert"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-06",
+    "src:l5"
+   ],
+   "owner": "QA-Auto"
+  }
+ ],
+ "notIssued": [],
+ "gaps": [
+  {
+   "spec": "DLV_SHIPPING_CHECK_TECH 5.3, SHIPPING_PRECHECK_FUNC 3.3",
+   "text": "RFP không định nghĩa \"đã nhận\" và nêu hai mức (cảnh báo / chặn) cho BR-DATE-01; khách chưa xác nhận. Làm theo tham số date_reversal (PR-A-06).",
+   "suggestedHandling": "clarify-issue",
+   "ref": "E15-FG04-03",
+   "id": "GAP-L5-14"
+  },
+  {
+   "spec": "DELIVERY_REVERSALS_POST_API, ORD_DATE_REVERSAL_TECH 5.5",
+   "text": "Vị trí màn thao tác reversal (route-publish cho ROLE-004, inventory-lot-detail cho ROLE-003) chỉ là [INFERRED]; độ dài tối đa của reason ghi TBD.",
+   "suggestedHandling": "assumption",
+   "ref": "FG05-06.3",
+   "id": "GAP-L5-15"
+  },
+  {
+   "spec": "DRIVER_HOURS_FUNC §3 (Q1, Q2, Q4)",
+   "text": "Cách cắt kỳ tháng / năm / 2 tuần, nguồn lịch sử nhiều ngày và việc kiểm trung bình 2 ngày thay kiểm 1 ngày chưa chốt; dùng giả định tháng / năm lịch trong lúc chờ.",
+   "suggestedHandling": "clarify-issue",
+   "ref": "E15-FG06-01",
+   "id": "GAP-L5-16"
+  },
+  {
+   "spec": "DRIVER_HOURS_FUNC §3 (Q3), QA-007 LAB-1",
+   "text": "Chưa có định nghĩa giờ chuẩn để tính 超勤 960 giờ / năm, và chưa thiết kế phần báo slot vượt kế hoạch (D5 p.34).",
+   "suggestedHandling": "clarify-issue",
+   "ref": "E15-FG06-01",
+   "id": "GAP-L5-17"
+  },
+  {
+   "spec": "DEV-014 / L5-007 (gộp vào L5-021)",
+   "text": "L5-066 chỉ nêu luật ngày + tháng / năm, còn DRIVER_HOURS_FUNC §3 có thêm trung bình 2 ngày / 2 tuần; backlog đưa cả bốn luật vào FG06-02 theo FG06-01.",
+   "suggestedHandling": "assumption",
+   "ref": "FG06-02",
+   "id": "GAP-L5-18"
+  },
+  {
+   "spec": "L5-054 (GAP-27) và DSP_DRIVER_HOURS_TECH §5",
+   "text": "L5-054 chặn YC409 khi tuyến PUBLISHED; thiết kế đích dùng ROUTE_VERSION_NOT_DRAFT với route_versions. Backlog gộp L5-054 vào story phiên bản tuyến, mã lỗi chốt khi dựng.",
+   "suggestedHandling": "open",
+   "ref": "FG06-04.2",
+   "id": "GAP-L5-19"
+  },
+  {
+   "spec": "L5-041 (GAP-12)",
+   "text": "Nhánh sửa 要求日・数量 từ allocation-failed-queue cần quyết định sửa dòng cũ hay tạo đơn mới (chưa có RPC sửa dòng đơn); chưa có issue riêng cho quyết định này.",
+   "suggestedHandling": "open",
+   "ref": "FG04-05",
+   "id": "GAP-L5-20"
+  },
+  {
+   "spec": "L5-026 (MOCK-14)",
+   "text": "Không nêu SDK máy quét cụ thể và model thiết bị; DoD dùng trình giả lập hoặc thiết bị mẫu.",
+   "suggestedHandling": "open",
+   "ref": "FG04-01",
+   "id": "GAP-L5-21"
+  },
+  {
+   "spec": "L5-018 (MOCK-06)",
+   "text": "RFP không có danh sách bằng chứng POD theo hợp đồng (NOT FOUND); dùng 2 mẫu LAB-4 làm mặc định cấu hình theo agreement.",
+   "suggestedHandling": "clarify-issue",
+   "ref": "E15-FG05-02",
+   "id": "GAP-L5-22"
+  },
+  {
+   "spec": "YC_ORDER_ENTRY, YC_ORDER_LIST (GAP-23, GAP-33)",
+   "text": "Danh sách màn có form ghi áp dụng L5-060 chưa liệt kê đầy đủ; FG04-11 sửa ở lớp dùng chung, cần rà từng form khi dựng.",
+   "suggestedHandling": "open",
+   "ref": "FG04-11",
+   "id": "GAP-L5-23"
+  }
+ ]
+}

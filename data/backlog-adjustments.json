@@ -1,0 +1,513 @@
+{
+  "decision": "DR-04 — plans/…/reports/decision-review-261014-backlog-merge.md (quick · ba)",
+  "removeItems": {},
+  "mergeItems": {
+    "E15-03": "E15-FG11-01",
+    "E15-14": "E15-FG10-04",
+    "E15-13": "E15-FG04-01",
+    "E14-07.1": "FG08-03.1"
+  },
+  "removeLabels": [
+    {
+      "label": "graded:br-temp-02",
+      "epics": [
+        "FG-07"
+      ],
+      "ids": [
+        "E15-FG07-03"
+      ],
+      "why": "BR-TEMP-02 là kiểm nhiệt lúc nhập / xuất; giám sát kho và nạp logger thuộc BR-TEMP-01 (GAP-L5-09)"
+    },
+    {
+      "label": "graded:br-date-01",
+      "epics": [],
+      "ids": [
+        "FG04-04"
+      ],
+      "why": "L5-040 / L5-050 chỉ là hiển thị kết quả và chống gửi hai lần ở màn tạo đơn, không chạm BR-DATE-01"
+    }
+  ],
+  "patches": {
+    "E14-07": {
+      "body.scope": [
+        "Dataset khối lượng R-03 ở môi trường test",
+        "Load test 80 người dùng đồng thời theo NFR-PERF-01, đo p95 đọc / ghi",
+        "Đo truy vết 3 năm sau khi FG08-03.1 thêm index lô (NFR-PERF-02); sửa điểm nghẽn tìm thấy"
+      ],
+      "body.blockedBy": [
+        "FG08-03.1"
+      ]
+    }
+  },
+  "blockingQuestionsAllowed": {
+    "FG04-02": "việc chỉ là áp câu trả lời của khách",
+    "FG04-03": "việc chỉ là áp câu trả lời của khách",
+    "FG05-01": "việc chỉ là áp câu trả lời của khách",
+    "FG09-03": "cần file mẫu 帳票 thật (LAB-4 A-12)",
+    "FG10-05": "chưa có đích và giao thức kho archive",
+    "FG10-05.1": "chưa có đích và giao thức kho archive"
+  },
+  "refAliases": [
+    [
+      "tài khoản môi trường thử",
+      "E13-06"
+    ],
+    [
+      "PoC Entra",
+      "E13-01"
+    ],
+    [
+      "job_worker",
+      "E13-02"
+    ],
+    [
+      "outbox",
+      "E13-03"
+    ],
+    [
+      "contract test",
+      "E13-07"
+    ],
+    [
+      "worker",
+      "E13-04"
+    ],
+    [
+      "kho tệp đính kèm",
+      "E14-05"
+    ],
+    [
+      "ADR-0011",
+      "E14-05"
+    ]
+  ],
+  "dropGaps": {
+    "GAP-L5-09": "Lỗi gắn nhãn của backlog, không phải chỗ hở spec — đã sửa nhãn",
+    "GAP-L5-13": "Quy ước mã của job, không phải chỗ hở spec",
+    "GAP-L5-45": "Nguồn của việc kiểm NFR là PR-D-02, không phải chỗ hở spec"
+  },
+  "gapHandling": {
+    "GAP-L5-01": {
+      "handling": "clarify-issue",
+      "ref": "E15-FG07-01"
+    },
+    "GAP-L5-02": {
+      "handling": "assumption",
+      "ref": "FG01-03",
+      "premise": "PR-A-09"
+    },
+    "GAP-L5-03": {
+      "handling": "premise",
+      "premise": "PR-S-05"
+    },
+    "GAP-L5-04": {
+      "handling": "premise",
+      "premise": "PR-S-05"
+    },
+    "GAP-L5-05": {
+      "handling": "open",
+      "ref": "FG02-08",
+      "note": "Cùng RPC record_shipping_check với FG04-12; xếp FG02-08 trước, không trùng việc"
+    },
+    "GAP-L5-06": {
+      "handling": "assumption",
+      "ref": "FG02-09",
+      "premise": "PR-A-10"
+    },
+    "GAP-L5-07": {
+      "handling": "premise",
+      "premise": "PR-S-05"
+    },
+    "GAP-L5-08": {
+      "handling": "open",
+      "ref": "FG02-03",
+      "note": "File role-list nằm ở hồ sơ LAB-1 ngoài gói LAB-4; issue ghi mã ROLE và dòng cần sửa, không đổi việc"
+    },
+    "GAP-L5-10": {
+      "handling": "assumption",
+      "ref": "FG02-11",
+      "premise": "PR-A-11"
+    },
+    "GAP-L5-11": {
+      "handling": "premise",
+      "premise": "PR-S-05"
+    },
+    "GAP-L5-12": {
+      "handling": "assumption",
+      "ref": "FG02-10",
+      "premise": "PR-A-11"
+    },
+    "GAP-L5-14": {
+      "handling": "clarify-issue",
+      "ref": "E15-FG04-03"
+    },
+    "GAP-L5-15": {
+      "handling": "assumption",
+      "ref": "FG05-06",
+      "premise": "PR-A-09"
+    },
+    "GAP-L5-16": {
+      "handling": "clarify-issue",
+      "ref": "E15-FG06-01"
+    },
+    "GAP-L5-17": {
+      "handling": "clarify-issue",
+      "ref": "E15-FG06-01"
+    },
+    "GAP-L5-18": {
+      "handling": "premise",
+      "ref": "FG06-02",
+      "premise": "PR-S-04"
+    },
+    "GAP-L5-19": {
+      "handling": "assumption",
+      "ref": "FG06-04",
+      "premise": "PR-A-10"
+    },
+    "GAP-L5-20": {
+      "handling": "open",
+      "ref": "FG04-05",
+      "note": "Chọn sửa dòng đơn hay tạo đơn mới ở buổi tinh chỉnh trước khi làm FG04-05; không chặn issue khác"
+    },
+    "GAP-L5-21": {
+      "handling": "assumption",
+      "ref": "FG04-01",
+      "premise": "PR-A-12"
+    },
+    "GAP-L5-22": {
+      "handling": "clarify-issue",
+      "ref": "E15-FG05-02"
+    },
+    "GAP-L5-23": {
+      "handling": "open",
+      "ref": "FG04-11",
+      "note": "Danh sách form rà khi dựng; DoD của FG04-11 đòi đủ form"
+    },
+    "GAP-L5-24": {
+      "handling": "clarify-issue",
+      "ref": "E15-FG08-01"
+    },
+    "GAP-L5-25": {
+      "handling": "assumption",
+      "ref": "FG09-05",
+      "premise": "PR-A-10"
+    },
+    "GAP-L5-26": {
+      "handling": "premise",
+      "premise": "PR-S-05"
+    },
+    "GAP-L5-27": {
+      "handling": "clarify-issue",
+      "ref": "E15-FG09-02"
+    },
+    "GAP-L5-28": {
+      "handling": "assumption",
+      "ref": "FG10-01",
+      "premise": "PR-A-11"
+    },
+    "GAP-L5-29": {
+      "handling": "assumption",
+      "ref": "FG10-03",
+      "premise": "PR-A-11"
+    },
+    "GAP-L5-30": {
+      "handling": "assumption",
+      "ref": "FG08-03.1",
+      "premise": "PR-A-11"
+    },
+    "GAP-L5-31": {
+      "handling": "premise",
+      "ref": "FG10-02.1",
+      "premise": "PR-S-06"
+    },
+    "GAP-L5-32": {
+      "handling": "assumption",
+      "ref": "FG09-04.2",
+      "premise": "PR-A-12"
+    },
+    "GAP-L5-33": {
+      "handling": "assumption",
+      "ref": "FG11-02",
+      "premise": "PR-A-09"
+    },
+    "GAP-L5-34": {
+      "handling": "premise",
+      "premise": "PR-S-05"
+    },
+    "GAP-L5-35": {
+      "handling": "assumption",
+      "ref": "FG11-10",
+      "premise": "PR-A-12"
+    },
+    "GAP-L5-36": {
+      "handling": "clarify-issue",
+      "ref": "E15-FG11-02"
+    },
+    "GAP-L5-37": {
+      "handling": "assumption",
+      "ref": "FG11-05",
+      "premise": "PR-A-12"
+    },
+    "GAP-L5-38": {
+      "handling": "open",
+      "ref": "FG11-09",
+      "note": "Nối link chạm màn của epic khác: phối hợp owner khi dựng, không đổi phạm vi việc"
+    },
+    "GAP-L5-39": {
+      "handling": "premise",
+      "premise": "PR-S-05"
+    },
+    "GAP-L5-40": {
+      "handling": "premise",
+      "premise": "PR-S-05"
+    },
+    "GAP-L5-41": {
+      "handling": "clarify-issue",
+      "ref": "E15-11"
+    },
+    "GAP-L5-42": {
+      "handling": "assumption",
+      "ref": "FG08-03.1",
+      "premise": "PR-A-11"
+    },
+    "GAP-L5-43": {
+      "handling": "assumption",
+      "ref": "E14-01",
+      "premise": "PR-A-12"
+    },
+    "GAP-L5-44": {
+      "handling": "clarify-issue",
+      "ref": "E15-16"
+    },
+    "GAP-L5-46": {
+      "handling": "clarify-issue",
+      "ref": "E15-15"
+    },
+    "GAP-L5-47": {
+      "handling": "premise",
+      "premise": "PR-S-05"
+    },
+    "GAP-L5-48": {
+      "handling": "assumption",
+      "ref": "FG02-13, FG02-16",
+      "premise": "PR-A-10"
+    },
+    "GAP-L5-49": {
+      "handling": "assumption",
+      "ref": "FG03-07",
+      "premise": "PR-A-12"
+    },
+    "GAP-L5-50": {
+      "handling": "assumption",
+      "ref": "FG04-15.1",
+      "premise": "PR-A-10"
+    },
+    "GAP-L5-51": {
+      "handling": "open",
+      "ref": "FG01-05.1",
+      "note": "Danh sách bảng phải trỏ phiên bản SKU chốt ở buổi tinh chỉnh FG01-05; phạm vi rộng nên theo dõi như rủi ro"
+    },
+    "GAP-L5-52": {
+      "handling": "assumption",
+      "ref": "FG12-08",
+      "premise": "PR-A-11"
+    },
+    "GAP-L5-53": {
+      "handling": "premise",
+      "premise": "PR-S-05"
+    }
+  },
+  "addItems": [
+    {
+      "id": "FG02-15",
+      "kind": "task",
+      "epicId": "FG-02",
+      "parentId": "EP-FG-02",
+      "title": "入荷検査入力 — Nối hook tải ảnh dùng chung vào form kiểm hàng nhập (ADR-0011)",
+      "body": {
+        "goal": "Ảnh kiểm hàng nhập đi qua kho đính kèm dùng chung (URL ký, SHA-256) thay cách tải tạm của prototype.",
+        "sources": [
+          {
+            "id": "GAP-L5-53",
+            "confidence": "INFERRED"
+          }
+        ],
+        "specRefs": [
+          "architecture/adr/ADR-0011-attachment-storage-private-bucket-signed-urls.md",
+          "specs/receiving/screen-specification/YC_RECEIVING_INSPECTION_SPEC.md"
+        ],
+        "premise": [
+          "PR-S-05"
+        ],
+        "scope": [
+          "Thay ô tải ảnh bằng hook dùng chung của E14-05",
+          "Gửi attachmentId cùng kết quả kiểm",
+          "Hiện tiến độ và lỗi tải theo từng ảnh"
+        ],
+        "outOfScope": [
+          "Phía API gắn attachmentId — FG02-14"
+        ],
+        "dod": [
+          "E2E: tải tệp ở màn 入荷検査入力 → có bản ghi attachments, SHA-256 phía máy và phía server khớp",
+          "Tải lỗi hoặc mất mạng: hiện thông báo tiếng Nhật, dữ liệu đã nhập trong form không mất"
+        ],
+        "blockedBy": [
+          "E14-05",
+          "FG02-14"
+        ]
+      },
+      "labels": [
+        "type:task",
+        "team:FE",
+        "epic:E-02",
+        "src:hardening"
+      ],
+      "owner": "FE-1"
+    },
+    {
+      "id": "FG05-12",
+      "kind": "task",
+      "epicId": "FG-05",
+      "parentId": "EP-FG-05",
+      "title": "POD 登録 — Nối hook tải ảnh dùng chung vào màn ghi POD (ADR-0011)",
+      "body": {
+        "goal": "Ảnh POD (online) đi qua kho đính kèm dùng chung; hàng đợi offline giữ nguyên cách mã hoá của FG-05.",
+        "sources": [
+          {
+            "id": "GAP-L5-53",
+            "confidence": "INFERRED"
+          }
+        ],
+        "specRefs": [
+          "architecture/adr/ADR-0011-attachment-storage-private-bucket-signed-urls.md",
+          "specs/system-design/api-design/delivery/POD_POST_API.md"
+        ],
+        "premise": [
+          "PR-S-05"
+        ],
+        "scope": [
+          "Thay bước tải ảnh POD online bằng hook dùng chung của E14-05",
+          "Gửi attachmentId khi ghi POD",
+          "Hiện tiến độ và lỗi tải"
+        ],
+        "outOfScope": [
+          "Phía API gắn attachmentId — FG05-11"
+        ],
+        "dod": [
+          "E2E: tải tệp ở màn POD → có bản ghi attachments, SHA-256 phía máy và phía server khớp",
+          "Tải lỗi hoặc mất mạng: hiện thông báo tiếng Nhật, dữ liệu đã nhập trong form không mất"
+        ],
+        "blockedBy": [
+          "E14-05",
+          "FG05-11"
+        ]
+      },
+      "labels": [
+        "type:task",
+        "team:FE",
+        "epic:E-05",
+        "src:hardening"
+      ],
+      "owner": "FE-2"
+    },
+    {
+      "id": "FG07-09",
+      "kind": "task",
+      "epicId": "FG-07",
+      "parentId": "EP-FG-07",
+      "title": "逸脱ケース — Nối hook tải chứng cứ dùng chung vào bước quyết định case (ADR-0011)",
+      "body": {
+        "goal": "Chứng cứ của case lệch nhiệt đi qua kho đính kèm dùng chung, gắn vào sự kiện quyết định.",
+        "sources": [
+          {
+            "id": "GAP-L5-53",
+            "confidence": "INFERRED"
+          }
+        ],
+        "specRefs": [
+          "architecture/adr/ADR-0011-attachment-storage-private-bucket-signed-urls.md",
+          "specs/system-design/api-design/temperature-quality/DEVIATION_CASES_BY_ID_DECIDE_POST_API.md"
+        ],
+        "premise": [
+          "PR-S-05"
+        ],
+        "scope": [
+          "Thay ô tải chứng cứ bằng hook dùng chung của E14-05",
+          "Gửi attachmentId khi ghi sự kiện / quyết định",
+          "Hiện tiến độ và lỗi tải"
+        ],
+        "outOfScope": [
+          "Phía API gắn attachmentId — FG07-08"
+        ],
+        "dod": [
+          "E2E: tải tệp ở màn 逸脱ケース → có bản ghi attachments, SHA-256 phía máy và phía server khớp",
+          "Tải lỗi hoặc mất mạng: hiện thông báo tiếng Nhật, dữ liệu đã nhập trong form không mất"
+        ],
+        "blockedBy": [
+          "E14-05",
+          "FG07-08"
+        ]
+      },
+      "labels": [
+        "type:task",
+        "team:FE",
+        "epic:E-07",
+        "src:hardening"
+      ],
+      "owner": "FE-2"
+    },
+    {
+      "id": "FG02-16",
+      "kind": "task",
+      "epicId": "FG-02",
+      "parentId": "EP-FG-02",
+      "title": "入荷検査 RPC — Siết receivedQty > 0 ở record_inspection và CHECK của DB (GAP-L5-48)",
+      "body": {
+        "goal": "Gọi thẳng API / RPC cũng không ghi được 受入数量 = 0, khớp spec D-2 (số nguyên dương).",
+        "sources": [
+          {
+            "id": "GAP-L5-48",
+            "confidence": "INFERRED"
+          }
+        ],
+        "specRefs": [
+          "specs/receiving/screen-specification/YC_RECEIVING_INSPECTION_SPEC.md D-2",
+          "specs/system-design/api-design/receiving/INSPECTIONS_POST_API.md"
+        ],
+        "premise": [
+          "PR-A-10"
+        ],
+        "scope": [
+          "RPC record_inspection từ chối receivedQty ≤ 0 với mã lỗi validation",
+          "Migration đổi CHECK receivedQty >= 0 thành > 0, sau khi truy vấn kiểm dữ liệu cũ không còn dòng 0 (có thì báo BrSE xử lý trước)",
+          "API trả lỗi theo api-conventions"
+        ],
+        "outOfScope": [
+          "Chặn ở form — FG02-13"
+        ],
+        "dod": [
+          "Assert SQL: gọi RPC với receivedQty = 0 bị từ chối, không ghi dòng",
+          "Migration chạy dev → test sau khi truy vấn kiểm không còn dòng receivedQty = 0"
+        ]
+      },
+      "labels": [
+        "type:task",
+        "team:BE",
+        "epic:E-02",
+        "src:hardening"
+      ],
+      "owner": "BE-1"
+    }
+  ],
+  "addBlockedBy": {
+    "FG04-01": [
+      "FG03-07"
+    ],
+    "FG10-04.1": [
+      "E13-03.1"
+    ],
+    "E13-01.3": [
+      "E13-01.4"
+    ]
+  }
+}

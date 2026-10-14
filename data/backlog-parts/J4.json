@@ -1,0 +1,2470 @@
+{
+ "job": "J4",
+ "epics": [
+  "FG-11",
+  "FG-12"
+ ],
+ "items": [
+  {
+   "id": "FG11-01",
+   "kind": "story",
+   "epicId": "FG-11",
+   "parentId": "EP-FG-11",
+   "title": "ログイン — Đăng nhập SSO OIDC Entra ID + MFA + đồng bộ vai trò (L5-013, gộp L5-001)",
+   "body": {
+    "goal": "Nhân viên đăng nhập bằng Entra ID của khách; vai trò lấy từ nhóm IdP qua bảng ánh xạ, MFA bắt buộc cho ROLE-007/008, mọi lần đăng nhập có audit; không còn mật khẩu trong hệ thống ở production.",
+    "sources": [
+     {
+      "id": "L5-013",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-417",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-241",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-058",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "F-059",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "IF-IDP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "if:IF-IDP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-SEC-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-SEC-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0009",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_SSO_LOGIN_TECH.md",
+     "specs/system-design/api-design/administration/AUTH_CALLBACK_GET_API.md",
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md §4.5",
+     "specs/administration/screen-specification/YC_LOGIN_SPEC.md (bảng thiết kế đích)",
+     "architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md"
+    ],
+    "premise": [
+     "PR-D-03",
+     "PR-A-04"
+    ],
+    "scope": [
+     "Dựng sau khi PoC 5 điểm của ADR-0009 đạt: OIDC code + PKCE, provider azure của Supabase Auth",
+     "Nhóm đọc qua Graph /me/memberOf phía server; vai trò từ idp_group_role_map, đúng một vai trò",
+     "Role DB riêng idp_sync_agent + RPC sync_profile_from_idp (security definer)",
+     "MFA ROLE-007/008 kiểm amr; ROLE-005 thiết bị quản lý do Conditional Access (A-10)",
+     "Audit auth.login_succeeded / auth.login_failed / profile.role_synced cùng transaction"
+    ],
+    "outOfScope": [
+     "Ánh xạ nhóm qua 起票 → 承認 và màn YC_RBAC_ADMIN — FG11-02",
+     "Audit export và đăng xuất — FG11-06; PoC Entra ID và PoC JWT role máy — spike ở E-13",
+     "Câu hỏi cấu hình tenant với IT khách — E15-FG11-01"
+    ],
+    "dod": [
+     "PoC Entra ID (E-13) đã đạt đủ 5 điểm trước khi code; nếu trượt điểm 1, 4 hoặc 5 thì dừng, quyết lại trong ADR-0009 và KHÔNG dùng service_role thay thế",
+     "Cả 5 con xong; luồng đăng nhập chạy trên tenant thử: ROLE-007 có MFA vào được, thiếu amr bị từ chối",
+     "Không còn khoá vượt RLS trong luồng đăng nhập; ngoại lệ idp_sync_agent ≤ 1 dòng trong allow-list check-rls (FG11-03)"
+    ],
+    "blockedBy": [
+     "E-13 PoC Entra ID (ADR-0009)"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-11",
+    "src:l5",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG11-01.1",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-01",
+   "title": "DB — idp_group_role_map, role idp_sync_agent, RPC sync_profile_from_idp (L5-013)",
+   "body": {
+    "goal": "Có bảng ánh xạ nhóm → vai trò và RPC đồng bộ hồ sơ, chạy dưới role riêng, không dùng service_role.",
+    "sources": [
+     {
+      "id": "L5-013",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-417",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-SEC-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md §4.5",
+     "specs/administration/technical-design/ADM_SSO_LOGIN_TECH.md §4.3",
+     "architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md"
+    ],
+    "premise": [
+     "PR-D-03",
+     "PR-A-08"
+    ],
+    "scope": [
+     "Migration idp_group_role_map: unique partial (active) cho idp_group_id, RLS SELECT cho ROLE-007/008",
+     "Role nologin idp_sync_agent chỉ EXECUTE RPC; thu hồi khỏi anon, authenticated, public",
+     "RPC: ánh xạ đúng một vai trò, kiểm MFA, upsert profiles, ghi audit (event_category AUTH) cùng transaction",
+     "Outcome OK · NO_ROLE_MAPPED · ROLE_CONFLICT · MFA_MISSING; nhánh từ chối không tạo/sửa profiles"
+    ],
+    "outOfScope": [
+     "Luồng duyệt thay đổi ánh xạ — FG11-02.1"
+    ],
+    "dod": [
+     "Assert SQL phủ 4 outcome và ca người thuộc hai nhóm cùng vai trò vẫn hợp lệ",
+     "Gọi RPC bằng role khác idp_sync_agent → lỗi 42501",
+     "Migration chạy qua dev → test; audit login_failed có actor_id NULL khi chưa có hồ sơ"
+    ],
+    "blockedBy": [
+     "E-13 PoC Entra ID (ADR-0009)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-11",
+    "src:l5",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG11-01.2",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-01",
+   "title": "Route /auth/callback — đổi code, kiểm tid, Graph memberOf, gọi RPC (SPEC-YC-241)",
+   "body": {
+    "goal": "Callback hoàn tất đăng nhập: đổi code lấy phiên, lấy nhóm từ Graph, gọi RPC bằng JWT idp_sync_agent, xoá phiên khi bị từ chối.",
+    "sources": [
+     {
+      "id": "SPEC-YC-241",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-417",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-IDP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "if:IF-IDP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-SEC-03",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-SEC-03",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/api-design/administration/AUTH_CALLBACK_GET_API.md §4–5",
+     "specs/administration/technical-design/ADM_SSO_LOGIN_TECH.md §4.2, §4.4"
+    ],
+    "premise": [
+     "PR-D-03"
+    ],
+    "scope": [
+     "exchangeCodeForSession (state + PKCE), kiểm tid theo biến môi trường server",
+     "Graph /me/memberOf bằng provider token trong cùng request, đọc hết trang; không đọc groups từ ID token hay user_metadata",
+     "Client idp_sync_agent nằm trong một module server-only; JWT ký bằng khoá riêng",
+     "Outcome khác OK → signOut trước khi 303 /login?error=… (sso_failed, no_profile, role_conflict, mfa_required)",
+     "Không log code, token, claim thô, danh sách nhóm đầy đủ; correlationId trên mọi dòng log",
+     "next = / → gọi hàm landing theo vai trò của FG11-09.2"
+    ],
+    "outOfScope": [
+     "Mã hoá đính kèm và hàng đợi offline của NFR-SEC-03 — E-14 (ADR-0011), FG-05 (ADR-0010)"
+    ],
+    "dod": [
+     "Contract test với tenant thử Entra ID: mỗi nhánh của bảng phản hồi API §4 trả đúng 303 và đúng giá trị ?error",
+     "Graph timeout/lỗi → signOut + sso_failed, không hạ quyền im lặng, không gọi RPC",
+     "Test quét tĩnh: không có import client idp_sync_agent ngoài module callback; log mẫu không chứa token"
+    ],
+    "blockedBy": [
+     "E-13 PoC Entra ID (ADR-0009)",
+     "FG11-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-11",
+    "src:l5",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG11-01.3",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-01",
+   "title": "ログイン — Nút SSO, bỏ form mật khẩu ở production, ?error mới (YC_LOGIN)",
+   "body": {
+    "goal": "Màn đăng nhập production chỉ có nút SSO và hiện đúng thông điệp cho từng lý do bị từ chối.",
+    "sources": [
+     {
+      "id": "F-058",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "NFR-SEC-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_LOGIN_SPEC.md (bảng thiết kế đích)",
+     "specs/administration/technical-design/ADM_SSO_LOGIN_TECH.md §4.1"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Server Action signInWithOAuth provider azure, scope openid email profile, redirectTo = /auth/callback?next=<next đã safeNextPath>",
+     "Gỡ form email/mật khẩu ở production; dev/test dùng tenant thử, không bật lại mật khẩu",
+     "Hiện thông điệp cho ?error: expired, no_profile, sso_failed, role_conflict, mfa_required",
+     "Giữ quy tắc next chỉ nhận đường dẫn tương đối cùng origin"
+    ],
+    "outOfScope": [
+     "Chữ thông điệp JA của 3 giá trị mới — E15-FG11-02",
+     "Landing theo vai trò — FG11-09.2"
+    ],
+    "dod": [
+     "Unit test Server Action: signInWithOAuth không trả URL → ?error=sso_failed; next xấu → /",
+     "Build production không còn form mật khẩu (kiểm bằng test render)",
+     "Mỗi giá trị ?error hiện một thông điệp, không để trống"
+    ],
+    "blockedBy": [
+     "FG11-01.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-11",
+    "src:l5"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG11-01.4",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-01",
+   "title": "Test E2E SSO trên tenant thử — MFA, không nhóm, nhiều vai trò, audit (L5-013)",
+   "body": {
+    "goal": "Bộ kiểm chạy được chứng minh luồng SSO đúng ở cả ca thành công và ca từ chối.",
+    "sources": [
+     {
+      "id": "L5-013",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-SEC-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_SSO_LOGIN_TECH.md",
+     "specs/system-design/api-design/administration/AUTH_CALLBACK_GET_API.md §4"
+    ],
+    "premise": [
+     "PR-D-03"
+    ],
+    "scope": [
+     "Kịch bản: ROLE-007 có MFA vào được; thiếu amr → mfa_required; người không nhóm → no_profile; hai nhóm khác vai trò → role_conflict",
+     "Sau mỗi ca assert dòng audit_events (login_succeeded / login_failed + reason) và không có phiên treo",
+     "Chạy trong CI hoặc job riêng với tenant thử"
+    ],
+    "outOfScope": [
+     "Kiểm RPC mức SQL — FG11-01.1"
+    ],
+    "dod": [
+     "Cả 4 kịch bản xanh trên tenant thử; chạy được bằng một lệnh",
+     "Kết quả ghi rõ ca nào cần tài khoản MFA thật và ca nào mô phỏng được"
+    ],
+    "blockedBy": [
+     "FG11-01.2",
+     "FG11-01.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-11",
+    "src:l5"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG11-01.5",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-01",
+   "title": "Runbook cấp / xoay / thu hồi khoá ký idp_sync_agent, env server UAT/prod (ADR-0009)",
+   "body": {
+    "goal": "Khoá ký của role idp_sync_agent được cấp, cất và thu hồi theo quy trình, token không bao giờ ra trình duyệt hay preview.",
+    "sources": [
+     {
+      "id": "ADR-0009",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md (mục Việc phải làm)"
+    ],
+    "premise": [
+     "PR-D-03"
+    ],
+    "scope": [
+     "Cấp khoá ký riêng và token chỉ ở biến môi trường server UAT/prod; preview không có",
+     "Runbook cấp, xoay, thu hồi độc lập với phiên người dùng",
+     "Checklist kiểm token không có trong bundle và log"
+    ],
+    "outOfScope": [
+     "PoC điểm 5 (cách cấp khoá trên gói Supabase thật) — spike ở E-13"
+    ],
+    "dod": [
+     "Thu hồi thử trên UAT: token cũ gọi RPC bị từ chối, phiên người dùng không bị ảnh hưởng",
+     "Checklist chạy qua ở UAT; runbook nằm trong docs vận hành"
+    ],
+    "blockedBy": [
+     "E-13 PoC Entra ID (ADR-0009)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-11",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "FG11-02",
+   "kind": "story",
+   "epicId": "FG-11",
+   "parentId": "EP-FG-11",
+   "title": "ロール・権限管理 — Ánh xạ nhóm IdP → vai trò qua 起票→承認, bỏ đổi vai trò tay (YC_RBAC_ADMIN)",
+   "body": {
+    "goal": "Vai trò chỉ đổi qua bảng ánh xạ đã duyệt (người lập ≠ người duyệt); màn quản trị không còn đổi vai trò tay hay reset dữ liệu.",
+    "sources": [
+     {
+      "id": "nfr:NFR-SEC-02",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0002",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_RBAC_ADMIN_SPEC.md (bảng thiết kế đích)",
+     "specs/master-data/technical-design/MST_DECIDE_CHANGE_TECH.md",
+     "specs/system-design/api-design/master-data/MASTER_CHANGES_POST_API.md",
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md §4.5"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Loại thay đổi IDP_GROUP_ROLE_MAP đi qua master_change_requests, duyệt ghi idp_group_role_map",
+     "set_user_role và RBAC_ROLE_POST không còn dùng ở bản đích",
+     "YC_RBAC_ADMIN: xem ánh xạ + ma trận quyền; bỏ khối đổi vai trò tay và reset dữ liệu demo"
+    ],
+    "outOfScope": [
+     "Gỡ hàm reset_demo_data_now và cấm xoá audit_events ở production — E-14",
+     "Màn YC_MASTER_APPROVAL — epic FG-01",
+     "Đồng bộ vai trò lúc đăng nhập — FG11-01"
+    ],
+    "dod": [
+     "Ánh xạ chỉ đổi được qua 起票 → 承認; người lập tự duyệt bị chặn (SELF_APPROVAL)",
+     "Ba con xong; không còn đường UI hay API đổi profiles.role ngoài sync từ IdP"
+    ],
+    "blockedBy": [
+     "FG11-01.1"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-11",
+    "src:l5",
+    "src:hardening"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG11-02.1",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-02",
+   "title": "DB + RPC — Ánh xạ nhóm qua duyệt: IDP_GROUP_ROLE_MAP, bỏ set_user_role",
+   "body": {
+    "goal": "Thay đổi ánh xạ nhóm đi hết đường 起票 → 承認 và chỉ hàm duyệt mới ghi được idp_group_role_map.",
+    "sources": [
+     {
+      "id": "nfr:NFR-SEC-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/master-data/technical-design/MST_DECIDE_CHANGE_TECH.md",
+     "specs/system-design/api-design/master-data/MASTER_CHANGES_BY_ID_DECIDE_POST_API.md",
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md §4.5"
+    ],
+    "premise": [],
+    "scope": [
+     "Thêm giá trị IDP_GROUP_ROLE_MAP vào enum master_change_entity",
+     "private.apply_idp_group_role_map gọi từ decide_master_change: sửa nếu cùng idp_group_id, thêm nếu chưa có; approved_change_id = id yêu cầu",
+     "MASTER_CHANGES_POST kiểm payload: role thuộc 8 vai trò, có idpGroupId",
+     "Thu hồi EXECUTE của set_user_role và gỡ route RBAC_ROLE_POST"
+    ],
+    "outOfScope": [
+     "Màn duyệt — FG-01"
+    ],
+    "dod": [
+     "Assert SQL: ghi trực tiếp idp_group_role_map bị từ chối; duyệt bởi chính người lập bị chặn",
+     "Gọi set_user_role sau migration → lỗi",
+     "Migration chạy dev → test"
+    ],
+    "blockedBy": [
+     "FG11-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-11",
+    "src:l5",
+    "src:hardening"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG11-02.2",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-02",
+   "title": "YC_RBAC_ADMIN — xem ánh xạ nhóm, bỏ khối đổi vai trò tay và reset demo",
+   "body": {
+    "goal": "Màn quản trị khớp thiết kế đích: chỉ xem ánh xạ và ma trận, đổi qua 起票 sang màn duyệt.",
+    "sources": [
+     {
+      "id": "nfr:NFR-SEC-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_RBAC_ADMIN_SPEC.md (bảng thiết kế đích)"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Khối bảng ánh xạ nhóm IdP → vai trò (chỉ đọc, ROLE-007/008) kèm link 起票",
+     "Gỡ khối đổi vai trò từng người và khối reset dữ liệu demo",
+     "Giữ ma trận quyền màn × vai trò chỉ đọc"
+    ],
+    "outOfScope": [
+     "Layout khối ánh xạ chưa có wireframe LAB-4 — ghi ở gaps"
+    ],
+    "dod": [
+     "Test component: ROLE-008 thấy bảng nhưng không có nút 起票; không còn nút đổi vai trò hay reset",
+     "Chuỗi hiển thị theo PR-A-08 và nhãn JA khớp spec"
+    ],
+    "blockedBy": [
+     "FG11-02.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-11",
+    "src:l5",
+    "src:hardening"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG11-02.3",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-02",
+   "title": "Test assert SQL + E2E — đổi ánh xạ qua duyệt, người lập ≠ người duyệt",
+   "body": {
+    "goal": "Kiểm tự động chứng minh quy tắc tách người lập và người duyệt cho ánh xạ vai trò.",
+    "sources": [
+     {
+      "id": "nfr:NFR-SEC-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0002-auth-proxy-plus-rls.md",
+     "specs/administration/screen-specification/YC_RBAC_ADMIN_SPEC.md"
+    ],
+    "premise": [],
+    "scope": [
+     "Assert SQL: lập → duyệt bởi người khác → idp_group_role_map đổi; tự duyệt → lỗi",
+     "E2E YC_RBAC_ADMIN: không còn khối đổi vai trò tay",
+     "Ca mutation: bỏ kiểm người lập ≠ người duyệt thì test phải đỏ"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test xanh trong CI; mutation đã nêu làm test đỏ",
+     "Phủ cả ROLE-007 và ROLE-008 cho phần đọc ánh xạ"
+    ],
+    "blockedBy": [
+     "FG11-02.1",
+     "FG11-02.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-11",
+    "src:l5",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG11-03",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "EP-FG-11",
+   "title": "RLS / RPC — Test tĩnh: allow-list EXECUTE, cấm import idp_sync_agent, guard page",
+   "body": {
+    "goal": "Ba lớp chặn truy cập giữ vững ở bản đích: ngoại lệ role máy có tên, page nào quên guard là test đỏ.",
+    "sources": [
+     {
+      "id": "ADR-0002",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0002-auth-proxy-plus-rls.md (Bổ sung thiết kế đích)",
+     "architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md"
+    ],
+    "premise": [],
+    "scope": [
+     "check-rls: hàm cấp EXECUTE cho role khác authenticated phải nằm trong allow-list (chỉ sync_profile_from_idp → idp_sync_agent)",
+     "Test quét tĩnh cấm import client idp_sync_agent ngoài module callback",
+     "Test quét mọi page.tsx dưới (app) gọi requireScreenAccess / ScreenRestrictedGuard / requirePageUser (ADR-0002 ghi hiện chưa có)"
+    ],
+    "outOfScope": [
+     "Ma trận vai trò × màn — FG11-04"
+    ],
+    "dod": [
+     "Thêm một hàm cấp EXECUTE cho role lạ thì check-rls đỏ",
+     "Thêm page.tsx không guard thì test quét đỏ; chạy trong CI"
+    ],
+    "blockedBy": [
+     "FG11-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-11",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG11-04",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "EP-FG-11",
+   "title": "Ma trận vai trò × màn — Test sinh tự động từ nguồn LAB-1 (ADR-0004)",
+   "body": {
+    "goal": "Bảng quyền 42 màn × 8 vai trò luôn khớp nguồn LAB-1; lệch là CI đỏ.",
+    "sources": [
+     {
+      "id": "ADR-0004",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0004-generated-role-screen-access.md"
+    ],
+    "premise": [],
+    "scope": [
+     "gen-screen-access --check chạy trong CI",
+     "Test luật: ROLE-008 ≥ xem ở mọi dòng có trong ma trận, không bao giờ thao tác",
+     "Test override: chỉ nâng quyền, có reason + source; sourceMandated cần đủ 4 điều kiện"
+    ],
+    "outOfScope": [
+     "Xác nhận override với khách (L5-004, L5-012) — job khác",
+     "Bổ sung 5 dòng ma trận F-066..F-070 — L5-005"
+    ],
+    "dod": [
+     "Sửa nguồn LAB-1 mà không chạy lại generator → check đỏ",
+     "Test 3 nhánh sourceMandated xanh; ROLE-008 operate bị chặn"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-11",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG11-05",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "EP-FG-11",
+   "title": "Phiên — strictUser cho ghi nhạy cảm, log truy cập bị từ chối (ADR-0002)",
+   "body": {
+    "goal": "Khoá tài khoản hoặc đăng xuất nơi khác có hiệu lực ngay với thao tác ghi nhạy cảm; truy cập bị từ chối để lại dấu vết.",
+    "sources": [
+     {
+      "id": "ADR-0002",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0002-auth-proxy-plus-rls.md (Hệ quả, Việc phải làm nếu đi production)"
+    ],
+    "premise": [],
+    "scope": [
+     "Thao tác ghi nhạy cảm dùng strictUser (hỏi lại Auth), danh sách do BrSE chốt cùng ROLE-007",
+     "Ghi log có correlationId khi requireScreenAccess / requireApiUser từ chối",
+     "Thời hạn JWT theo trả lời E15-FG11-02"
+    ],
+    "outOfScope": [
+     "Quyết định thời hạn phiên — E15-FG11-02"
+    ],
+    "dod": [
+     "Test: tài khoản đã khoá thì thao tác ghi nhạy cảm bị 401 dù JWT còn hạn",
+     "Mỗi lần forbidden sinh một dòng log JSON có correlationId, không chứa token"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-11",
+    "src:hardening"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG11-06",
+   "kind": "story",
+   "epicId": "FG-11",
+   "parentId": "EP-FG-11",
+   "title": "監査ログ参照 — Audit chỉ thêm cho export và đăng nhập / đăng xuất (L5-063)",
+   "body": {
+    "goal": "Mọi lần export CSV audit và đăng xuất ghi audit_events trước khi trả kết quả; cả 5 loại sự kiện của NFR-AUD-01 có mặt.",
+    "sources": [
+     {
+      "id": "L5-063",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-AUD-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-AUD-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/api-design/administration/AUDIT_EVENTS_EXPORT_CSV_GET_API.md §5",
+     "specs/system-design/database-design/TEMPERATURE_AUDIT_DB.md (mục Thay đổi đích, T3)",
+     "specs/administration/screen-specification/YC_AUDIT_LOG_SPEC.md (bảng thiết kế đích)"
+    ],
+    "premise": [],
+    "scope": [
+     "event_category 5 loại STATE / MASTER / APPROVAL / EXPORT / AUTH và danh mục action mới",
+     "Export CSV audit: ghi audit_events.exported (bộ lọc, row_count, truncated, sha256, tên file) rồi mới trả file; ghi lỗi → 500, không trả file",
+     "Đăng xuất ghi auth.logout; báo bị cắt bằng header X-Truncated"
+    ],
+    "outOfScope": [
+     "Ghi audit đăng nhập thành công/thất bại — FG11-01.1 (RPC sync_profile_from_idp)",
+     "Gói bằng chứng YC_AUDIT_EXPORT — epic FG-09",
+     "Nạp log lỗi phía Entra ID vào audit — E15-FG11-02"
+    ],
+    "dod": [
+     "Export 1 lần → đúng 1 dòng audit EXPORT với sha256 khớp file",
+     "Audit_events vẫn chỉ INSERT: UPDATE/DELETE bị từ chối; sửa bằng sự kiện bù",
+     "Ba con xong"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-11",
+    "src:l5",
+    "src:hardening"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG11-06.1",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-06",
+   "title": "DB — event_category 5 loại, danh mục action, RPC record_auth_event (L5-063)",
+   "body": {
+    "goal": "Bảng audit_events phân loại được theo 5 loại sự kiện và nhận sự kiện auth qua RPC.",
+    "sources": [
+     {
+      "id": "L5-063",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-AUD-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/TEMPERATURE_AUDIT_DB.md (T3)"
+    ],
+    "premise": [],
+    "scope": [
+     "Cột event_category + CHECK 5 giá trị, điền cho action hiện có",
+     "Danh mục action: audit_events.exported, auth.logout, auth.login_succeeded, auth.login_failed, profile.role_synced",
+     "RPC record_auth_event cho đăng xuất"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL: INSERT với category ngoài 5 loại bị CHẶN; UPDATE/DELETE audit_events bị từ chối",
+     "Migration chạy dev → test; dòng cũ có category đúng"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-11",
+    "src:l5",
+    "src:hardening"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG11-06.2",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-06",
+   "title": "Route export audit và /auth/sign-out — ghi audit trước khi trả (L5-063)",
+   "body": {
+    "goal": "Export và đăng xuất để lại sự kiện audit, lỗi ghi thì không trả file.",
+    "sources": [
+     {
+      "id": "L5-063",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-AUD-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/api-design/administration/AUDIT_EVENTS_EXPORT_CSV_GET_API.md §5"
+    ],
+    "premise": [],
+    "scope": [
+     "Export: dựng thân CSV → tính SHA-256 → insert audit EXPORT → trả file; lỗi → 500",
+     "Header X-Truncated khi vượt 10.000 dòng; payload ghi truncated",
+     "POST /auth/sign-out gọi record_auth_event rồi signOut"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test route: audit lỗi → 500 và không có thân file; vượt 10.000 dòng có X-Truncated",
+     "Đăng xuất để lại auth.logout; test đủ ca 200/401/403/500"
+    ],
+    "blockedBy": [
+     "FG11-06.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-11",
+    "src:l5",
+    "src:hardening"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG11-06.3",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-06",
+   "title": "Assert SQL + E2E — audit export / logout, audit_events chỉ thêm (NFR-AUD-01)",
+   "body": {
+    "goal": "Kiểm tự động chứng minh export và đăng xuất để lại audit, bảng không sửa được.",
+    "sources": [
+     {
+      "id": "NFR-AUD-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/api-design/administration/AUDIT_EVENTS_EXPORT_CSV_GET_API.md",
+     "specs/system-design/database-design/TEMPERATURE_AUDIT_DB.md"
+    ],
+    "premise": [],
+    "scope": [
+     "E2E: ROLE-008 export CSV → xem dòng EXPORT ở 監査ログ参照",
+     "E2E: đăng xuất → dòng auth.logout",
+     "Assert SQL chỉ thêm: UPDATE/DELETE bị từ chối ở mọi vai trò"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Các ca xanh trong CI",
+     "Bỏ bước ghi audit ở route thì E2E đỏ"
+    ],
+    "blockedBy": [
+     "FG11-06.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-11",
+    "src:l5",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG11-07",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "EP-FG-11",
+   "title": "監査ログ参照 — Lọc ngày theo JST cho truy vấn và CSV (L5-053)",
+   "body": {
+    "goal": "Bộ lọc from/to hiểu là ngày JST, to lấy hết ngày, cả ở màn lẫn CSV.",
+    "sources": [
+     {
+      "id": "L5-053",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_AUDIT_LOG_SPEC.md (Lọc ngày)",
+     "specs/system-design/api-design/administration/AUDIT_EVENTS_EXPORT_CSV_GET_API.md §5",
+     "specs/_common/deviation-table.md (GAP-26, L5-053)"
+    ],
+    "premise": [],
+    "scope": [
+     "from → ${from}T00:00:00+09:00; to → 00:00 JST của ngày sau, so bằng lt",
+     "Áp cùng cách cho truy vấn màn và CSV export"
+    ],
+    "outOfScope": [
+     "Ghi audit khi export — FG11-06.2"
+    ],
+    "dod": [
+     "Unit test biên ngày: sự kiện 23:59 JST ngày to được lấy, 00:00 ngày kế tiếp thì không",
+     "Cùng bộ lọc cho ra cùng số dòng ở màn và trong CSV"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-11",
+    "src:l5"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG11-08",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "EP-FG-11",
+   "title": "ログイン — Leaked-password protection hoặc xác nhận production không giữ mật khẩu (L5-006)",
+   "body": {
+    "goal": "Môi trường còn dùng mật khẩu có bật leaked-password protection; production chỉ SSO thì ghi nhận và đóng DEV-013.",
+    "sources": [
+     {
+      "id": "L5-006",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (DEV-013, L5-006)",
+     "specs/administration/technical-design/ADM_SSO_LOGIN_TECH.md §4.1"
+    ],
+    "premise": [],
+    "scope": [
+     "Liệt kê môi trường còn đăng nhập mật khẩu; bật Auth leaked-password protection ở những nơi gói hỗ trợ (gói Pro)",
+     "Nếu production chỉ SSO: ghi quyết định vào ADR-0009 / runbook"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Advisor auth_leaked_password_protection hết cảnh báo ở môi trường còn mật khẩu, hoặc có ghi chú đóng DEV-013",
+     "Checklist môi trường đính kèm issue"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-11",
+    "src:l5",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "FG11-09",
+   "kind": "story",
+   "epicId": "FG-11",
+   "parentId": "EP-FG-11",
+   "title": "画面遷移 — Landing theo vai trò sau đăng nhập và nối các cạnh điều hướng cần thiết (L5-042)",
+   "body": {
+    "goal": "Đăng nhập xong vào màn chính của vai trò; các cạnh điều hướng LAB-1 cần cho vận hành được nối thay vì đi qua menu.",
+    "sources": [
+     {
+      "id": "L5-042",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (GAP-13, L5-042)",
+     "specs/administration/screen-specification/YC_LOGIN_SPEC.md (Landing theo vai trò)",
+     "specs/administration/technical-design/ADM_SSO_LOGIN_TECH.md §4.4"
+    ],
+    "premise": [],
+    "scope": [
+     "Chọn trong 19 cạnh 【未実装】 những cạnh cần cho vận hành (đề xuất: landing, 検査不合格 → 隔離, 承認後 → màn nguồn)",
+     "Hàm landing theo vai trò dùng chung cho login và callback",
+     "Nối các cạnh đã chọn"
+    ],
+    "outOfScope": [
+     "13 cạnh đã đi được qua menu giữ nguyên"
+    ],
+    "dod": [
+     "Ba con xong",
+     "Mỗi vai trò có landing đúng bảng LAB-1 và link không lộ màn vai trò đó bị ẩn"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:story",
+    "team:FE",
+    "epic:E-11",
+    "src:l5"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG11-09.1",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-09",
+   "title": "Chốt danh sách cạnh điều hướng cần nối trong 19 cạnh GAP-13 (L5-042)",
+   "body": {
+    "goal": "Có danh sách cạnh được chọn, kèm lý do, trước khi FE nối link.",
+    "sources": [
+     {
+      "id": "L5-042",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (GAP-13)",
+     "docs/design/wireframe/ia-spec.json (transitions, trong repo prototype)"
+    ],
+    "premise": [],
+    "scope": [
+     "Rà 19 cạnh, chọn cạnh cần cho vận hành, ghi cạnh bỏ kèm lý do",
+     "Ghi kết quả vào spec các màn liên quan"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Danh sách chốt, FE-1 xác nhận đã đọc",
+     "Mỗi cạnh có trạng thái nối / bỏ + lý do"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-11",
+    "src:l5"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "FG11-09.2",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-09",
+   "title": "Landing theo vai trò — hàm dùng chung cho login và callback (YC_LOGIN)",
+   "body": {
+    "goal": "Đăng nhập xong người dùng vào đúng màn chính của vai trò.",
+    "sources": [
+     {
+      "id": "L5-042",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_LOGIN_SPEC.md (Landing theo vai trò)",
+     "specs/administration/technical-design/ADM_SSO_LOGIN_TECH.md §4.4"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Bảng vai trò → màn: ROLE-006 → order-list, ROLE-001 → receiving-appointment, ROLE-007 → master-sku, ROLE-008 → audit-log, ROLE-002 → location-status",
+     "Áp khi next là / ở login Server Action; callback gọi cùng hàm"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test mỗi vai trò có landing; vai trò không có dòng → menu /",
+     "next hợp lệ khác / vẫn thắng landing"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-11",
+    "src:l5"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG11-09.3",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "FG11-09",
+   "title": "Nối các cạnh điều hướng đã chọn giữa các màn (GAP-13)",
+   "body": {
+    "goal": "Link ngữ cảnh giữa màn có thật cho các cạnh đã chọn.",
+    "sources": [
+     {
+      "id": "L5-042",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (GAP-13)"
+    ],
+    "premise": [],
+    "scope": [
+     "Thêm link cho từng cạnh được chọn ở FG11-09.1",
+     "Ẩn link khi vai trò không xem được màn đích"
+    ],
+    "outOfScope": [
+     "Màn thuộc epic khác: phối hợp với owner epic đó"
+    ],
+    "dod": [
+     "Mỗi cạnh được chọn có link hoạt động trong test component",
+     "Vai trò ẩn màn đích không thấy link"
+    ],
+    "blockedBy": [
+     "FG11-09.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-11",
+    "src:l5"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG11-10",
+   "kind": "task",
+   "epicId": "FG-11",
+   "parentId": "EP-FG-11",
+   "title": "Hồi quy E2E — 3 màn administration đã dựng: YC_LOGIN, YC_RBAC_ADMIN, YC_AUDIT_LOG (DR-03)",
+   "body": {
+    "goal": "Luồng chính của 3 màn administration đã dựng được kiểm hồi quy tự động trong CI.",
+    "sources": [],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_LOGIN_SPEC.md",
+     "specs/administration/screen-specification/YC_RBAC_ADMIN_SPEC.md",
+     "specs/administration/screen-specification/YC_AUDIT_LOG_SPEC.md"
+    ],
+    "premise": [],
+    "scope": [
+     "YC_LOGIN: đăng nhập, next an toàn, từ chối hiện thông điệp",
+     "YC_RBAC_ADMIN: xem ánh xạ và ma trận, không có khối đổi tay",
+     "YC_AUDIT_LOG: lọc, phân trang, xuất CSV"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Kịch bản phủ luồng chính của cả 3 màn theo AC Screen Spec, chạy được trong CI",
+     "Login chạy qua tenant thử, nêu rõ cách vượt MFA trong CI"
+    ],
+    "blockedBy": [
+     "FG11-01",
+     "FG11-02",
+     "FG11-06"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-11",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E15-FG11-01",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "外部連携 — Hỏi IT khách: Conditional Access, nhóm, admin consent Graph, amr (IF-IDP-01)",
+   "body": {
+    "goal": "Có câu trả lời của IT khách về cấu hình Entra ID để PoC và SSO không phải đoán.",
+    "sources": [
+     {
+      "id": "ADR-0009",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-059",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md (Lựa chọn 8)",
+     "specs/system-design/api-design/administration/AUTH_CALLBACK_GET_API.md (Q1, Q4)"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "scope": [
+     "Conditional Access bật MFA cho nhóm ROLE-007/008 và compliant device cho ROLE-005",
+     "Gán nhóm cho ứng dụng; admin consent quyền Graph tối thiểu",
+     "Tenant có phát amr không; chính sách thiết bị ROLE-005"
+    ],
+    "outOfScope": [
+     "Làm PoC — spike ở E-13"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập); khi khách trả lời, ghi vào ADR-0009 / PREMISE và đổi tham số nếu cần, rồi đóng",
+     "Còn chờ thì Blocked kèm ngày hỏi lại"
+    ],
+    "blockedBy": [],
+    "affects": [
+     "E-13 PoC Entra ID (ADR-0009)",
+     "FG11-01",
+     "FG11-01.1",
+     "FG11-01.2",
+     "FG11-01.5"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-FG11-02",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "ログイン — Hỏi khách: thời hạn phiên, log lỗi IdP, thông điệp JA ?error (IF-IDP-01)",
+   "body": {
+    "goal": "Chốt ba điểm đang để ngỏ của SSO mà code đang dùng giá trị tạm.",
+    "sources": [
+     {
+      "id": "IF-IDP-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/api-design/administration/AUTH_CALLBACK_GET_API.md (Q2, Q3)",
+     "specs/administration/screen-specification/YC_LOGIN_SPEC.md (Câu hỏi mở đích)"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Thời hạn phiên và refresh token",
+     "Lỗi phía IdP (sai mật khẩu, MFA trượt) có cần nạp vào audit_events không",
+     "Chữ thông điệp JA cho sso_failed, role_conflict, mfa_required"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập); khi khách trả lời, ghi vào spec và đổi tham số, rồi đóng",
+     "Còn chờ thì Blocked kèm ngày hỏi lại"
+    ],
+    "blockedBy": [],
+    "affects": [
+     "FG11-01.3",
+     "FG11-05",
+     "FG11-06"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "FG12-01",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "EP-FG-12",
+   "title": "移行照合 — Domain di trú: 6 hàm thuần và hằng nhãn JA (SPEC-YC-533)",
+   "body": {
+    "goal": "Có module domain thuần dùng chung cho 4 màn di trú: đối chiếu, chặn sign-off, tiến độ rehearsal, phân loại ngày và mã bò, nhãn JA.",
+    "sources": [
+     {
+      "id": "SPEC-YC-533",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/function-specifications/MIGRATION_RECONCILIATION_FUNC.md §2.1–2.7"
+    ],
+    "premise": [],
+    "scope": [
+     "reconcileItem, signoffBlockers (4 lý do chặn), rehearsalProgress",
+     "classifyDateValue, classifyBeefIndividualId, expectedHandling",
+     "Hằng MIGRATION_LABELS_JA theo bảng 2.7"
+    ],
+    "outOfScope": [
+     "Đơn vị và công thức 在庫値 — E15-FG12-01",
+     "Công cụ migration cài lại 2.4–2.6 nếu không dùng TypeScript — ghi ở gaps"
+    ],
+    "dod": [
+     "Unit test migration-reconciliation.test.ts: khớp, thiếu 1 dòng, thừa 1 dòng, có 却下 và 重複 vẫn khớp, giá trị âm / số thực ném INVALID_COUNT",
+     "Hai luật cứng: DATE_AMBIGUOUS → NO_AUTO_FIX_REVIEW, BEEF_ID_9_DIGIT → BUSINESS_REVIEW; đủ 6 loại finding"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG12-02",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "EP-FG-12",
+   "title": "DB — 移行 run, file nguồn, lineage và danh mục (MIGRATION_DB 4.1–4.4, 4.10–4.11)",
+   "body": {
+    "goal": "Có bảng lưu số phận từng dòng nguồn, chỉ thêm, không cho dòng 却下 thiếu lý do.",
+    "sources": [
+     {
+      "id": "SPEC-YC-313",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "DR-MIG-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/administration/MIGRATION_DB.md §4.1–4.4, §4.9–4.11"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "migration_runs, migration_source_files (SHA-256, số dòng)",
+     "migration_reject_reasons: mã có kiểm soát, cấm mã chứa UNKNOWN",
+     "migration_lineage chỉ thêm; CHECK (result = REJECTED) = (reject_reason_code is not null)",
+     "migration_record_types, migration_transform_rules (chỉ thêm phiên bản)",
+     "RLS: REVOKE ALL rồi GRANT SELECT; ROLE-007/008 đọc mọi bảng, ROLE-002 chỉ phần được liệt kê ở §4.9; công cụ migration ghi bằng vai trò hệ thống riêng"
+    ],
+    "outOfScope": [
+     "Nội dung record_type do khách chốt — E15-FG12-01"
+    ],
+    "dod": [
+     "Assert SQL: lineage 却下 thiếu lý do bị CHECK chặn; mã lý do UNKNOWN bị chặn; UPDATE/DELETE lineage bị từ chối",
+     "ROLE-001, 003–006 không đọc được bảng di trú; ROLE-002 chỉ đọc đúng phần §4.9; migration chạy dev → test"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG12-03",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "EP-FG-12",
+   "title": "DB — 移行 profiling, đối chiếu, sign-off, dữ liệu cũ tham chiếu (MIGRATION_DB 4.5–4.8)",
+   "body": {
+    "goal": "Có bảng profiling, đối chiếu, chữ ký nghiệp vụ và dữ liệu cũ chỉ đọc trong cửa sổ chạy song song.",
+    "sources": [
+     {
+      "id": "SPEC-YC-313",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/administration/MIGRATION_DB.md §4.5–4.9, §5"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "migration_profile_findings: 6 finding_type, handling CHECK khớp hai luật cứng, chỉ thêm",
+     "migration_reconciliations: diff, matched là cột sinh",
+     "migration_signoffs: UNIQUE (run_id, item_key), không sửa, không rút lại, comment ≤ 500",
+     "legacy_reference_records chỉ đọc; RLS theo private.parallel_ops_window_open() (run FINAL COMPLETED, trong 7 ngày)"
+    ],
+    "outOfScope": [
+     "Cửa sổ một tuần tính từ lúc nào — E15-FG12-02"
+    ],
+    "dod": [
+     "Assert SQL: ngoài cửa sổ không ai đọc được dòng nào, trong cửa sổ đọc được",
+     "diff, matched đúng; ký trùng báo 23505; chữ ký không UPDATE/DELETE được"
+    ],
+    "blockedBy": [
+     "FG12-02"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG12-04",
+   "kind": "story",
+   "epicId": "FG-12",
+   "parentId": "EP-FG-12",
+   "title": "移行プロファイリング — Màn xem kết quả profiling và xuất CSV (SPEC-YC-156)",
+   "body": {
+    "goal": "Người phụ trách xem bất thường của dữ liệu nguồn trước mapping và xuất CSV; ngày mơ hồ không bị tự đoán.",
+    "sources": [
+     {
+      "id": "SPEC-YC-156",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-239",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-063",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_PROFILING_SPEC.md",
+     "specs/system-design/api-design/administration/MIGRATION_PROFILING_EXPORT_CSV_GET_API.md",
+     "specs/administration/function-specifications/MIGRATION_RECONCILIATION_FUNC.md §2.4–2.6"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Query đọc run PROFILING và phát hiện, lọc, phân trang",
+     "API export CSV kèm SHA-256 và audit",
+     "Màn chỉ đọc, ROLE-007/008 xem, vai trò khác bị chặn",
+     "UI theo wireframe LAB-4"
+    ],
+    "outOfScope": [
+     "Công cụ chạy profiling theo lô — không thuộc ứng dụng (ghi ở gaps)",
+     "Mapping và rehearsal — FG12-06"
+    ],
+    "dod": [
+     "Bốn con xong",
+     "Ngày mơ hồ hiện nguyên văn, đánh dấu 要確認, không tự sửa; mã bò 9 chữ số đánh dấu 要判断"
+    ],
+    "blockedBy": [
+     "FG12-01",
+     "FG12-03"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG12-04.1",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-04",
+   "title": "Query profiling + API export.csv, ghi audit (SPEC-YC-239)",
+   "body": {
+    "goal": "Màn có dữ liệu để đọc và nút xuất CSV chạy đúng.",
+    "sources": [
+     {
+      "id": "SPEC-YC-239",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-156",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/api-design/administration/MIGRATION_PROFILING_EXPORT_CSV_GET_API.md"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Query run PROFILING + findings dưới RLS, lọc và phân trang",
+     "GET /api/migration/profiling/export.csv: 400/401/403/404 (run khác loại)/409 RUN_NOT_COMPLETED",
+     "CSV 7 cột, tiền tố chống công thức, SHA-256, chèn audit migration.profiling.exported trước khi trả file"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test route đủ mã 200/400/401/403/404/409/500; ghi audit lỗi thì không trả file",
+     "Giá trị bắt đầu bằng = + - @ có tiền tố trong CSV"
+    ],
+    "blockedBy": [
+     "FG12-01",
+     "FG12-03"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG12-04.2",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-04",
+   "title": "Màn /migration-profiling — khối A–D, ô chọn run, nút xuất CSV",
+   "body": {
+    "goal": "Màn hiển thị và xuất theo spec.",
+    "sources": [
+     {
+      "id": "SPEC-YC-156",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_PROFILING_SPEC.md §4–6"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Ô 実行, khối tổng hợp, bảng phát hiện, bộ lọc trên query string",
+     "Nút 「プロファイル結果を出力する」 vô hiệu khi run chưa hoàn tất",
+     "Màn 「この画面を利用する権限がありません」 cho vai trò ẩn"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component: run mặc định là run mới nhất; nút export disabled khi run chưa COMPLETED",
+     "Ngày giờ JST YYYY/MM/DD HH:mm qua hàm dùng chung"
+    ],
+    "blockedBy": [
+     "FG12-04.1",
+     "FG12-04.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG12-04.3",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-04",
+   "title": "Design UI theo wireframe YC_MIGRATION_PROFILING",
+   "body": {
+    "goal": "FE có thiết kế đủ trạng thái để dựng.",
+    "sources": [
+     {
+      "id": "SPEC-YC-156",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_PROFILING_SPEC.md §2, assets/*_wireframe.png"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Dựng UI từ wireframe và annotated của LAB-4",
+     "Đủ trạng thái loading, empty, error, blocked, no-permission"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Bản thiết kế phủ các trạng thái ở mục 6 của spec",
+     "FE-2 rà và xác nhận có thể dựng"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG12-04.4",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-04",
+   "title": "Assert SQL + E2E profiling — xem, xuất CSV, vai trò bị chặn",
+   "body": {
+    "goal": "Kiểm tự động chứng minh luồng chính và các ca chặn của màn.",
+    "sources": [
+     {
+      "id": "SPEC-YC-156",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-063",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_PROFILING_SPEC.md §5"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "ROLE-007 mở màn, đổi run, xuất CSV tên migration-profiling-{ngày JST}.csv",
+     "ROLE-001 thấy màn bị chặn; run chưa hoàn tất không xuất được",
+     "Assert SQL luật handling của hai finding cứng"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "E2E xanh trong CI",
+     "Assert SQL chặn handling sai luật F-063"
+    ],
+    "blockedBy": [
+     "FG12-04.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG12-05",
+   "kind": "story",
+   "epicId": "FG-12",
+   "parentId": "EP-FG-12",
+   "title": "移行系譜参照 — Màn truy vết từng dòng migration (SPEC-YC-155)",
+   "body": {
+    "goal": "Người phụ trách lần theo số phận từng dòng nguồn: file, dòng, biến đổi, kết quả và lý do 却下.",
+    "sources": [
+     {
+      "id": "SPEC-YC-155",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-062",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "DR-MIG-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_LINEAGE_SPEC.md",
+     "specs/system-design/database-design/administration/MIGRATION_DB.md §4.4"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Query lineage có bộ lọc theo run, file, kết quả, lý do, khoảng dòng, ソースキー",
+     "Dải đếm ソース = 受入 + 却下 + 重複 và khối chi tiết một dòng",
+     "Màn chỉ đọc",
+     "UI theo wireframe LAB-4"
+    ],
+    "outOfScope": [
+     "Công cụ migration ghi lineage — không thuộc ứng dụng (gaps)",
+     "Ký đối chiếu — FG12-06"
+    ],
+    "dod": [
+     "Bốn con xong",
+     "Dòng 却下 luôn hiện lý do; dòng thiếu lý do hiện badge 理由未記録（要調査）"
+    ],
+    "blockedBy": [
+     "FG12-02"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG12-05.1",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-05",
+   "title": "Query lineage — bộ lọc, đếm, chi tiết dòng (RSC dưới RLS)",
+   "body": {
+    "goal": "Có dữ liệu cho danh sách, dải đếm và khối chi tiết.",
+    "sources": [
+     {
+      "id": "SPEC-YC-155",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "DR-MIG-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_LINEAGE_SPEC.md §4–5"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Lọc B-1…B-7 trên query string, phân trang 50 dòng sắp theo file, dòng",
+     "Đếm theo run + file, kiểm đẳng thức nguồn = tổng ba kết quả",
+     "Chi tiết dòng: trước/sau, quy tắc biến đổi, lý do 却下"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test truy vấn: bộ lọc kết hợp trả đúng dòng, phân trang giữ bộ lọc",
+     "ROLE-001 gọi → không có dòng (RLS)"
+    ],
+    "blockedBy": [
+     "FG12-02"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG12-05.2",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-05",
+   "title": "Màn /migration-lineage — form tìm, danh sách, khối chi tiết dòng",
+   "body": {
+    "goal": "Màn hiển thị theo spec.",
+    "sources": [
+     {
+      "id": "SPEC-YC-155",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_LINEAGE_SPEC.md §4"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Form 検索 và nút 却下行を確認する",
+     "Danh sách D, khối E mở bằng row= trên URL",
+     "Trạng thái rỗng hai biến thể"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component: nút 却下行を確認する đặt 結果 = 却下",
+     "Link từ REHEARSAL và PARALLEL_OPS với run, row, sourceKey mở sẵn dòng đúng"
+    ],
+    "blockedBy": [
+     "FG12-05.1",
+     "FG12-05.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG12-05.3",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-05",
+   "title": "Design UI theo wireframe YC_MIGRATION_LINEAGE",
+   "body": {
+    "goal": "FE có thiết kế đủ trạng thái.",
+    "sources": [
+     {
+      "id": "SPEC-YC-155",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_LINEAGE_SPEC.md §2, assets/*_wireframe.png"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Dựng UI từ wireframe và annotated",
+     "Đủ trạng thái ở mục 6"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Bản thiết kế phủ các trạng thái ở mục 6",
+     "FE-2 rà và xác nhận"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG12-05.4",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-05",
+   "title": "Assert SQL + E2E lineage — lọc 却下, không có lý do unknown",
+   "body": {
+    "goal": "Kiểm tự động chứng minh luồng chính và các ca chặn của màn.",
+    "sources": [
+     {
+      "id": "SPEC-YC-155",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "DR-MIG-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_LINEAGE_SPEC.md §5"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "E2E lọc 却下, mở chi tiết dòng, ROLE-001 bị chặn",
+     "Assert SQL CHECK lý do 却下 và danh mục không có UNKNOWN"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "E2E xanh trong CI",
+     "Assert SQL đỏ khi bỏ CHECK"
+    ],
+    "blockedBy": [
+     "FG12-05.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG12-06",
+   "kind": "story",
+   "epicId": "FG-12",
+   "parentId": "EP-FG-12",
+   "title": "リハーサル照合 — Đối chiếu rehearsal và business sign-off (SPEC-YC-157)",
+   "body": {
+    "goal": "Mỗi lần rehearsal, nghiệp vụ thấy ソース = 受入 + 却下 + 重複 theo từng hạng mục và ký riêng từng hạng mục khớp.",
+    "sources": [
+     {
+      "id": "SPEC-YC-157",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-240",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-064",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "DR-MIG-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_REHEARSAL_SPEC.md",
+     "specs/system-design/api-design/administration/MIGRATION_RUNS_BY_ID_SIGNOFFS_POST_API.md",
+     "specs/administration/function-specifications/MIGRATION_RECONCILIATION_FUNC.md §2.1–2.3"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Tổng hợp đối chiếu theo hạng mục từ lineage, không nhập tay",
+     "RPC record_migration_signoff + API POST signoffs, ROLE-007 ghi thay chủ nghiệp vụ (A-8)",
+     "Chặn ký khi không khớp hoặc còn 却下 thiếu lý do",
+     "UI theo wireframe LAB-4"
+    ],
+    "outOfScope": [
+     "Việc chạy rehearsal và ký thực tế — việc dự án, không thành issue (PR-D-02)",
+     "Câu hỏi sign-off do ROLE-007, final load có phải ký — E15-FG12-02"
+    ],
+    "dod": [
+     "Bốn con xong",
+     "Chữ ký chỉ thêm, không sửa; ký trùng báo ALREADY_SIGNED",
+     "Lệch 1 dòng thì không ký được, có 却下 hợp lệ vẫn ký được"
+    ],
+    "blockedBy": [
+     "FG12-01",
+     "FG12-03"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG12-06.1",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-06",
+   "title": "RPC record_migration_signoff + POST signoffs + query đối chiếu (SPEC-YC-240)",
+   "body": {
+    "goal": "Ký được từng hạng mục dưới khoá, server kiểm lại đẳng thức.",
+    "sources": [
+     {
+      "id": "SPEC-YC-240",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "DR-MIG-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/api-design/administration/MIGRATION_RUNS_BY_ID_SIGNOFFS_POST_API.md",
+     "specs/_common/traceability.md (DR-MIG-01)"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Query tổng hợp đối chiếu của run và tiến độ rehearsal",
+     "POST: kiểm origin, quyền thao tác màn, schema (itemKey, businessSignerName 1–100, comment ≤ 500)",
+     "signoffBlockers → 422 blocked ACC-MIG-01; RPC kiểm lại dưới khoá → 422 invariant",
+     "Insert chữ ký + audit migration.signoff cùng transaction"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test route: 201, 400, 401, 403 (ROLE-008), 404, 409 RUN_NOT_COMPLETED, 409 ALREADY_SIGNED, 422",
+     "Assert SQL: hai người ký cùng lúc chỉ một thành công (23505)"
+    ],
+    "blockedBy": [
+     "FG12-01",
+     "FG12-03"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG12-06.2",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-06",
+   "title": "Màn /migration-rehearsal — bảng đối chiếu, 却下明細, hộp サインオフ",
+   "body": {
+    "goal": "Màn đối chiếu và ký theo spec.",
+    "sources": [
+     {
+      "id": "SPEC-YC-157",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-064",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_REHEARSAL_SPEC.md §4–5"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Khối A–D: run, badge run, 照合サマリ, 却下明細",
+     "Nút サインオフする chỉ hiện cho ROLE-007 và vô hiệu khi 不一致 hoặc 理由未記録",
+     "Hộp xác nhận với ô 署名者名, xử lý lỗi 409/422/400"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component: ROLE-008 không thấy nút ký; 不一致 thì nút vô hiệu kèm lý do",
+     "Link 却下行を調査 mở lineage đã lọc"
+    ],
+    "blockedBy": [
+     "FG12-06.1",
+     "FG12-06.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG12-06.3",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-06",
+   "title": "Design UI theo wireframe YC_MIGRATION_REHEARSAL",
+   "body": {
+    "goal": "FE có thiết kế đủ trạng thái.",
+    "sources": [
+     {
+      "id": "SPEC-YC-157",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_REHEARSAL_SPEC.md §2, assets/*_wireframe.png"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Dựng UI từ wireframe và annotated",
+     "Đủ trạng thái ở mục 6, gồm hộp xác nhận"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Bản thiết kế phủ các trạng thái ở mục 6",
+     "FE-2 rà và xác nhận"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG12-06.4",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-06",
+   "title": "Assert SQL + E2E rehearsal — khớp, lệch 1 dòng, ký, ký trùng",
+   "body": {
+    "goal": "Kiểm tự động chứng minh luồng chính và các ca chặn của màn.",
+    "sources": [
+     {
+      "id": "SPEC-YC-157",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-240",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-064",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_MIGRATION_REHEARSAL_SPEC.md §5"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "E2E: ký hạng mục khớp; hạng mục lệch 1 đơn vị không ký được",
+     "E2E: ký trùng và ROLE-008 không có nút",
+     "Assert SQL đẳng thức không dung sai"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "E2E xanh trong CI",
+     "Assert SQL đỏ khi cho phép dung sai"
+    ],
+    "blockedBy": [
+     "FG12-06.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG12-07",
+   "kind": "story",
+   "epicId": "FG-12",
+   "parentId": "EP-FG-12",
+   "title": "並行運用リファレンス — Tra cứu dữ liệu hệ thống cũ và xem chênh lệch (SPEC-YC-158)",
+   "body": {
+    "goal": "Trong tuần chạy song song, người dùng tra bản ghi hệ thống cũ chỉ đọc và thấy chênh lệch với dữ liệu đã chuyển.",
+    "sources": [
+     {
+      "id": "SPEC-YC-158",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-065",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_PARALLEL_OPS_SPEC.md",
+     "specs/system-design/database-design/administration/MIGRATION_DB.md §4.8, §4.10"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Tìm bản ghi cũ theo loại, khoá cũ, khách, SKU, ngày",
+     "Xem chênh lệch từng trường cũ ↔ mới",
+     "Cửa sổ 7 ngày do RLS giữ; trước/sau cửa sổ hiện trạng thái thay thế",
+     "UI theo wireframe LAB-4"
+    ],
+    "outOfScope": [
+     "Việc vận hành song song là giai đoạn dự án, không thành issue (PR-D-02)",
+     "Cửa sổ tính từ final load hay Go-Live — E15-FG12-02"
+    ],
+    "dod": [
+     "Bốn con xong",
+     "Ngoài cửa sổ không hiện kết quả tìm",
+     "Màn không có thao tác ghi"
+    ],
+    "blockedBy": [
+     "FG12-02",
+     "FG12-03"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG12-07.1",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-07",
+   "title": "Query searchLegacyRecords, getLegacyRecordDiff, cửa sổ chạy song song",
+   "body": {
+    "goal": "Có truy vấn tìm và so sánh bản ghi cũ trong cửa sổ.",
+    "sources": [
+     {
+      "id": "SPEC-YC-158",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-065",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_PARALLEL_OPS_SPEC.md §4–5",
+     "specs/administration/function-specifications/MIGRATION_RECONCILIATION_FUNC.md §2.7"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Tìm theo B-1…B-6 trên query string, 50 dòng/trang",
+     "Luật 一致 / 差分あり / 対応なし và so từng trường 一致 / 相違 (btrim)",
+     "Đọc cửa sổ từ run FINAL; không đọc lại bảng nghiệp vụ, dùng after_values của lineage"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test truy vấn: mỗi nhánh 対応なし / 差分あり / 一致 đúng luật 2.7",
+     "Ngoài cửa sổ RLS trả 0 dòng"
+    ],
+    "blockedBy": [
+     "FG12-03"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG12-07.2",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-07",
+   "title": "Màn /parallel-ops — form tìm, kết quả, khối 差分表示, trạng thái thay thế",
+   "body": {
+    "goal": "Màn tra cứu theo spec.",
+    "sources": [
+     {
+      "id": "SPEC-YC-158",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_PARALLEL_OPS_SPEC.md §4"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Banner chỉ đọc, 並行運用期間, form 検索",
+     "Danh sách kết quả, khối 差分表示, link 系譜を開く chỉ cho ROLE-007/008",
+     "Trạng thái trước / sau cửa sổ"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test component: ROLE-002 không có nút 系譜を開く",
+     "Trước cửa sổ hiện 並行運用はカットオーバー後に開始します"
+    ],
+    "blockedBy": [
+     "FG12-07.1",
+     "FG12-07.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG12-07.3",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-07",
+   "title": "Design UI theo wireframe YC_PARALLEL_OPS",
+   "body": {
+    "goal": "FE có thiết kế đủ trạng thái.",
+    "sources": [
+     {
+      "id": "SPEC-YC-158",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_PARALLEL_OPS_SPEC.md §2, assets/*_wireframe.png"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Dựng UI từ wireframe và annotated",
+     "Đủ trạng thái ở mục 6, gồm hai trạng thái thay thế"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Bản thiết kế phủ các trạng thái ở mục 6",
+     "FE-2 rà và xác nhận"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG12-07.4",
+   "kind": "task",
+   "epicId": "FG-12",
+   "parentId": "FG12-07",
+   "title": "Assert SQL + E2E parallel-ops — trong / ngoài cửa sổ, vai trò",
+   "body": {
+    "goal": "Kiểm tự động chứng minh luồng chính và các ca chặn của màn.",
+    "sources": [
+     {
+      "id": "SPEC-YC-158",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-065",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_PARALLEL_OPS_SPEC.md §5"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "E2E trong cửa sổ: tìm, xem chênh lệch, mở lineage",
+     "Ngoài cửa sổ: không đọc được; ROLE-001 bị chặn"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "E2E xanh trong CI",
+     "Assert SQL cửa sổ 7 ngày đỏ khi sửa thành 8"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-12",
+    "src:design-only"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E15-FG12-01",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "移行データ — Xin mẫu dữ liệu thật, chốt loại bản ghi, khoá nghiệp vụ, công thức 在庫値 (L5-019)",
+   "body": {
+    "goal": "Có mẫu file cũ thật và danh sách loại bản ghi để code di trú và nạp master thật không còn dựa seed giả. Việc nạp dữ liệu là việc dự án (PR-D-02), không thuộc issue này.",
+    "sources": [
+     {
+      "id": "L5-019",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/administration/MIGRATION_DB.md §5 (Q2)",
+     "specs/administration/function-specifications/MIGRATION_RECONCILIATION_FUNC.md §3 (Q2, Q3)"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-D-02"
+    ],
+    "scope": [
+     "Mẫu master SKU, khách, NCC và dữ liệu logger thật (đã mask)",
+     "Cấu trúc file cũ, danh sách record_type, khoá nghiệp vụ",
+     "Đơn vị và công thức 在庫値; mã bò không phải 9/10 chữ số ghi thành phát hiện nào"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập); khi khách trả lời, cập nhật MIGRATION_DB và spec, đổi dữ liệu record_type, rồi đóng",
+     "Còn chờ thì Blocked kèm ngày hỏi lại"
+    ],
+    "blockedBy": [],
+    "affects": [
+     "FG12-01",
+     "FG12-02",
+     "FG12-03",
+     "FG12-06.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-FG12-02",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "移行運用 — Chốt luật di trú: cửa sổ song song, ROLE-007 ký thay, thời hạn giữ (A-5, A-8)",
+   "body": {
+    "goal": "Chốt các giả định di trú đang để trạng thái assumed.",
+    "sources": [
+     {
+      "id": "SPEC-YC-158",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/administration/MIGRATION_DB.md §5 (Q1, Q3, Q4)",
+     "specs/system-design/api-design/administration/MIGRATION_RUNS_BY_ID_SIGNOFFS_POST_API.md (Q1, Q2)"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Cửa sổ một tuần tính từ final load xong hay từ Go-Live; sau đó còn tra dữ liệu cũ không",
+     "ROLE-007 ghi sign-off thay chủ nghiệp vụ (A-8); final load có bắt ký như rehearsal",
+     "Thời hạn giữ dữ liệu di trú hỏi chung ở E15-FG09-02 (retention)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập); khi khách trả lời, ghi vào spec / PREMISE, đổi tham số, rồi đóng",
+     "Còn chờ thì Blocked kèm ngày hỏi lại"
+    ],
+    "blockedBy": [],
+    "affects": [
+     "FG12-03",
+     "FG12-06.1",
+     "FG12-07.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  }
+ ],
+ "notIssued": [
+  {
+   "id": "DR-PRIV-01",
+   "reason": "Yêu cầu hệ thống: dữ liệu cá nhân tối thiểu do màn của FG-06, FG-07, FG-08 dựng; phần FG-11 chỉ là hồ sơ SSO, nằm trong FG11-01.1 và FG11-01.2 (không log nhóm, claim thô)."
+  }
+ ],
+ "gaps": [
+  {
+   "spec": "YC_RBAC_ADMIN_SPEC (bảng thiết kế đích)",
+   "text": "Thiết kế đích chỉ ghi \"màn quản lý ánh xạ nhóm\" trong một dòng bảng, không có wireframe hay danh sách item cho khối ánh xạ; wireframe hiện tại vẫn là đổi vai trò tay.",
+   "suggestedHandling": "assumption",
+   "ref": "FG11-02.2",
+   "id": "GAP-L5-33"
+  },
+  {
+   "spec": "YC_MIGRATION_LINEAGE_SPEC / MIGRATION_RECONCILIATION_FUNC Q1",
+   "text": "Công cụ ghi lineage và chạy profiling (F-062, F-063) không có issue: spec nói công cụ migration tự ghi, ngôn ngữ chưa chốt, 2.4-2.6 là đặc tả cho công cụ cài lại.",
+   "suggestedHandling": "open",
+   "ref": "FG12-04, FG12-05",
+   "id": "GAP-L5-34"
+  },
+  {
+   "spec": "ADM_SSO_LOGIN_TECH §4.1 / YC_LOGIN_SPEC",
+   "text": "Dev/test dùng tenant thử Entra ID và không bật lại mật khẩu; spec không nói CI E2E vượt MFA và đăng nhập bằng cách nào.",
+   "suggestedHandling": "assumption",
+   "ref": "FG11-01.4, FG11-10",
+   "id": "GAP-L5-35"
+  },
+  {
+   "spec": "YC_LOGIN_SPEC (Câu hỏi mở đích)",
+   "text": "Thông điệp JA cho sso_failed, role_conflict, mfa_required chưa có nguồn.",
+   "suggestedHandling": "clarify-issue",
+   "ref": "E15-FG11-02",
+   "id": "GAP-L5-36"
+  },
+  {
+   "spec": "ADR-0002 (Việc phải làm nếu đi production)",
+   "text": "Nêu \"rút ngắn JWT hoặc kiểm getUser() cho thao tác ghi\" nhưng không liệt kê thao tác nhạy cảm nào ngoài rbac-admin.",
+   "suggestedHandling": "open",
+   "ref": "FG11-05",
+   "id": "GAP-L5-37"
+  },
+  {
+   "spec": "deviation-table GAP-13 (L5-042)",
+   "text": "19 cạnh điều hướng trải nhiều feature; nối link chạm màn của epic khác, cần phối hợp owner để không đụng file.",
+   "suggestedHandling": "open",
+   "ref": "FG11-09.3",
+   "id": "GAP-L5-38"
+  },
+  {
+   "spec": "MIGRATION_DB 4.9",
+   "text": "Công cụ migration ghi bằng vai trò hệ thống riêng nhưng không có ADR hay PoC cho vai trò này (khác job_worker, idp_sync_agent); dễ bị bỏ sót khi dựng.",
+   "suggestedHandling": "open",
+   "ref": "FG12-02",
+   "id": "GAP-L5-39"
+  }
+ ]
+}

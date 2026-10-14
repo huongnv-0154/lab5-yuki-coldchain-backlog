@@ -1,0 +1,4445 @@
+{
+ "job": "J5",
+ "epics": [
+  "E-13",
+  "E-14",
+  "E-15"
+ ],
+ "items": [
+  {
+   "id": "E13-01",
+   "kind": "story",
+   "epicId": "E-13",
+   "parentId": "EP-E-13",
+   "title": "PoC Entra ID — Spike 5 điểm của ADR-0009, trượt thì dừng SSO (ADR-0009)",
+   "body": {
+    "goal": "Biết sớm tenant Entra ID thử có đủ 5 điều kiện để dựng SSO hay không; nếu không, SSO dừng và không bao giờ dùng service_role thay thế.",
+    "sources": [
+     {
+      "id": "ADR-0009",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0007",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md §7 (bảng PoC 5 điểm)",
+     "architecture/target-architecture.md §2 (B3), §9 câu hỏi 3",
+     "specs/administration/technical-design/ADM_SSO_LOGIN_TECH.md"
+    ],
+    "scope": [
+     "Chạy 5 điểm của ADR-0009 §7 trên tenant thử: provider token phía server, Graph /me/memberOf, nguồn amr, JWT idp_sync_agent, cấp/thu hồi khoá ký",
+     "Ghi kết quả từng điểm: đạt / trượt / cần quyết định lại",
+     "Trượt điểm 4–5: dừng, ghi phương án ứng viên (role Postgres LOGIN riêng), không dùng service_role"
+    ],
+    "outOfScope": [
+     "Dựng SSO thật, map nhóm → ROLE — issue SSO ở FG-11 (L5-013)",
+     "Tài khoản / tenant thử — E13-06"
+    ],
+    "dod": [
+     "Bảng 5 điểm có kết quả kèm bằng chứng (log, ảnh chụp cấu hình đã che) lưu trong repo",
+     "Quyết định tiếp / dừng SSO ghi vào ADR-0009 hoặc PREMISE",
+     "Issue SSO ở FG-11 chỉ mở khi E13-01 xong"
+    ],
+    "premise": [
+     "PR-D-03",
+     "PR-A-04"
+    ],
+    "blockedBy": [
+     "E13-06.2"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-01.1",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-01",
+   "title": "Spike điểm 1–3: provider token, Graph /me/memberOf, nguồn amr (ADR-0009)",
+   "body": {
+    "goal": "Chứng minh callback lấy được provider token phía server, đọc đúng nhóm qua Graph và có nguồn amr đáng tin.",
+    "sources": [
+     {
+      "id": "ADR-0009",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md §7 điểm 1–3"
+    ],
+    "scope": [
+     "Điểm 1: lấy provider token lúc đổi code với Supabase Auth",
+     "Điểm 2: phân trang, nhóm lồng (transitiveMemberOf), quyền Graph tối thiểu cần admin consent",
+     "Điểm 3: amr có ở token / Conditional Access không"
+    ],
+    "outOfScope": [
+     "Điểm 4–5 — E13-01.2"
+    ],
+    "dod": [
+     "Script / route thử chạy được trên tenant thử, kết quả 3 điểm ghi lại",
+     "Điểm 2 trượt: ghi rõ phương án dự phòng (claim groups) và cần review lại"
+    ],
+    "premise": [
+     "PR-D-03"
+    ],
+    "blockedBy": [
+     "E13-06.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-01.2",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-01",
+   "title": "Spike điểm 4–5: JWT idp_sync_agent chỉ gọi 1 RPC, cấp/thu hồi khoá ký (ADR-0009)",
+   "body": {
+    "goal": "Chứng minh JWT role idp_sync_agent qua PostgREST chỉ gọi được sync_profile_from_idp và khoá ký riêng cấp / thu hồi được trên gói Supabase thật.",
+    "sources": [
+     {
+      "id": "ADR-0009",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0007",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md §7 điểm 4–5",
+     "architecture/target-architecture.md §2"
+    ],
+    "scope": [
+     "Tạo role nologin, cấp cho authenticator, chỉ EXECUTE sync_profile_from_idp",
+     "Ký JWT bằng khoá riêng, thử gọi RPC khác và bảng → phải bị từ chối",
+     "Thử cấp và thu hồi khoá ký trên gói Supabase dùng thật"
+    ],
+    "outOfScope": [
+     "Role job_worker — E13-02 (dùng chung kết quả điểm 5)"
+    ],
+    "dod": [
+     "Assert SQL / HTTP: gọi đúng 1 RPC thành công, mọi RPC và bảng khác bị từ chối",
+     "Thu hồi khoá làm JWT cũ hết hiệu lực, ghi lại các bước",
+     "Trượt: ghi nhận dừng, không có đường nào dùng service_role"
+    ],
+    "premise": [
+     "PR-D-03"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-01.3",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-01",
+   "title": "Báo cáo kết quả PoC và quyết định tiếp / dừng SSO (ADR-0009)",
+   "body": {
+    "goal": "Kết quả PoC được ghi thành quyết định, và việc cần khách (Conditional Access, admin consent) được nêu rõ.",
+    "sources": [
+     {
+      "id": "ADR-0009",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md §7–8"
+    ],
+    "scope": [
+     "Tổng hợp kết quả E13-01.1 và E13-01.2 vào một trang quyết định",
+     "Cập nhật ADR-0009 / PREMISE theo kết quả",
+     "Nêu việc còn cần khách — đã có E15-FG11-01"
+    ],
+    "outOfScope": [
+     "Chạy PoC — E13-01.1, E13-01.2"
+    ],
+    "dod": [
+     "Quyết định tiếp / dừng nằm trong repo, trỏ được tới bằng chứng",
+     "Issue E15-FG11-01 cập nhật theo kết quả"
+    ],
+    "premise": [
+     "PR-D-03",
+     "PR-A-04"
+    ],
+    "blockedBy": [
+     "E13-01.1",
+     "E13-01.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E13-02",
+   "kind": "story",
+   "epicId": "E-13",
+   "parentId": "EP-E-13",
+   "title": "PoC role job_worker — JWT riêng cho route worker, không service_role (ADR-0007)",
+   "body": {
+    "goal": "Route worker chạy bằng role DB job_worker chỉ gọi RPC worker và chỉ ghi / xoá đúng bucket, có bằng chứng bằng test.",
+    "sources": [
+     {
+      "id": "ADR-0007",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0009",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0007-background-worker-pg-cron-pg-net-internal-route.md (định danh route worker, PoC)",
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md §4.2",
+     "architecture/target-architecture.md §2 (B4)"
+    ],
+    "scope": [
+     "Role nologin job_worker, chỉ EXECUTE RPC worker; policy Storage theo bucket (file ERP, gói xuất, xoá object khi purge)",
+     "JWT ký khoá riêng, chỉ ở biến môi trường server",
+     "Dùng chung kết quả điểm 5 (cấp / thu hồi khoá) của E13-01.2"
+    ],
+    "outOfScope": [
+     "Route worker và claim job — E13-04",
+     "Role label_print_agent — issue in nhãn ở FG-02"
+    ],
+    "dod": [
+     "JWT job_worker gọi được RPC worker và ghi / xoá đúng bucket, gọi RPC khác bị từ chối",
+     "PoC không đạt: dừng, không dùng service_role, ghi quyết định",
+     "Issue dựng worker (E13-04) chỉ bắt đầu sau khi PoC đạt"
+    ],
+    "premise": [
+     "PR-D-03"
+    ],
+    "blockedBy": [
+     "E13-01.2"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-02.1",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-02",
+   "title": "Role job_worker + JWT ký riêng + policy Storage theo bucket (ADR-0007)",
+   "body": {
+    "goal": "Role và policy cấp quyền tối thiểu cho route worker.",
+    "sources": [
+     {
+      "id": "ADR-0007",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0007-background-worker-pg-cron-pg-net-internal-route.md",
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md §4.2"
+    ],
+    "scope": [
+     "Migration tạo role job_worker nologin, GRANT cho authenticator",
+     "GRANT EXECUTE chỉ trên RPC worker (claim_integration_job, settle_integration_attempt…)",
+     "Policy Storage: ghi / xoá theo bucket cần cho ERP, gói xuất, purge"
+    ],
+    "outOfScope": [
+     "Nội dung RPC worker — E13-04, E13-05"
+    ],
+    "dod": [
+     "Migration chạy qua dev → test, forward-only",
+     "Biến môi trường chứa JWT khai báo trong tài liệu môi trường (không có giá trị thật trong repo)"
+    ],
+    "premise": [
+     "PR-D-03"
+    ],
+    "blockedBy": [
+     "E13-01.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-02.2",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-02",
+   "title": "Assert SQL / HTTP phủ định cho job_worker (ADR-0007)",
+   "body": {
+    "goal": "Có test chứng minh job_worker không làm được gì ngoài quyền được cấp.",
+    "sources": [
+     {
+      "id": "ADR-0007",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0007-background-worker-pg-cron-pg-net-internal-route.md"
+    ],
+    "scope": [
+     "Gọi RPC khác, đọc / ghi bảng nghiệp vụ, đụng bucket khác → phải lỗi",
+     "Gọi RPC worker và ghi đúng bucket → thành công",
+     "Thu hồi khoá → JWT cũ bị từ chối"
+    ],
+    "outOfScope": [
+     "Test cho idp_sync_agent — E13-01.2"
+    ],
+    "dod": [
+     "Test chạy xanh trong CI",
+     "Mỗi ca phủ định có tên nêu rõ quyền bị từ chối"
+    ],
+    "premise": [
+     "PR-D-03"
+    ],
+    "blockedBy": [
+     "E13-02.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E13-03",
+   "kind": "story",
+   "epicId": "E-13",
+   "parentId": "EP-E-13",
+   "title": "Outbox giao dịch — job tích hợp ghi cùng transaction nghiệp vụ (ADR-0008)",
+   "body": {
+    "goal": "Mọi RPC nghiệp vụ xếp được job tích hợp / mail trong cùng transaction; rollback thì không có job; giao ít nhất một lần kèm chống trùng.",
+    "sources": [
+     {
+      "id": "ADR-0008",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0008-transactional-outbox-for-integrations-and-mail.md",
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md §4.1–4.3",
+     "architecture/target-architecture.md §5–6"
+    ],
+    "scope": [
+     "Bảng integration_jobs, integration_job_attempts (idempotency_key)",
+     "Hàm private.enqueue_integration_job dùng trong RPC nghiệp vụ; mẫu khoá chống trùng để FG10-04 dùng lại cho mail_outbox",
+     "Idempotency key (ERP) chống nạp trùng"
+    ],
+    "outOfScope": [
+     "Worker nhận job — E13-04",
+     "Lịch thử lại và lease — E13-05",
+     "Màn theo dõi job — FG-10",
+     "mail_outbox và private.enqueue_mail — FG10-04"
+    ],
+    "dod": [
+     "Assert SQL: RPC lỗi giữa chừng thì không còn dòng job nào",
+     "Gọi enqueue hai lần cùng key chỉ ra một dòng"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-03.1",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-03",
+   "title": "DB — integration_jobs, integration_job_attempts, index, audit (ADR-0008)",
+   "body": {
+    "goal": "Schema outbox có đủ trạng thái, khoá chống trùng và index cho worker.",
+    "sources": [
+     {
+      "id": "ADR-0008",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md §4.1, §4.2, §4.3"
+    ],
+    "scope": [
+     "Migration 2 bảng theo INTEGRATION_DB, CHECK trạng thái QUEUED/RUNNING/RETRY_WAIT/SUCCEEDED/REJECTED/FAILED_FINAL",
+     "Unique idempotency_key",
+     "RLS: người dùng không ghi trực tiếp"
+    ],
+    "outOfScope": [
+     "Bảng idp_group_role_map — FG-11",
+     "mail_outbox — FG10-04.1"
+    ],
+    "dod": [
+     "Migration chạy qua dev → test, forward-only",
+     "Assert SQL kiểm CHECK và unique"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-03.2",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-03",
+   "title": "RPC enqueue_integration_job + khoá chống trùng + audit integration.* (ADR-0008)",
+   "body": {
+    "goal": "Một cách duy nhất để RPC nghiệp vụ xếp job tích hợp cùng transaction.",
+    "sources": [
+     {
+      "id": "ADR-0008",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0008-transactional-outbox-for-integrations-and-mail.md",
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md §4.1"
+    ],
+    "scope": [
+     "private.enqueue_integration_job(kind, payload, idempotency_key)",
+     "Ghi audit_events integration.* cùng transaction",
+     "Tài liệu hướng dẫn gọi từ RPC nghiệp vụ của FG khác"
+    ],
+    "outOfScope": [
+     "Handler từng loại job — FG-10",
+     "private.enqueue_mail — FG10-04.2"
+    ],
+    "dod": [
+     "Unit test domain khoá chống trùng",
+     "Assert SQL: rollback RPC nghiệp vụ → không có job, không có audit"
+    ],
+    "blockedBy": [
+     "E13-03.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-03.3",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-03",
+   "title": "Assert SQL outbox: rollback, trùng khoá, giao ít nhất một lần (ADR-0008)",
+   "body": {
+    "goal": "Có test phủ đúng bất biến của outbox.",
+    "sources": [
+     {
+      "id": "ADR-0008",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0008-transactional-outbox-for-integrations-and-mail.md"
+    ],
+    "scope": [
+     "Ca rollback, ca trùng idempotency_key",
+     "Ca hai transaction song song cùng key"
+    ],
+    "outOfScope": [
+     "Test worker — E13-04.4"
+    ],
+    "dod": [
+     "Test xanh trong CI",
+     "Số dòng kỳ vọng ghi trong tên test"
+    ],
+    "blockedBy": [
+     "E13-03.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E13-04",
+   "kind": "story",
+   "epicId": "E-13",
+   "parentId": "EP-E-13",
+   "title": "Worker nền — pg_cron → pg_net → route nội bộ, SKIP LOCKED (SPEC-YC-419)",
+   "body": {
+    "goal": "Job có I/O ngoài chạy qua một bộ lập lịch duy nhất, mỗi lần gọi nhận đúng một job, job quá lease tự về hàng đợi.",
+    "sources": [
+     {
+      "id": "SPEC-YC-419",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0007",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-LOC-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-LOC-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md §4.1–4.3",
+     "architecture/adr/ADR-0007-background-worker-pg-cron-pg-net-internal-route.md",
+     "architecture/target-architecture.md §6",
+     "specs/_common/DATES_FUNC.md"
+    ],
+    "scope": [
+     "pg_cron integration-dispatch mỗi phút, private.dispatch_integration_jobs → pg_net",
+     "Route POST /api/internal/jobs/run: Node, hnd1, x-worker-secret so hằng thời gian, sai trả 404, không đọc cookie",
+     "claim_integration_job bằng FOR UPDATE SKIP LOCKED",
+     "Lịch cron đổi JST → UTC (NFR-LOC-01)"
+    ],
+    "outOfScope": [
+     "Lịch thử lại, lease, settle — E13-05",
+     "Handler từng giao diện — FG-10",
+     "Độ dài lease và maxDuration thật — E15-11 (tạm dùng mặc định cấu hình được)"
+    ],
+    "dod": [
+     "Hai worker gọi đồng thời không nhận cùng một job (test)",
+     "Sai secret trả 404 như route không tồn tại",
+     "Mỗi lần chạy có log JSON mang id lần thử làm correlationId"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "blockedBy": [
+     "E13-02",
+     "E13-03"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-04.1",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-04",
+   "title": "DB — pg_cron dispatch, pg_net, claim_integration_job, quy đổi cron JST→UTC (ADR-0007)",
+   "body": {
+    "goal": "Phần DB của worker: lập lịch, đánh thức và nhận job an toàn khi chạy song song.",
+    "sources": [
+     {
+      "id": "SPEC-YC-419",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-LOC-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md §4.1, §4.3"
+    ],
+    "scope": [
+     "Extension pg_cron, pg_net; job integration-dispatch * * * * *",
+     "private.dispatch_integration_jobs đọc URL và secret từ Vault",
+     "claim_integration_job: SKIP LOCKED, tăng attempt_count, đặt lease"
+    ],
+    "outOfScope": [
+     "Job lịch erp-daily-batch, purge, áp master — issue của FG tương ứng"
+    ],
+    "dod": [
+     "Assert SQL: hai phiên claim song song nhận hai job khác nhau",
+     "Migration chạy qua dev → test"
+    ],
+    "blockedBy": [
+     "E13-03.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-04.2",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-04",
+   "title": "Route nội bộ /api/internal/jobs/run — xác thực secret, gọi RPC bằng job_worker (ADR-0007)",
+   "body": {
+    "goal": "Route nhận một job mỗi lần và giao cho handler đăng ký.",
+    "sources": [
+     {
+      "id": "SPEC-YC-419",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md §4.2, §4.4"
+    ],
+    "scope": [
+     "Runtime Node, preferredRegion hnd1, maxDuration theo cấu hình",
+     "x-worker-secret so timingSafeEqual, hỗ trợ xoay secret (hai giá trị)",
+     "Gọi RPC bằng JWT job_worker, bảng đăng ký handler theo kind",
+     "Log JSON có correlationId = id lần thử"
+    ],
+    "outOfScope": [
+     "Handler cụ thể — FG-10"
+    ],
+    "dod": [
+     "Unit test xác thực secret (đúng / sai / thiếu)",
+     "Không có đường dùng service_role trong route"
+    ],
+    "blockedBy": [
+     "E13-02.1",
+     "E13-04.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-04.3",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-04",
+   "title": "Vault + biến môi trường worker cho từng môi trường, quy trình xoay secret (ADR-0007)",
+   "body": {
+    "goal": "Mỗi project Supabase có URL route worker và secret trong Vault; Vercel có biến tương ứng.",
+    "sources": [
+     {
+      "id": "SPEC-YC-419",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0007",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §3",
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md §4.1"
+    ],
+    "scope": [
+     "Thiết lập Vault URL + secret cho dev / test / UAT / prod",
+     "Biến môi trường server cho JWT job_worker",
+     "Quy trình xoay secret cặp hai giá trị, ghi vào runbook"
+    ],
+    "outOfScope": [
+     "Tạo project và môi trường — E14-01"
+    ],
+    "dod": [
+     "Checklist cấu hình đạt ở cả 4 môi trường",
+     "Runbook xoay secret có các bước và người làm"
+    ],
+    "blockedBy": [
+     "E14-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E13-04.4",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-04",
+   "title": "Test worker: song song, secret sai, lịch cron UTC (ADR-0007)",
+   "body": {
+    "goal": "Test tự động cho dispatch và route worker.",
+    "sources": [
+     {
+      "id": "SPEC-YC-419",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-LOC-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md §4.1–4.3"
+    ],
+    "scope": [
+     "Hai worker tranh một job",
+     "Secret sai → 404, không đọc cookie",
+     "Giờ chạy cron quy đổi đúng JST → UTC"
+    ],
+    "outOfScope": [
+     "Test thử lại / lease — E13-05.3"
+    ],
+    "dod": [
+     "Test xanh trong CI",
+     "Ca cron kiểm giờ JST và UTC cụ thể"
+    ],
+    "blockedBy": [
+     "E13-04.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E13-05",
+   "kind": "story",
+   "epicId": "E-13",
+   "parentId": "EP-E-13",
+   "title": "Thử lại và lease chung — phân loại lỗi, lịch A-4, FAILED_FINAL (SPEC-YC-531)",
+   "body": {
+    "goal": "Mọi job tích hợp dùng một luật chung: 5 lần chờ 1·2·4·8·16 phút, lỗi nội dung không thử lại, hết lượt thì báo mail.",
+    "sources": [
+     {
+      "id": "SPEC-YC-531",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0007",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0008",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/function-specifications/INTEGRATION_RETRY_FUNC.md §2.1–2.5",
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md §4.4",
+     "architecture/target-architecture.md §5–6"
+    ],
+    "scope": [
+     "Domain classifyAttemptFailure, decideNextJobState, retryDelayMinutes, isLeaseExpired (tham số cấu hình được theo A-4)",
+     "RPC settle_integration_attempt, thu hồi lease LEASE_EXPIRED",
+     "FAILED_FINAL → mail INTEGRATION_FAILURE cho ROLE-007 / ROLE-008"
+    ],
+    "outOfScope": [
+     "Nút 再実行 và màn theo dõi — FG-10",
+     "Giá trị lease thật — E15-11"
+    ],
+    "dod": [
+     "Bảng chuyển trạng thái trong tài liệu job đạt hết trong test",
+     "Lỗi nội dung (REJECTED) không bao giờ tự thử lại",
+     "Trạng thái cuối ghi audit_events với correlation_id là id lần thử"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "blockedBy": [
+     "E13-03",
+     "E13-04"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-05.1",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-05",
+   "title": "Domain INTEGRATION_RETRY — phân loại lỗi, lịch thử lại, lease (SPEC-YC-531)",
+   "body": {
+    "goal": "Hàm thuần quyết định trạng thái tiếp theo của job.",
+    "sources": [
+     {
+      "id": "SPEC-YC-531",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/function-specifications/INTEGRATION_RETRY_FUNC.md §2.1–2.5"
+    ],
+    "scope": [
+     "classifyAttemptFailure, consecutiveFailures, decideNextJobState, retryDelayMinutes, isLeaseExpired",
+     "Tham số từ rule_versions, mặc định theo A-4"
+    ],
+    "outOfScope": [
+     "isNeedsAction, connectionStatus, nhãn JA — màn theo dõi ở FG-10"
+    ],
+    "dod": [
+     "Unit test mọi nhánh, gồm biên lượt thứ 5 và lease đúng hạn",
+     "Không phụ thuộc DB"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-05.2",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-05",
+   "title": "RPC settle_integration_attempt + thu hồi lease + mail FAILED_FINAL (SPEC-YC-531)",
+   "body": {
+    "goal": "Chốt kết quả mỗi lần thử trong DB đúng luật domain.",
+    "sources": [
+     {
+      "id": "SPEC-YC-531",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0008",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md §4.4",
+     "specs/administration/function-specifications/INTEGRATION_RETRY_FUNC.md §2.3",
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md §4.1–4.2"
+    ],
+    "scope": [
+     "RPC settle ghi attempt, đổi trạng thái, next_attempt_at",
+     "Thu hồi job quá lease (LEASE_EXPIRED) trong dispatch",
+     "Xếp mail INTEGRATION_FAILURE qua outbox khi FAILED_FINAL",
+     "Ghi audit integration.*"
+    ],
+    "outOfScope": [
+     "Nội dung mail — FG-10"
+    ],
+    "dod": [
+     "Assert SQL cho mọi chuyển trạng thái",
+     "Mail FAILED_FINAL chỉ xếp một lần (dedupe_key)"
+    ],
+    "blockedBy": [
+     "E13-05.1",
+     "E13-03.2",
+     "E13-04.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "E13-05.3",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-05",
+   "title": "Assert SQL máy trạng thái job: thử lại, lease, REJECTED, FAILED_FINAL (SPEC-YC-531)",
+   "body": {
+    "goal": "Test tự động phủ vòng đời job.",
+    "sources": [
+     {
+      "id": "SPEC-YC-531",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/function-specifications/INTEGRATION_RETRY_FUNC.md",
+     "architecture/target-architecture.md §6 (sơ đồ trạng thái)"
+    ],
+    "scope": [
+     "Chuỗi 5 lượt với thời gian giả lập",
+     "Quá lease, REJECTED không tự thử lại",
+     "FAILED_FINAL → mail"
+    ],
+    "outOfScope": [
+     "Test ca từng giao diện — FG-10"
+    ],
+    "dod": [
+     "Test xanh trong CI",
+     "Mỗi cạnh của sơ đồ trạng thái có ít nhất một ca"
+    ],
+    "blockedBy": [
+     "E13-05.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E13-06",
+   "kind": "story",
+   "epicId": "E-13",
+   "parentId": "EP-E-13",
+   "title": "Tài khoản môi trường thử cho 6 giao diện ngoài (IdP, bản đồ, SFTP, mail, archive, logger)",
+   "body": {
+    "goal": "Mỗi giao diện ngoài có tài khoản / điểm thử riêng cho dev, test, UAT để làm và chạy contract test không đụng hệ thống thật.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:test",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:UAT",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §3, §5",
+     "specs/_common/traceability.md (OPS-ENV-01)"
+    ],
+    "scope": [
+     "Yêu cầu cấp tài khoản thử từ khách",
+     "Tenant Entra thử + app registration; khoá bản đồ thử; SFTP thử; relay / hộp thư thử; đích archive thử; fixture logger"
+    ],
+    "outOfScope": [
+     "Dùng tài khoản thật ở prod — theo runbook cutover (ngoài backlog)",
+     "Đích archive thật — chờ E15-FG10-04"
+    ],
+    "dod": [
+     "Mỗi giao diện có tài khoản thử đăng ký trong tài liệu môi trường (không chứa secret)",
+     "Mỗi tài khoản thử gọi được bằng một lệnh kiểm kết nối"
+    ],
+    "premise": [
+     "PR-A-04",
+     "PR-D-04"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:story",
+    "team:Infra",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E13-06.1",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-06",
+   "title": "Gửi khách yêu cầu cấp tài khoản thử: tenant IdP, SFTP, relay, archive, bản đồ",
+   "body": {
+    "goal": "Khách nhận danh sách rõ việc cần cấp và hạn cần có; có ngày hỏi lại.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §3 bảng môi trường",
+     "architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md §8"
+    ],
+    "scope": [
+     "Danh sách theo giao diện: loại tài khoản, môi trường (test / UAT), hạn cần",
+     "Ghi rõ Entra: app registration riêng cho từng môi trường, nhóm test",
+     "Theo dõi ngày hỏi lại (kịch bản cấp trễ 3 ngày)"
+    ],
+    "outOfScope": [
+     "Câu hỏi làm rõ thiết kế — E15-*"
+    ],
+    "dod": [
+     "Bản yêu cầu đã gửi (giả lập), ghi ngày gửi và hạn trả lời",
+     "Bảng theo dõi từng tài khoản: đã cấp / chưa"
+    ],
+    "premise": [
+     "PR-A-04"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E13-06.2",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-06",
+   "title": "Tenant Entra thử + app registration + nhóm test cho 8 vai trò (IdP)",
+   "body": {
+    "goal": "Có tenant thử dùng được cho PoC E13-01 và SSO ở dev / test.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0009",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md §7–8",
+     "architecture/target-architecture.md §3"
+    ],
+    "scope": [
+     "App registration riêng cho mỗi môi trường, redirect URI /auth/callback",
+     "Nhóm test ánh xạ 8 ROLE, tài khoản thử có / không MFA",
+     "Admin consent quyền Graph tối thiểu"
+    ],
+    "outOfScope": [
+     "Chạy PoC — E13-01"
+    ],
+    "dod": [
+     "Đăng nhập thử bằng tài khoản thử thành công",
+     "Redirect URI đăng ký đủ cho từng môi trường"
+    ],
+    "premise": [
+     "PR-A-04"
+    ],
+    "blockedBy": [
+     "E13-06.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E13-06.3",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-06",
+   "title": "Khoá dịch vụ bản đồ thử hoặc stub có cache theo cặp điểm (IF-MAP-01)",
+   "body": {
+    "goal": "Môi trường dev / test gọi bản đồ không tốn licence thật.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §5 (IF-MAP-01)",
+     "specs/dispatch/technical-design/DSP_ROUTE_REVISION_TECH.md"
+    ],
+    "scope": [
+     "Khoá / endpoint thử theo licence của khách, hoặc stub trả thời gian di chuyển cố định",
+     "Biến môi trường riêng từng môi trường"
+    ],
+    "outOfScope": [
+     "Adapter gọi bản đồ và cache travel_times — FG-10 (L5-014)"
+    ],
+    "dod": [
+     "Lệnh kiểm kết nối trả thời gian di chuyển cho một cặp điểm mẫu",
+     "Khoá thử không nằm trong repo"
+    ],
+    "blockedBy": [
+     "E13-06.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E13-06.4",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-06",
+   "title": "Managed SFTP thử cho ERP: khoá SSH, host key ghim, thư mục, file mẫu (IF-ERP-01)",
+   "body": {
+    "goal": "Có SFTP thử hai chiều cho nhận / gửi 4 loại CSV.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:test",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §5 (IF-ERP-01)",
+     "specs/administration/technical-design/ADM_ERP_SFTP_EXCHANGE_TECH.md"
+    ],
+    "scope": [
+     "Thư mục nhận / gửi, khoá SSH riêng từng môi trường, host key ghim",
+     "File mẫu orders / inbound và file điều khiển ghi sau cùng"
+    ],
+    "outOfScope": [
+     "Handler ERP — FG-10 (L5-015)"
+    ],
+    "dod": [
+     "Lệnh kiểm kết nối đọc / ghi được file mẫu",
+     "Khoá không nằm trong repo"
+    ],
+    "blockedBy": [
+     "E13-06.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E13-06.5",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-06",
+   "title": "Relay mail thử + hộp thư bắt thư cho test / UAT (IF-MAIL-01)",
+   "body": {
+    "goal": "Mail thử không ra ngoài, kiểm được nội dung thư.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:UAT",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §5 (IF-MAIL-01)",
+     "specs/administration/technical-design/ADM_MAIL_OUTBOX_TECH.md"
+    ],
+    "scope": [
+     "SMTP TLS thử (relay của khách hoặc bắt thư nội bộ)",
+     "Hộp thư thử cho ROLE-007 / ROLE-008"
+    ],
+    "outOfScope": [
+     "Mẫu thư và gửi — FG-10 (L5-016)"
+    ],
+    "dod": [
+     "Gửi thử một thư qua SMTP TLS và đọc được ở hộp thư thử",
+     "Dev không có đường gửi tới địa chỉ thật"
+    ],
+    "blockedBy": [
+     "E13-06.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E13-06.6",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-06",
+   "title": "Đích archive thử cho gói ARCHIVE (IF-ARCH-01)",
+   "body": {
+    "goal": "Có đích nhận gói archive thử để chạy giao và thử lại.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §5 (IF-ARCH-01), §9 câu hỏi 4"
+    ],
+    "scope": [
+     "Đích thử theo giao thức giả định, gói đọc lại được",
+     "Giao thức là adapter thay được khi khách trả lời"
+    ],
+    "outOfScope": [
+     "Giao thức thật — chờ E15-FG10-04"
+    ],
+    "dod": [
+     "Gói mẫu giao tới đích thử và đọc lại",
+     "Ghi giao thức đã giả định trong tài liệu môi trường"
+    ],
+    "blockedBy": [
+     "E13-06.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E13-06.7",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-06",
+   "title": "Bộ fixture CSV 3 logger một định dạng cho test / UAT (IF-LOG-01)",
+   "body": {
+    "goal": "Có file logger mẫu: đúng, lệch hash, thiếu quãng, để test nạp file.",
+    "sources": [
+     {
+      "id": "env:test",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §5 (IF-LOG-01), §3",
+     "specs/temperature-quality/function-specifications/LOGGER_FILE_FUNC.md"
+    ],
+    "scope": [
+     "Fixture hợp lệ, trùng hash, khoảng trống sinh MISSING_READING, dòng sai định dạng",
+     "Dữ liệu giả, không dùng dữ liệu thật"
+    ],
+    "outOfScope": [
+     "Nạp dữ liệu logger thật — FG-12 (L5-019)"
+    ],
+    "dod": [
+     "Fixture nằm trong repo, mỗi file có mô tả kỳ vọng",
+     "Test nạp ở FG-07 dùng lại được"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E13-07",
+   "kind": "story",
+   "epicId": "E-13",
+   "parentId": "EP-E-13",
+   "title": "Khung contract test cho 6 giao diện ngoài chạy với môi trường thử",
+   "body": {
+    "goal": "Mọi adapter giao diện ngoài có chỗ cắm contract test dùng tài khoản thử và chạy trong CI.",
+    "sources": [
+     {
+      "id": "OPS-TEST-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "task-breakdown.md §1.3 (DoD tích hợp)",
+     "architecture/target-architecture.md §5"
+    ],
+    "scope": [
+     "Khung chạy contract test, đọc cấu hình tài khoản thử theo môi trường",
+     "Ví dụ mẫu cho một giao diện (relay mail) làm khuôn",
+     "Job CI chạy contract test theo lịch và khi đổi adapter"
+    ],
+    "outOfScope": [
+     "Viết contract test từng giao diện — issue giao diện ở FG-10 / FG-11"
+    ],
+    "dod": [
+     "Một contract test mẫu chạy xanh trong CI với relay thử",
+     "Giao diện không có tài khoản thử thì test báo skip có lý do, không giả xanh"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "blockedBy": [
+     "E13-06"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:QA",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E13-07.1",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-07",
+   "title": "Harness contract test: cấu hình theo môi trường, helper, ví dụ relay mail",
+   "body": {
+    "goal": "Khung dùng chung để viết contract test.",
+    "sources": [
+     {
+      "id": "OPS-TEST-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §5"
+    ],
+    "scope": [
+     "Loader cấu hình tài khoản thử (biến môi trường, không secret trong repo)",
+     "Helper dọn dữ liệu sau test",
+     "Ví dụ contract test mail relay thử"
+    ],
+    "outOfScope": [
+     "Contract test ERP, IdP, bản đồ, archive — issue giao diện tương ứng"
+    ],
+    "dod": [
+     "Ví dụ chạy xanh ở môi trường test",
+     "Hướng dẫn thêm contract test mới ≤ 1 trang"
+    ],
+    "blockedBy": [
+     "E13-06.5"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E13-07.2",
+   "kind": "task",
+   "epicId": "E-13",
+   "parentId": "E13-07",
+   "title": "Job CI contract test: secret theo môi trường, lịch chạy hằng đêm",
+   "body": {
+    "goal": "Contract test chạy tự động, không lộ secret.",
+    "sources": [
+     {
+      "id": "OPS-TEST-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §3"
+    ],
+    "scope": [
+     "Job CI riêng, secret theo môi trường, chạy hằng đêm và khi đổi thư mục adapter",
+     "Báo lỗi tới kênh nhóm"
+    ],
+    "outOfScope": [
+     "Pipeline build / deploy — E14-02"
+    ],
+    "dod": [
+     "Job chạy được trong CI và báo kết quả",
+     "Log job không in secret"
+    ],
+    "blockedBy": [
+     "E13-07.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-13",
+    "src:integration"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-01",
+   "kind": "story",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "4 môi trường dev / test / UAT / prod tách hẳn, secret riêng (OPS-ENV-01)",
+   "body": {
+    "goal": "Có 4 môi trường, mỗi môi trường một project Supabase Tokyo và một môi trường Vercel hnd1, cấu hình và dữ liệu đúng bảng môi trường.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:dev",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:test",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:UAT",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:prod",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0001",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §3",
+     "architecture/adr/ADR-0001-supabase-tokyo-and-vercel-hnd1.md",
+     "specs/_common/traceability.md (OPS-ENV-01)"
+    ],
+    "scope": [
+     "Project Supabase + môi trường Vercel cho dev / test / UAT / prod, vùng Tokyo / hnd1",
+     "Bộ secret và biến riêng từng môi trường; không khoá idp_sync_agent ở preview",
+     "Dev: seed giả (fixture R-06); test: seed giả + dataset khối lượng R-03; prod: khởi tạo sạch",
+     "Script kiểm tách môi trường"
+    ],
+    "outOfScope": [
+     "Nạp dữ liệu di trú đã che cho UAT — issue di trú ở FG-12 (L5-019)",
+     "Tài khoản thử các giao diện — E13-06"
+    ],
+    "dod": [
+     "Checklist cấu hình đạt ở cả 4 môi trường, kiểm bằng script",
+     "Không có secret hay khoá dùng chung giữa hai môi trường",
+     "UAT không chứa dữ liệu thật chưa che (kiểm bằng truy vấn mẫu)"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:story",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-01.1",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-01",
+   "title": "Dựng 4 project Supabase Tokyo + 4 môi trường Vercel hnd1 (ADR-0001)",
+   "body": {
+    "goal": "Hạ tầng 4 môi trường tồn tại và tách nhau.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0001",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:dev",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:test",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:UAT",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:prod",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §3",
+     "architecture/adr/ADR-0001-supabase-tokyo-and-vercel-hnd1.md"
+    ],
+    "scope": [
+     "Tạo project Supabase ap-northeast-1 và môi trường Vercel regions hnd1 cho từng môi trường",
+     "Domain / URL và redirect URI /auth/callback riêng từng môi trường",
+     "Ghi bảng môi trường vào tài liệu vận hành"
+    ],
+    "outOfScope": [
+     "Secret và Vault — E14-01.2"
+    ],
+    "dod": [
+     "Mỗi môi trường mở được trang đăng nhập ở URL riêng",
+     "Bảng môi trường khớp TA §3"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-01.2",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-01",
+   "title": "Secret, Vault, biến môi trường theo môi trường; không khoá idp_sync_agent ở preview",
+   "body": {
+    "goal": "Mỗi môi trường có bộ secret riêng, xoay được theo runbook.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §3"
+    ],
+    "scope": [
+     "Biến server cho SFTP, SMTP, Entra, JWT các role máy",
+     "Vault cho URL / secret worker (cùng E13-04.3)",
+     "Chặn preview theo nhánh khỏi khoá idp_sync_agent"
+    ],
+    "outOfScope": [
+     "Giá trị thật của tài khoản thử — E13-06"
+    ],
+    "dod": [
+     "Quét repo và log CI không thấy secret",
+     "Preview không đọc được khoá idp_sync_agent (test)"
+    ],
+    "blockedBy": [
+     "E14-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-01.3",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-01",
+   "title": "Seed giả fixture R-06 cho dev và dataset khối lượng R-03 cho test",
+   "body": {
+    "goal": "Dev và test có dữ liệu giả đúng quy mô, tái tạo được.",
+    "sources": [
+     {
+      "id": "env:dev",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "env:test",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §3, §4 (NFR-PERF-02)"
+    ],
+    "scope": [
+     "Seed giả theo fixture R-06 cho dev",
+     "Bộ sinh dataset khối lượng R-03 (lô 3 năm) cho test",
+     "Lệnh nạp / làm mới một bước"
+    ],
+    "outOfScope": [
+     "Dữ liệu thật đã che cho UAT — FG-12"
+    ],
+    "dod": [
+     "Nạp lại từ đầu ở dev và test chạy được bằng một lệnh",
+     "Số dòng dataset R-03 ghi trong README của bộ sinh"
+    ],
+    "blockedBy": [
+     "E14-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-01.4",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-01",
+   "title": "Script kiểm tách môi trường và parity cấu hình dev → prod",
+   "body": {
+    "goal": "Phát hiện được môi trường dùng chung secret, thiếu cấu hình hoặc có dữ liệu thật chưa che.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §3"
+    ],
+    "scope": [
+     "So khoá cấu hình giữa 4 môi trường (tên, không giá trị)",
+     "Kiểm không có secret trùng, redirect URI đúng",
+     "Truy vấn mẫu kiểm UAT đã che"
+    ],
+    "outOfScope": [
+     "Quy tắc che dữ liệu — FG-12"
+    ],
+    "dod": [
+     "Script chạy được và báo lỗi khi cố tình để thiếu một biến",
+     "Kết quả lưu làm bằng chứng cho checklist"
+    ],
+    "blockedBy": [
+     "E14-01.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-02",
+   "kind": "story",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "CI/CD và migration chỉ tiến — artifact checksum, phê duyệt, rollback (OPS-ENV-01)",
+   "body": {
+    "goal": "Mỗi bản phát hành mang đủ checksum artifact, diff cấu hình, phê duyệt, điểm PITR trước migration và đường rollback; migration chỉ tiến dev → test → UAT → prod.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0013",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-AVL-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-AVL-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md (Sẵn sàng, release)",
+     "architecture/target-architecture.md §3 (migration chỉ tiến), §4 (NFR-AVL-01)"
+    ],
+    "scope": [
+     "Pipeline build / test / deploy từng môi trường, phê duyệt trước prod",
+     "Migration expand → migrate → contract, chỉ tiến, ghi điểm PITR trước khi chạy",
+     "Migration có khoá chỉ trong cửa sổ 23:00–05:00 JST và có phê duyệt",
+     "Rollback app bằng Vercel promote bản trước"
+    ],
+    "outOfScope": [
+     "Job CI contract test — E13-07.2",
+     "Cutover và UAT — ngoài backlog (PR-D-02)"
+    ],
+    "dod": [
+     "Một bản phát hành chạy hết 4 môi trường qua pipeline, đủ 5 thứ của OPS-ENV-01",
+     "Pipeline từ chối migration có bước \"down\"",
+     "Diễn tập rollback app thành công một lần"
+    ],
+    "blockedBy": [
+     "E14-01"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-02.1",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-02",
+   "title": "Pipeline build/test/deploy 4 môi trường: checksum, diff cấu hình, phê duyệt (OPS-ENV-01)",
+   "body": {
+    "goal": "Triển khai lặp lại được, có bằng chứng từng bản.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0013",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md"
+    ],
+    "scope": [
+     "Build một artifact, ghi checksum, deploy cùng artifact lên các môi trường",
+     "Bước diff cấu hình và phê duyệt thủ công trước prod",
+     "Rollback bằng promote bản Vercel trước"
+    ],
+    "outOfScope": [
+     "Migration — E14-02.2"
+    ],
+    "dod": [
+     "Pipeline chạy xanh từ nhánh chính tới test tự động, UAT / prod có cổng phê duyệt",
+     "Lưu checksum và diff cấu hình cho mỗi lần phát hành"
+    ],
+    "blockedBy": [
+     "E14-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-02.2",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-02",
+   "title": "Pipeline migration chỉ tiến, ghi điểm PITR trước, cửa sổ 23:00–05:00 JST (ADR-0013)",
+   "body": {
+    "goal": "Migration lên UAT / prod an toàn và nằm ngoài giờ dịch vụ khi cần khoá.",
+    "sources": [
+     {
+      "id": "ADR-0013",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-AVL-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-AVL-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md",
+     "architecture/target-architecture.md §3"
+    ],
+    "scope": [
+     "Chạy migration theo thứ tự dev → test → UAT → prod",
+     "Ghi điểm PITR trước khi chạy ở UAT / prod",
+     "Chặn migration có khoá ngoài cửa sổ bảo trì đã phê duyệt"
+    ],
+    "outOfScope": [
+     "Quy ước viết migration — E14-02.3"
+    ],
+    "dod": [
+     "Chạy thử một migration qua 4 môi trường, điểm PITR được ghi",
+     "Migration có khoá bị chặn khi chạy ngoài cửa sổ (test)"
+    ],
+    "blockedBy": [
+     "E14-02.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-02.3",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-02",
+   "title": "Quy ước expand → migrate → contract và lint migration không có down (ADR-0013)",
+   "body": {
+    "goal": "Deploy ban ngày không cần dừng hệ thống.",
+    "sources": [
+     {
+      "id": "ADR-0013",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md"
+    ],
+    "scope": [
+     "Tài liệu quy ước cho BE: đổi schema 3 bước",
+     "Lint: chặn DROP / đổi kiểu cột phá tương thích trong cùng một migration với code mới",
+     "Ví dụ một đổi tên cột theo 3 bước"
+    ],
+    "outOfScope": [
+     "Viết migration của từng FG"
+    ],
+    "dod": [
+     "Lint chạy trong CI, có ca xanh và ca đỏ",
+     "Quy ước ≤ 2 trang, BE-1 / BE-2 đồng ý"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-02.4",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-02",
+   "title": "Cổng CI: unit, assert SQL, E2E smoke trên preview trước khi merge",
+   "body": {
+    "goal": "Không merge khi test chính đỏ.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "OPS-TEST-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "task-breakdown.md §1.3"
+    ],
+    "scope": [
+     "Job CI chạy unit, assert SQL, E2E smoke (đăng nhập, một luồng ghi)",
+     "Chặn merge khi đỏ"
+    ],
+    "outOfScope": [
+     "Hồi quy E2E từng FG"
+    ],
+    "dod": [
+     "Merge bị chặn khi cố tình làm một test đỏ",
+     "Thời gian job ghi lại làm mốc"
+    ],
+    "blockedBy": [
+     "E14-02.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E14-03",
+   "kind": "story",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "Quan sát: correlation ID server sinh, log JSON sạch, log drain vùng Nhật (ADR-0014)",
+   "body": {
+    "goal": "Từ mã lỗi trên màn tra được log route → RPC → audit → job bằng một UUID; log nằm ở đích trong vùng Nhật.",
+    "sources": [
+     {
+      "id": "NFR-OPS-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-OPS-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0014",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0014-observability-correlation-id-structured-logs.md (Lựa chọn 1–2)",
+     "architecture/target-architecture.md §4 (NFR-OPS-01)",
+     "specs/_common/api-conventions.md",
+     "specs/_common/log-convention.md"
+    ],
+    "scope": [
+     "Wrapper defineWriteRoute / defineReadRoute sinh UUID, header x-correlation-id, truyền p_correlation_id vào RPC",
+     "Log JSON một dòng mỗi bước, không tên / email / token / URL ký",
+     "Log drain Vercel và Supabase tới một đích vùng Nhật"
+    ],
+    "outOfScope": [
+     "Sửa từng RPC nhận p_correlation_id — issue RPC của FG",
+     "Cảnh báo và runbook — E14-04"
+    ],
+    "dod": [
+     "Request mẫu trả x-correlation-id và cùng UUID có ở log, audit_events",
+     "Test quét: log không có token, chữ ký, URL ký",
+     "Log chỉ có ở đích trong vùng Nhật"
+    ],
+    "blockedBy": [
+     "E14-01"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-03.1",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-03",
+   "title": "Wrapper route sinh correlation ID, header x-correlation-id, p_correlation_id (ADR-0014)",
+   "body": {
+    "goal": "Mọi route dùng chung một cách sinh và truyền correlation ID, không nhận id từ client.",
+    "sources": [
+     {
+      "id": "NFR-OPS-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0014",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0014-observability-correlation-id-structured-logs.md",
+     "specs/_common/api-conventions.md"
+    ],
+    "scope": [
+     "Sinh UUID mới mỗi request, bỏ qua header client",
+     "Đặt vào log, truyền vào RPC, trả ở header phản hồi",
+     "Màn hiện mã khi báo lỗi"
+    ],
+    "outOfScope": [
+     "Correlation ID của việc nền — E13-04.2 (id lần thử)"
+    ],
+    "dod": [
+     "Unit test: header client gửi lên bị bỏ qua",
+     "Mẫu một route ghi → audit_events.correlation_id khớp header"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-03.2",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-03",
+   "title": "Logger JSON có cấu trúc, lọc dữ liệu cá nhân và bí mật (ADR-0014)",
+   "body": {
+    "goal": "Log có đủ trường và không rò dữ liệu.",
+    "sources": [
+     {
+      "id": "NFR-OPS-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-OPS-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0014",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0014-observability-correlation-id-structured-logs.md (Lựa chọn 2)",
+     "specs/_common/log-convention.md"
+    ],
+    "scope": [
+     "Trường ts, level, correlationId, route / jobKind, userId, rpc, durationMs, outcome / code",
+     "Danh sách cấm: tên, email, ghi chú tự do, token, chữ ký, URL ký, byte tệp",
+     "Test quét log mẫu"
+    ],
+    "outOfScope": [
+     "Đích log — E14-03.3"
+    ],
+    "dod": [
+     "Unit test: chuỗi cấm không xuất hiện trong dòng log",
+     "Log đo được durationMs của route, RPC, gọi ngoài"
+    ],
+    "blockedBy": [
+     "E14-03.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-03.3",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-03",
+   "title": "Log drain Vercel + Supabase tới đích vùng Nhật, hạn giữ log (ADR-0014)",
+   "body": {
+    "goal": "Log tập trung, trong vùng Nhật, tìm được theo correlationId.",
+    "sources": [
+     {
+      "id": "NFR-OPS-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0014",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0014-observability-correlation-id-structured-logs.md",
+     "architecture/target-architecture.md §1 (Log drain)"
+    ],
+    "scope": [
+     "Chọn đích log trong vùng Nhật, cấu hình drain cho 4 môi trường",
+     "Hạn giữ log theo đề xuất (INTEGRATION_LOG 1 năm), chờ khách xác nhận — E15-16",
+     "Một truy vấn mẫu tìm theo correlationId"
+    ],
+    "outOfScope": [
+     "Cảnh báo trên đích log — E14-04.2"
+    ],
+    "dod": [
+     "Log của Vercel và Supabase xuất hiện ở đích trong vùng Nhật ở cả 4 môi trường",
+     "Truy vấn mẫu trả đủ chuỗi log một request"
+    ],
+    "blockedBy": [
+     "E14-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-04",
+   "kind": "story",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "Chỉ số, cảnh báo ba kênh, probe sẵn sàng và runbook (ADR-0014)",
+   "body": {
+    "goal": "Job 要対応, hàng đợi quá tuổi, lỗi 5xx và mất kết nối đều có cảnh báo tới đúng người kèm mã runbook; đo được sẵn sàng 99,5 % trong 05:00–23:00 JST.",
+    "sources": [
+     {
+      "id": "NFR-OPS-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-OPS-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0014",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-AVL-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-AVL-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0014-observability-correlation-id-structured-logs.md (Lựa chọn 3)",
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md (Sẵn sàng)",
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md §4.5"
+    ],
+    "scope": [
+     "Chỉ số DB (độ sâu và tuổi hàng đợi, FAILED_FINAL / REJECTED, thu hồi lease, purge FAILED, chép bản sao trễ) + cảnh báo qua mail outbox",
+     "Cảnh báo ở đích log (p95, 5xx, 401 route worker) và probe ngoài mỗi phút",
+     "Runbook cho mỗi mã cảnh báo",
+     "Báo cáo sẵn sàng tháng từ dữ liệu probe"
+    ],
+    "outOfScope": [
+     "Ngưỡng / kênh / người nhận thật — E15-16 (tạm dùng mặc định của ADR-0014)",
+     "Hypercare 4 tuần — ngoài backlog (PR-D-02)"
+    ],
+    "dod": [
+     "Mỗi loại cảnh báo gây được bằng tay ở môi trường test và tới đúng hộp thư thử",
+     "Mỗi mã cảnh báo có mục runbook",
+     "Báo cáo sẵn sàng tháng sinh được từ dữ liệu probe"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "blockedBy": [
+     "E14-03",
+     "E13-03"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-04.1",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-04",
+   "title": "View chỉ số DB + pg_cron 5 phút xếp cảnh báo qua private.enqueue_mail (ADR-0014)",
+   "body": {
+    "goal": "Cảnh báo từ DB dùng lại hàng đợi mail có chống trùng.",
+    "sources": [
+     {
+      "id": "ADR-0014",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-OPS-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0014-observability-correlation-id-structured-logs.md (bảng chỉ số)",
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md §4.5"
+    ],
+    "scope": [
+     "View độ sâu / tuổi việc cũ nhất của integration_jobs, mail_outbox, hàng in nhãn, FAILED_FINAL / REJECTED chưa chạy lại",
+     "Job pg_cron 5 phút, dedupe_key theo chỉ số × khung giờ, mã runbook trong thư"
+    ],
+    "outOfScope": [
+     "Bản sao tệp trễ — chỉ thêm view khi E14-06.2 xong"
+    ],
+    "dod": [
+     "Assert SQL: vượt ngưỡng sinh đúng một mail trong khung giờ",
+     "Thư mang mã runbook và id, không mang dữ liệu nghiệp vụ"
+    ],
+    "blockedBy": [
+     "E13-03.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-04.2",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-04",
+   "title": "Cảnh báo ở đích log và probe ngoài mỗi phút 05:00–23:00 JST, health check (ADR-0014)",
+   "body": {
+    "goal": "Hai kênh ngoài DB phát hiện được khi DB hoặc relay mail dừng.",
+    "sources": [
+     {
+      "id": "ADR-0014",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-AVL-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-AVL-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0014-observability-correlation-id-structured-logs.md",
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md"
+    ],
+    "scope": [
+     "Endpoint health check đọc được DB",
+     "Probe ngoài mỗi phút trong giờ dịch vụ, cảnh báo của dịch vụ probe",
+     "Cảnh báo p95 theo route (đọc 2 s, ghi 3 s), tỉ lệ 5xx, 401 route worker",
+     "Dữ liệu cho báo cáo sẵn sàng tháng"
+    ],
+    "outOfScope": [
+     "Chọn người nhận thật — E15-16"
+    ],
+    "dod": [
+     "Tắt DB ở test thì probe và đích log cảnh báo",
+     "Báo cáo tháng tính được số phút lỗi"
+    ],
+    "blockedBy": [
+     "E14-03.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-04.3",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-04",
+   "title": "Runbook theo mã cảnh báo: nguyên nhân, cách kiểm, xử lý, leo thang (ADR-0014)",
+   "body": {
+    "goal": "Người trực xử lý được cảnh báo mà không phải hỏi nhóm dev.",
+    "sources": [
+     {
+      "id": "ADR-0014",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-OPS-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0014-observability-correlation-id-structured-logs.md"
+    ],
+    "scope": [
+     "Một mục cho mỗi mã cảnh báo ở E14-04.1 và E14-04.2",
+     "Cách tra theo correlationId / id job",
+     "Đường leo thang"
+    ],
+    "outOfScope": [
+     "Runbook khôi phục — E14-06.4"
+    ],
+    "dod": [
+     "Mọi mã cảnh báo có mục runbook (đối chiếu bằng danh sách)",
+     "Một người ngoài nhóm chạy thử một mục theo văn bản"
+    ],
+    "blockedBy": [
+     "E14-04.1",
+     "E14-04.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-05",
+   "kind": "story",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "Kho đính kèm dùng chung — bucket riêng tư, URL ký, SHA-256 hai phía (L5-023)",
+   "body": {
+    "goal": "Ảnh kiểm hàng, POD, sự cố, deviation và CSV logger lưu thành tệp thật, tải lên thẳng kho bằng URL ký, byte được đối chiếu SHA-256 ở server.",
+    "sources": [
+     {
+      "id": "L5-023",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-540",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-242",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0011",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0011-attachment-storage-private-bucket-signed-urls.md",
+     "specs/_common/ATTACHMENT_FUNC.md",
+     "specs/system-design/api-design/ATTACHMENTS_UPLOAD_URLS_POST_API.md",
+     "specs/system-design/database-design/ATTACHMENT_DB.md",
+     "specs/_common/deviation-table.md (MOCK-11, L5-023)"
+    ],
+    "scope": [
+     "Bucket attachments riêng tư, bảng attachments + create_attachment_slots",
+     "Domain checkAttachmentDeclaration, evaluateAttachmentBinding, sha256Matches",
+     "API cấp URL tải lên, service gắn tệp dùng chung, tải xuống qua route kiểm quyền",
+     "Hook / component tải lên phía client (SHA-256 bằng WebCrypto)"
+    ],
+    "outOfScope": [
+     "Gắn tệp ở 6 API nghiệp vụ (INSPECTIONS_POST, POD_POST…) — issue API của FG tương ứng",
+     "UNLOAD_CHECK có cần ảnh thật không — E15-08",
+     "Bản sao tệp — E14-06"
+    ],
+    "dod": [
+     "Tải lên một tệp thật, hash lệch trả 422 ATTACHMENT_HASH_MISMATCH và dòng REJECTED",
+     "Không có URL công khai, authenticated không có policy đọc / ghi object",
+     "Log không chứa URL ký hay byte tệp"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "blockedBy": [
+     "E14-01.1"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-05.1",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-05",
+   "title": "Bucket attachments riêng tư, policy Storage, giới hạn tải lên, mã hoá khi lưu (ADR-0011)",
+   "body": {
+    "goal": "Kho tệp đúng chính sách bảo mật ở mọi môi trường.",
+    "sources": [
+     {
+      "id": "ADR-0011",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "L5-023",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0011-attachment-storage-private-bucket-signed-urls.md"
+    ],
+    "scope": [
+     "Tạo bucket riêng tư attachments cho 4 môi trường",
+     "Không policy đọc / ghi cho authenticated; ghi chỉ bằng role job_worker / URL ký",
+     "Tắt upsert, giới hạn kích thước theo rule attachment_limits"
+    ],
+    "outOfScope": [
+     "Bucket bản sao — E14-06.3"
+    ],
+    "dod": [
+     "Thử đọc / ghi trực tiếp bằng role authenticated bị từ chối",
+     "Cấu hình giống nhau ở 4 môi trường, kiểm bằng script"
+    ],
+    "blockedBy": [
+     "E14-01.1",
+     "E13-02.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-05.2",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-05",
+   "title": "DB — bảng attachments, create_attachment_slots, CHECK, trigger bất biến (SPEC-YC-540)",
+   "body": {
+    "goal": "Metadata tệp có bất biến ở DB: tệp chưa khớp SHA-256 không thể ở VERIFIED.",
+    "sources": [
+     {
+      "id": "SPEC-YC-540",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0011",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/ATTACHMENT_DB.md §4.1",
+     "architecture/adr/ADR-0011-attachment-storage-private-bucket-signed-urls.md"
+    ],
+    "scope": [
+     "Migration bảng attachments + CHECK + trigger chặn sửa cột mô tả",
+     "RPC create_attachment_slots kiểm vai trò và giới hạn, ghi PENDING + audit cùng transaction",
+     "rule_versions rule_key attachment_limits"
+    ],
+    "outOfScope": [
+     "Gắn tệp vào bản ghi nghiệp vụ — RPC của FG"
+    ],
+    "dod": [
+     "Assert SQL: không có đường nào đưa tệp lệch hash lên VERIFIED",
+     "Migration chạy qua dev → test"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-05.3",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-05",
+   "title": "Domain ATTACHMENT — khai báo, gắn tệp, so SHA-256 (SPEC-YC-540)",
+   "body": {
+    "goal": "Luật khai báo và gắn tệp nằm ở domain, test được.",
+    "sources": [
+     {
+      "id": "SPEC-YC-540",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/ATTACHMENT_FUNC.md §2.1–2.5"
+    ],
+    "scope": [
+     "Các hàm domain theo ATTACHMENT_FUNC",
+     "Mã lỗi gộp ATTACHMENT_* theo error-codes"
+    ],
+    "outOfScope": [
+     "Retention theo purpose chạy ở purge — FG-09"
+    ],
+    "dod": [
+     "Unit test mọi nhánh gồm biên dung lượng, MIME, hết hạn",
+     "Trường chuỗi và ngày giờ theo PR-A-08"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-05.4",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-05",
+   "title": "API upload-urls — kiểm quyền theo purpose, ký URL tải lên (SPEC-YC-242)",
+   "body": {
+    "goal": "Client xin được URL tải lên có ký, một lần, hạn ngắn.",
+    "sources": [
+     {
+      "id": "SPEC-YC-242",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0011",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/api-design/ATTACHMENTS_UPLOAD_URLS_POST_API.md",
+     "architecture/adr/ADR-0011-attachment-storage-private-bucket-signed-urls.md"
+    ],
+    "scope": [
+     "Route theo mẫu defineWriteRoute, kiểm quyền màn suy từ purpose",
+     "Gọi create_attachment_slots, ký URL hạn uploadUrlTtlSec",
+     "storage_path do server sinh, không chứa tên tệp"
+    ],
+    "outOfScope": [
+     "Gắn tệp và tải xuống — E14-05.5"
+    ],
+    "dod": [
+     "Test route: purpose sai quyền bị từ chối, khai báo sai bị 422",
+     "Phản hồi không lộ storage_path"
+    ],
+    "blockedBy": [
+     "E14-05.2",
+     "E14-05.3",
+     "E14-05.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-05.5",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-05",
+   "title": "Service gắn tệp dùng chung + tải xuống qua route kiểm quyền (ADR-0011)",
+   "body": {
+    "goal": "Một service cho 6 API: đọc lại byte, tính SHA-256 server, gắn VERIFIED hoặc REJECTED; tải xuống bằng URL ký ngắn hạn.",
+    "sources": [
+     {
+      "id": "SPEC-YC-540",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0011",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0011-attachment-storage-private-bucket-signed-urls.md",
+     "specs/_common/ATTACHMENT_FUNC.md §2.4–2.5"
+    ],
+    "scope": [
+     "Service bindAttachment dùng evaluateAttachmentBinding + sha256Matches",
+     "reject_attachment khi lệch hash, mã 422 ATTACHMENT_HASH_MISMATCH",
+     "Route tải xuống kiểm quyền màn rồi ký URL ngắn hạn"
+    ],
+    "outOfScope": [
+     "Hạn giữ và purge object — FG-09 (ADR-0012)"
+    ],
+    "dod": [
+     "Test tích hợp với bucket thật ở test: khớp → VERIFIED, lệch → REJECTED",
+     "Tải xuống không có quyền bị từ chối"
+    ],
+    "blockedBy": [
+     "E14-05.4"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-05.6",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-05",
+   "title": "Job dọn slot PENDING quá hạn qua worker, xoá object tương ứng (ADR-0011)",
+   "body": {
+    "goal": "Slot tải lên không dùng không tồn đọng.",
+    "sources": [
+     {
+      "id": "ADR-0011",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0011-attachment-storage-private-bucket-signed-urls.md",
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md"
+    ],
+    "scope": [
+     "Handler worker xoá slot PENDING quá hạn và object (nếu có)",
+     "Ghi audit, log mang attachmentId"
+    ],
+    "outOfScope": [
+     "Pha object của purge — FG-09"
+    ],
+    "dod": [
+     "Assert SQL / test: slot quá hạn bị dọn, slot còn hạn giữ nguyên",
+     "Chạy lại không lỗi (idempotent)"
+    ],
+    "blockedBy": [
+     "E13-04",
+     "E14-05.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-05.7",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-05",
+   "title": "Hook tải lên phía client: SHA-256 WebCrypto, xin URL, PUT thẳng lên kho (SPEC-YC-242)",
+   "body": {
+    "goal": "Một cách dùng chung cho mọi màn cần đính kèm.",
+    "sources": [
+     {
+      "id": "SPEC-YC-242",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0011",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0011-attachment-storage-private-bucket-signed-urls.md",
+     "specs/system-design/api-design/ATTACHMENTS_UPLOAD_URLS_POST_API.md"
+    ],
+    "scope": [
+     "Hook tính SHA-256 bằng WebCrypto, gọi upload-urls, PUT byte",
+     "Trạng thái tiến độ / lỗi, hiện mã correlation khi lỗi",
+     "Hỗ trợ gọi lại từ hàng đợi offline POD (xin URL lúc gửi lại)"
+    ],
+    "outOfScope": [
+     "Gắn vào từng màn — issue màn của FG"
+    ],
+    "dod": [
+     "Test component: hash đúng gửi lên, lỗi hiện thông báo tiếng Nhật",
+     "Dùng được cho ≥ 2 màn mẫu"
+    ],
+    "blockedBy": [
+     "E14-05.4"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "E14-05.8",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-05",
+   "title": "Assert SQL + integration kho tệp: hash lệch, hết hạn, sai purpose, không đường công khai",
+   "body": {
+    "goal": "Test tự động phủ bất biến của kho tệp.",
+    "sources": [
+     {
+      "id": "ADR-0011",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-540",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "L5-023",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0011-attachment-storage-private-bucket-signed-urls.md"
+    ],
+    "scope": [
+     "Hash lệch, slot hết hạn, sai purpose, người tải ≠ người gọi",
+     "Role authenticated không đọc / ghi object trực tiếp"
+    ],
+    "outOfScope": [
+     "E2E tải ảnh trên từng màn — hồi quy của FG"
+    ],
+    "dod": [
+     "Test xanh trong CI ở môi trường test",
+     "Mỗi bất biến của ADR-0011 có ít nhất một ca"
+    ],
+    "blockedBy": [
+     "E14-05.5"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E14-06",
+   "kind": "story",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "Sao lưu: PITR DB, bản sao tệp mỗi 15 phút, runbook khôi phục RTO 4 giờ (ADR-0013)",
+   "body": {
+    "goal": "DB và tệp cùng RPO 15 phút và khôi phục trong 4 giờ theo runbook đã viết.",
+    "sources": [
+     {
+      "id": "NFR-BCP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-BCP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0013",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md",
+     "architecture/target-architecture.md §4 (NFR-BCP-01)"
+    ],
+    "scope": [
+     "PITR cho prod và UAT",
+     "Bucket thứ hai ở project khác trong vùng Nhật + job chép bổ sung 15 phút + đối soát hằng ngày",
+     "Runbook khôi phục 6 bước"
+    ],
+    "outOfScope": [
+     "Diễn tập restore — E14-11",
+     "Xác minh SLA / PITR của gói — E15-15",
+     "Sự cố cả vùng — chờ E15-15"
+    ],
+    "dod": [
+     "PITR bật ở prod và UAT, cửa sổ giữ ghi lại",
+     "Tệp VERIFIED mới xuất hiện ở bản sao trong ≤ 15 phút (đo)",
+     "Runbook khôi phục được đọc và duyệt"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "blockedBy": [
+     "E14-05"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-06.1",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-06",
+   "title": "Bật PITR prod + UAT, kiểm cửa sổ giữ và độ trễ WAL (ADR-0013)",
+   "body": {
+    "goal": "DB khôi phục được về thời điểm bất kỳ trong cửa sổ.",
+    "sources": [
+     {
+      "id": "ADR-0013",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-BCP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-BCP-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md"
+    ],
+    "scope": [
+     "Bật PITR ở prod, UAT",
+     "Ghi cửa sổ giữ và độ trễ WAL đo được",
+     "Ghi điểm PITR trước migration (nối với E14-02.2)"
+    ],
+    "outOfScope": [
+     "Số SLA hợp đồng — E15-15"
+    ],
+    "dod": [
+     "Khôi phục thử về một thời điểm ở UAT thành công",
+     "Số cửa sổ giữ / độ trễ đưa vào ADR-0013"
+    ],
+    "blockedBy": [
+     "E14-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-06.2",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-06",
+   "title": "Worker chép bổ sung tệp mỗi 15 phút + đối soát hằng ngày sang bucket thứ hai (ADR-0013)",
+   "body": {
+    "goal": "Mọi tệp VERIFIED có bản sao khớp SHA-256.",
+    "sources": [
+     {
+      "id": "ADR-0013",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-BCP-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md (Tệp — bất biến + bản sao thứ hai)"
+    ],
+    "scope": [
+     "Handler chép tệp VERIFIED có verified_at sau mốc lần trước, mỗi 15 phút",
+     "Đối soát hằng ngày: object thiếu hoặc SHA-256 lệch",
+     "Pha object của purge xoá cả hai bucket (nối FG-09)"
+    ],
+    "outOfScope": [
+     "Bucket và khoá ghi — E14-06.3"
+    ],
+    "dod": [
+     "Test: tệp mới có ở bản sao ≤ 15 phút, đối soát bắt được object thiếu",
+     "Chạy lại không chép trùng"
+    ],
+    "blockedBy": [
+     "E13-04",
+     "E14-05.2",
+     "E14-06.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-06.3",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-06",
+   "title": "Bucket bản sao ở project Supabase khác trong vùng Nhật, khoá chỉ thêm object (ADR-0013)",
+   "body": {
+    "goal": "Bản sao tệp tách khỏi project chính, không xoá được từ phía bucket chính.",
+    "sources": [
+     {
+      "id": "ADR-0013",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md"
+    ],
+    "scope": [
+     "Tạo project và bucket thứ hai trong vùng Nhật",
+     "Khoá ghi chỉ có quyền thêm object ở bucket đích",
+     "Biến môi trường cho worker"
+    ],
+    "outOfScope": [
+     "Nếu nhà cung cấp không có vùng thứ hai trong Nhật — E15-15"
+    ],
+    "dod": [
+     "Thử xoá / đọc bucket chính bằng khoá bản sao bị từ chối",
+     "Cấu hình ghi lại trong tài liệu môi trường"
+    ],
+    "blockedBy": [
+     "E14-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-06.4",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-06",
+   "title": "Runbook khôi phục RTO 4 giờ theo 6 bước của ADR-0013 (NFR-BCP-01)",
+   "body": {
+    "goal": "Có văn bản khôi phục theo 6 bước của ADR-0013, dùng được khi sự cố.",
+    "sources": [
+     {
+      "id": "ADR-0013",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-BCP-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md (Khôi phục — runbook)"
+    ],
+    "scope": [
+     "6 bước: tuyên bố sự cố, PITR về T, đối soát tệp, xử lý purge sau T, job tích hợp và mail sau T, kiểm nhanh luồng chấm",
+     "Danh sách sự kiện mail cần báo lại sau T",
+     "Trang bảo trì chặn ghi"
+    ],
+    "outOfScope": [
+     "Diễn tập — E14-11"
+    ],
+    "dod": [
+     "Runbook có người làm và thời gian ước tính từng bước",
+     "Được duyệt bởi PM / BrSE"
+    ],
+    "blockedBy": [
+     "E14-06.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-07",
+   "kind": "story",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "Hiệu năng: index lô, dataset R-03, load test 80 người, truy vết 3 năm ≤ 60 giây (NFR-PERF)",
+   "body": {
+    "goal": "Có số đo thật: p95 đọc ≤ 2 giây, ghi ≤ 3 giây ở 80 người cùng lúc và truy vết lô 3 năm ≤ 60 giây trên dataset khối lượng.",
+    "sources": [
+     {
+      "id": "NFR-PERF-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-PERF-02",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-PERF-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-PERF-02",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0001",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §4 (NFR-PERF-01, NFR-PERF-02)",
+     "specs/trace-recall/function-specifications/TRACEABILITY_FUNC.md §3.2",
+     "specs/system-design/database-design/INBOUND_INVENTORY_DB.md",
+     "specs/system-design/database-design/trace-recall/TRACE_RECALL_DB.md"
+    ],
+    "scope": [
+     "Thêm 4 index còn thiếu trên lots theo spec; giới hạn theo lô khác nhau",
+     "Dataset khối lượng R-03 ở môi trường test",
+     "Load test 80 người và đo truy vết 3 năm; sửa điểm nghẽn tìm thấy"
+    ],
+    "outOfScope": [
+     "Timeout bản đồ 3 giây và cache travel_times — FG-10 (L5-014)"
+    ],
+    "dod": [
+     "Báo cáo load test: p95 đọc / ghi ở 80 người, kèm cấu hình và dataset",
+     "Truy vết lô 3 năm ≤ 60 giây (EXPLAIN + thời gian đo)",
+     "Không đạt thì có issue sửa kèm số"
+    ],
+    "blockedBy": [
+     "E14-01.3"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-07.1",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-07",
+   "title": "DB — thêm 4 index còn thiếu trên lots cho các trục truy vết (NFR-PERF-02)",
+   "body": {
+    "goal": "Truy vết lô dùng index cho mọi trục tìm.",
+    "sources": [
+     {
+      "id": "NFR-PERF-02",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-PERF-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/INBOUND_INVENTORY_DB.md (mục lịch sử 0.2.1)",
+     "specs/trace-recall/function-specifications/TRACEABILITY_FUNC.md §3.2"
+    ],
+    "scope": [
+     "Migration 4 index theo spec, kiểm EXPLAIN từng trục tìm",
+     "Giới hạn theo lô khác nhau trong truy vấn truy vết"
+    ],
+    "outOfScope": [
+     "Màn truy vết — FG-08"
+    ],
+    "dod": [
+     "EXPLAIN từng trục dùng index trên dataset R-03",
+     "Migration chạy qua dev → test, forward-only"
+    ],
+    "blockedBy": [
+     "E14-01.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-07.2",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-07",
+   "title": "Bộ kịch bản load test 80 người cùng lúc ở môi trường test (NFR-PERF-01)",
+   "body": {
+    "goal": "Chạy lại được phép đo p95 đọc / ghi.",
+    "sources": [
+     {
+      "id": "NFR-PERF-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-PERF-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §4"
+    ],
+    "scope": [
+     "Kịch bản theo luồng chính: đọc danh sách, ghi nhập / xuất / POD",
+     "80 người dùng ảo, p95 tách đọc / ghi",
+     "Báo cáo kèm cấu hình môi trường"
+    ],
+    "outOfScope": [
+     "Sửa điểm nghẽn — issue riêng nếu có"
+    ],
+    "dod": [
+     "Chạy ở test với dataset R-03, ra báo cáo p95 đọc và ghi",
+     "Kịch bản nằm trong repo, chạy bằng một lệnh"
+    ],
+    "blockedBy": [
+     "FG08-03.1",
+     "E14-01.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E14-07.3",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-07",
+   "title": "Đo truy vết lô 3 năm ≤ 60 giây trên dataset R-03 (NFR-PERF-02)",
+   "body": {
+    "goal": "Có số đo thật cho NFR-PERF-02.",
+    "sources": [
+     {
+      "id": "NFR-PERF-02",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-PERF-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §4",
+     "specs/trace-recall/function-specifications/TRACEABILITY_FUNC.md §3.2"
+    ],
+    "scope": [
+     "Chạy truy vết xuôi / ngược trên dataset 3 năm",
+     "Ghi thời gian từng trục tìm"
+    ],
+    "outOfScope": [
+     "Tối ưu thêm nếu trượt — issue riêng"
+    ],
+    "dod": [
+     "Kết quả ≤ 60 giây mỗi trục hoặc có issue sửa kèm số đo",
+     "Báo cáo lưu trong repo"
+    ],
+    "blockedBy": [
+     "FG08-03.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E14-08",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "Threat model STRIDE cho 6 ranh giới tin cậy B1–B6 (kiểm bảo mật NFR-SEC)",
+   "body": {
+    "goal": "Có mô hình mối đe doạ cho 6 ranh giới và danh sách việc xử lý còn lại trước go-live.",
+    "sources": [
+     {
+      "id": "NFR-SEC-03",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §2 (B1–B6)",
+     "task-breakdown.md §1.5 (E-14)"
+    ],
+    "scope": [
+     "STRIDE từng ranh giới B1–B6 theo target-architecture §2",
+     "Rủi ro còn lại, mức độ, người xử lý",
+     "Đối chiếu với 3 role máy: job_worker, idp_sync_agent, label_print_agent"
+    ],
+    "outOfScope": [
+     "Sửa lỗi tìm ra — issue riêng theo mức độ"
+    ],
+    "dod": [
+     "Tài liệu threat model trong repo, mỗi ranh giới có ≥ 1 mối đe doạ và cách giảm",
+     "Mỗi rủi ro mở có người nhận"
+    ],
+    "premise": [
+     "PR-D-02"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-09",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "SBOM + quét lỗ hổng phụ thuộc trong CI, ngưỡng chặn phát hành (OPS-ENV-01)",
+   "body": {
+    "goal": "Mỗi bản phát hành có SBOM và kết quả quét lỗ hổng; lỗ hổng mức cao chặn phát hành.",
+    "sources": [
+     {
+      "id": "OPS-ENV-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "NFR-SEC-03",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "task-breakdown.md §1.5 (E-14)",
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md (release 5 thứ)"
+    ],
+    "scope": [
+     "Sinh SBOM trong pipeline, lưu cùng artifact",
+     "Quét phụ thuộc, ngưỡng chặn theo mức độ",
+     "Quy trình xử lý ngoại lệ có thời hạn"
+    ],
+    "outOfScope": [
+     "Kiểm giấy phép — nếu cần làm issue riêng"
+    ],
+    "dod": [
+     "SBOM đính kèm bản phát hành thử",
+     "Cố tình thêm gói có lỗ hổng cao thì pipeline chặn"
+    ],
+    "premise": [
+     "PR-D-02"
+    ],
+    "blockedBy": [
+     "E14-02.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-10",
+   "kind": "story",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "Tự đánh giá WCAG 2.2 AA: kiểm tự động trong CI + checklist tay kèm bằng chứng (NFR-ACC-01)",
+   "body": {
+    "goal": "Mỗi bản phát hành có bằng chứng tự đánh giá truy cập cho mọi màn.",
+    "sources": [
+     {
+      "id": "NFR-ACC-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-ACC-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §4 (NFR-ACC-01)",
+     "specs/_common/wireframe/ia-design.html"
+    ],
+    "scope": [
+     "Quét tự động bàn phím / nhãn / tương phản trên mọi màn trong CI",
+     "Checklist tay: focus, lỗi, màn kho số to và quét trước",
+     "Mẫu báo cáo tự đánh giá mỗi bản phát hành"
+    ],
+    "outOfScope": [
+     "Sửa lỗi từng màn — issue sửa màn của FG"
+    ],
+    "dod": [
+     "Báo cáo tự đánh giá đầu tiên với bằng chứng ảnh / log",
+     "Quét tự động chạy trong CI và liệt kê lỗi theo màn"
+    ],
+    "premise": [
+     "PR-D-02"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:story",
+    "team:QA",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E14-10.1",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-10",
+   "title": "Quét truy cập tự động mọi màn trong CI (axe + Playwright)",
+   "body": {
+    "goal": "Phát hiện lỗi truy cập cơ bản tự động.",
+    "sources": [
+     {
+      "id": "NFR-ACC-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-ACC-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §4"
+    ],
+    "scope": [
+     "Quét từng màn theo danh sách route",
+     "Báo cáo lỗi theo màn, ngưỡng chặn có thể đặt",
+     "Chạy trong CI"
+    ],
+    "outOfScope": [
+     "Đánh giá tay — E14-10.2"
+    ],
+    "dod": [
+     "Job CI chạy và xuất báo cáo theo màn",
+     "Cố tình bỏ nhãn một ô thì quét bắt được"
+    ],
+    "blockedBy": []
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E14-10.2",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-10",
+   "title": "Checklist tự đánh giá WCAG 2.2 AA bằng tay + mẫu báo cáo mỗi bản phát hành",
+   "body": {
+    "goal": "Phần không tự động hoá được có người kiểm và có bằng chứng.",
+    "sources": [
+     {
+      "id": "NFR-ACC-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-ACC-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §4"
+    ],
+    "scope": [
+     "Checklist bàn phím, focus, thông báo lỗi, tương phản, màn kho số to và quét trước",
+     "Chạy thử trên một mẫu màn mỗi FG",
+     "Mẫu báo cáo kèm bằng chứng"
+    ],
+    "outOfScope": [
+     "Sửa lỗi — issue của FG"
+    ],
+    "dod": [
+     "Checklist và một báo cáo mẫu đã điền cho các màn mẫu",
+     "Lỗi tìm thấy được ghi thành issue gắn đúng FG"
+    ],
+    "blockedBy": [
+     "E14-10.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "QA-1"
+  },
+  {
+   "id": "E14-11",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "Diễn tập restore trên UAT: PITR về T, đối soát tệp từ bản sao, đo RTO / RPO (ADR-0013)",
+   "body": {
+    "goal": "Có số RTO / RPO thật; trượt mục tiêu thì ghi hành động khắc phục.",
+    "sources": [
+     {
+      "id": "NFR-BCP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-BCP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0013",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md (Diễn tập)"
+    ],
+    "scope": [
+     "Chạy runbook E14-06.4 trên UAT",
+     "Đo thời gian từng bước, RTO và RPO thật",
+     "Ghi corrective action nếu trượt"
+    ],
+    "outOfScope": [
+     "Diễn tập hằng quý sau go-live — ngoài backlog"
+    ],
+    "dod": [
+     "Báo cáo diễn tập có thời gian từng bước, RTO ≤ 4 giờ và RPO ≤ 15 phút hoặc có corrective action",
+     "Runbook sửa theo điểm vướng khi diễn tập"
+    ],
+    "premise": [
+     "PR-D-02"
+    ],
+    "blockedBy": [
+     "E14-06"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-12",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "Diễn tập quan sát: gây lỗi, cảnh báo tới đúng nơi, tra bằng correlationId (ADR-0014)",
+   "body": {
+    "goal": "Chứng minh cảnh báo và runbook dùng được trước go-live.",
+    "sources": [
+     {
+      "id": "NFR-OPS-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "nfr:NFR-OPS-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0014",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/adr/ADR-0014-observability-correlation-id-structured-logs.md"
+    ],
+    "scope": [
+     "Gây: job FAILED_FINAL, hàng đợi quá tuổi, DB dừng ngắn, 5xx tăng",
+     "Kiểm cảnh báo tới hộp thư thử ở cả ba kênh",
+     "Tra nguyên nhân bằng correlationId theo runbook"
+    ],
+    "outOfScope": [
+     "Hypercare — ngoài backlog"
+    ],
+    "dod": [
+     "Mỗi tình huống: thời gian từ lỗi tới cảnh báo và tới tìm ra nguyên nhân",
+     "Điểm hở runbook ghi thành sửa trong E14-04.3"
+    ],
+    "premise": [
+     "PR-D-02"
+    ],
+    "blockedBy": [
+     "E14-04"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Infra",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "Infra"
+  },
+  {
+   "id": "E14-13",
+   "kind": "story",
+   "epicId": "E-14",
+   "parentId": "EP-E-14",
+   "title": "Gỡ phần chỉ dành cho prototype: demo reset, truncate, tài khoản demo (DEV-008)",
+   "body": {
+    "goal": "Production không còn nút, job hay hàm xoá dữ liệu demo; dữ liệu append-only không thể bị xoá bởi đường prototype.",
+    "sources": [
+     {
+      "id": "env:prod",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (DEV-008)",
+     "architecture/target-architecture.md §3, §6 (không có demo-reset-daily ở production)"
+    ],
+    "scope": [
+     "Huỷ lịch demo-reset-daily, gỡ private.truncate_demo_data() và seed-reset khỏi đường prod",
+     "Gỡ nút / route reset demo nếu có",
+     "Script kiểm prod sạch phần prototype"
+    ],
+    "outOfScope": [
+     "Thay tài khoản demo bằng SSO — FG-11 (L5-013)"
+    ],
+    "dod": [
+     "Ở UAT / prod không còn job cron demo-reset, hàm truncate, nút reset",
+     "Script kiểm chạy trong pipeline và đỏ khi cố tình thêm lại"
+    ],
+    "premise": [
+     "PR-D-02"
+    ],
+    "blockedBy": [
+     "E14-02.1"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-13.1",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-13",
+   "title": "Migration gỡ demo-reset-daily và truncate_demo_data khỏi prod (DEV-008)",
+   "body": {
+    "goal": "Không còn đường xoá dữ liệu demo ở môi trường thật.",
+    "sources": [
+     {
+      "id": "env:prod",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (DEV-008)",
+     "architecture/target-architecture.md §6"
+    ],
+    "scope": [
+     "Migration tiến: cron.unschedule demo-reset-daily, DROP FUNCTION private.truncate_demo_data()",
+     "Chỉ dev dùng seed-reset qua script ngoài migration",
+     "Gỡ nút reset ở UI nếu có"
+    ],
+    "outOfScope": [
+     "Seed giả cho dev — E14-01.3"
+    ],
+    "dod": [
+     "Assert SQL: hàm và job không tồn tại sau migration",
+     "Dev vẫn nạp lại được bằng script seed"
+    ],
+    "blockedBy": [
+     "E14-01.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "E14-13.2",
+   "kind": "task",
+   "epicId": "E-14",
+   "parentId": "E14-13",
+   "title": "Script kiểm prod không còn phần chỉ dành cho prototype (DEV-008)",
+   "body": {
+    "goal": "Chặn tự động việc đưa lại phần prototype lên prod.",
+    "sources": [
+     {
+      "id": "env:prod",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §3"
+    ],
+    "scope": [
+     "Kiểm cron, hàm, route reset, tài khoản demo ở UAT / prod",
+     "Chạy trong pipeline trước khi lên prod"
+    ],
+    "outOfScope": [
+     "Quản lý tài khoản thật — FG-11"
+    ],
+    "dod": [
+     "Pipeline đỏ khi thêm lại một job reset thử ở test",
+     "Báo cáo kiểm lưu làm bằng chứng phát hành"
+    ],
+    "blockedBy": [
+     "E14-13.1",
+     "E14-02.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-14",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E15-01",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Xác nhận ảnh kiểm hàng nhập là bắt buộc, sửa story E-02-S02 (L5-002)",
+   "body": {
+    "goal": "Khách xác nhận ảnh khi kiểm hàng nhập là bắt buộc để sửa lại story LAB-1 cho khớp code và RFP.",
+    "sources": [
+     {
+      "id": "L5-002",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (DEV-005, L5-002)"
+    ],
+    "scope": [
+     "Hỏi: ảnh kiểm hàng nhập có bắt buộc không, không ngoại lệ nào?",
+     "Nếu xác nhận: sửa story-E-02-S02 dòng 67 (tài liệu LAB-1)",
+     "Trong lúc chờ: giữ theo code (photo_path not null, đúng RFP), theo DEV-005."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "DEV-005",
+     "L5-009"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-02",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Xác nhận vai trò thao tác màn temp-import (L5-004)",
+   "body": {
+    "goal": "Khách xác nhận vai nào được thao tác màn nạp CSV nhiệt (temp-import) hiện đang là giả định.",
+    "sources": [
+     {
+      "id": "L5-004",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (DEV-011, L5-004)",
+     "docs/screen-access-overrides.json (theo DEV-011)"
+    ],
+    "scope": [
+     "Hỏi: vai trò nào được nạp / sửa nạp logger; 5 màn システム実行 có ai thao tác tay không",
+     "Trong lúc chờ: giữ quyền theo override đã duyệt 26/9 (ADR-0004), theo DEV-011."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "DEV-011",
+     "L5-022"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-03",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Hỏi khách về Entra ID: Conditional Access, nhóm, admin consent, amr (arch-q:3)",
+   "body": {
+    "goal": "Khách xác nhận cấu hình Entra ID cần cho SSO: MFA, thiết bị được quản lý, nhóm, quyền Graph, phát amr.",
+    "sources": [
+     {
+      "id": "arch-q:3",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §9 câu hỏi 3",
+     "architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md §8"
+    ],
+    "scope": [
+     "Hỏi: Conditional Access bật MFA cho nhóm ROLE-007 / ROLE-008 và compliant device cho ROLE-005?",
+     "Hỏi: gán nhóm cho ứng dụng, admin consent quyền Graph, tenant có phát amr không?",
+     "Trong lúc chờ: dùng giả định A-10 (MFA cho ROLE-007 / ROLE-008, thiết bị quản lý cho ROLE-005); PoC E13-01 trả lời phần kỹ thuật."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "E13-01",
+     "E13-06.2",
+     "L5-013"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-04",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Yêu cầu khách/LAB-1 bổ sung 5 dòng ma trận F-066..F-070 (L5-005)",
+   "body": {
+    "goal": "Ma trận vai trò × chức năng của LAB-1 đủ 70 chức năng.",
+    "sources": [
+     {
+      "id": "L5-005",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (DEV-012, L5-005)"
+    ],
+    "scope": [
+     "Yêu cầu bổ sung dòng ma trận cho F-066..F-070 vào role-list (không sửa bản chụp lab1-source)",
+     "Trong lúc chờ: quyền theo giả định A-7 (print agent), A-8 và A-20 của LAB-4."
+    ],
+    "outOfScope": [
+     "Sửa bản chụp lab1-source/ — không làm"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "DEV-012",
+     "L5-032"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-05",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Chốt: lô 解除済み có được đảo lại về cách ly khi tái phát alarm (L5-008)",
+   "body": {
+    "goal": "Khách quyết định luồng trạng thái lô có cho phép RELEASED → QUARANTINE hay chỉ một chiều.",
+    "sources": [
+     {
+      "id": "L5-008",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (DEV-016, L5-008)"
+    ],
+    "scope": [
+     "Hỏi: tái phát alarm sau khi giải phóng, lô có phải về cách ly không?",
+     "Nếu không: bỏ nhánh RELEASED → QUARANTINE trong change_lot_status",
+     "Trong lúc chờ: giữ theo code (cho phép đảo, an toàn hơn), theo DEV-016 quyết định A."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "DEV-016"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-06",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Xác nhận đổi role-list ROLE-003 × F-036 từ ─ sang ✅ (L5-012)",
+   "body": {
+    "goal": "Khách xác nhận ROLE-003 có quyền ở claim-detail / claim-list để bỏ đánh dấu ngoại lệ.",
+    "sources": [
+     {
+      "id": "L5-012",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (DEV-035, L5-012)",
+     "specs/_common/role-screen-matrix.md"
+    ],
+    "scope": [
+     "Hỏi: đổi ô ma trận ROLE-003 × F-036 sang ✅?",
+     "Nếu xác nhận: sửa role-list LAB-1, bỏ ‡ ngoại lệ",
+     "Trong lúc chờ: giữ override sourceMandated và RPC add_claim_event hiện có, theo DEV-035."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "DEV-035",
+     "L5-032"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-07",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Tra lại nguồn / khách cho ngưỡng severity cảnh báo nhiệt 30 / 60 phút (L5-020)",
+   "body": {
+    "goal": "Ngưỡng 30 / 60 phút có nguồn thật; rule_versions temp_alarm đổi source_verified sang true.",
+    "sources": [
+     {
+      "id": "L5-020",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (MOCK-08, L5-020)"
+    ],
+    "scope": [
+     "Hỏi khách / tra nguồn: ngưỡng severity trung 30 phút, cao 60 phút",
+     "Khi xác nhận: cập nhật source_verified = true hoặc đổi giá trị",
+     "Trong lúc chờ: dùng 30 / 60 phút trong rule_versions (tham số, source_verified = false)."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "MOCK-08"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-08",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Hỏi khách: UNLOAD_CHECK có cần ảnh thật hay giữ checkbox (L5-023)",
+   "body": {
+    "goal": "Khách quyết định kiểm xếp hàng lên xe (UNLOAD_CHECK) cần ảnh chứng cứ thật hay chỉ đánh dấu.",
+    "sources": [
+     {
+      "id": "L5-023",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (MOCK-11, L5-023)",
+     "architecture/adr/ADR-0011-attachment-storage-private-bucket-signed-urls.md"
+    ],
+    "scope": [
+     "Hỏi: UNLOAD_CHECK có cần ảnh như các chứng cứ khác không?",
+     "Nếu cần: thêm purpose mới (sửa enum + screensOfPurpose, theo ADR-0011)",
+     "Trong lúc chờ: giữ checkbox marker như hiện trạng; kho tệp dùng được ngay cho ảnh khác."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "L5-023",
+     "E14-05"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-09",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Lấy sức chứa và thiết bị thật từng vị trí kho (L5-027)",
+   "body": {
+    "goal": "Master vị trí có sức chứa và thiết bị thật thay giá trị seed cố định.",
+    "sources": [
+     {
+      "id": "L5-027",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (MOCK-15, L5-027)"
+    ],
+    "scope": [
+     "Hỏi: sức chứa, thiết bị từng vị trí — đo đạc hoặc xuất từ WMS của khách",
+     "Trong lúc chờ: dùng seed cố định theo khu vực (1000 / 600 / 800, cách ly 100), theo MOCK-15."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "MOCK-15",
+     "L5-019"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-10",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Xác nhận tần suất vệ sinh và chu kỳ review HACCP thật (L5-028)",
+   "body": {
+    "goal": "Luật haccp_cadence dùng giá trị đã audit của khách và đặt source_verified = true.",
+    "sources": [
+     {
+      "id": "L5-028",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (MOCK-16, L5-028)"
+    ],
+    "scope": [
+     "Hỏi: tần suất / ca vệ sinh bắt buộc và chu kỳ review HACCP đã audit",
+     "Trong lúc chờ: dùng bản seed (AM, PM) trong rule_versions, source_verified = false."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "MOCK-16",
+     "L5-062"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-11",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Hỏi khách độ dài lease và maxDuration của route worker (arch-q:1)",
+   "body": {
+    "goal": "Có số liệu để đặt lease và maxDuration.",
+    "sources": [
+     {
+      "id": "arch-q:1",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §9 câu hỏi 1",
+     "specs/administration/technical-design/ADM_JOB_WORKER_TECH.md (Câu hỏi mở 1)",
+     "specs/administration/technical-design/ADM_ERP_SFTP_EXCHANGE_TECH.md (Câu hỏi mở 2)"
+    ],
+    "scope": [
+     "Hỏi: độ dài lease job và maxDuration theo gói Vercel được chọn",
+     "Kích thước file ERP thật hỏi chung ở E15-FG10-01",
+     "Trong lúc chờ: dùng mặc định cấu hình được theo A-4 và ADM_JOB_WORKER_TECH; lease và maxDuration là tham số."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "E13-04",
+     "E13-05",
+     "L5-015"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-12",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Xác nhận ngưỡng cảnh báo gần hết hạn thật theo hợp đồng (L5-029)",
+   "body": {
+    "goal": "Ngưỡng gần hết hạn do khách quy định, đưa vào rule_versions nếu theo hợp đồng.",
+    "sources": [
+     {
+      "id": "L5-029",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (MOCK-17, L5-029)"
+    ],
+    "scope": [
+     "Hỏi: ngưỡng cảnh báo gần hết hạn có cố định 7 ngày hay theo chính sách / hợp đồng?",
+     "Trong lúc chờ: giữ hằng NEAR_EXPIRY_DAYS = 7 ngày."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "MOCK-17"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-13",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Chốt tỷ lệ 1/3 · 1/2 cố định toàn công ty hay theo hợp đồng (L5-043)",
+   "body": {
+    "goal": "Khách quyết định tỷ lệ cửa sổ giao là hằng số hay dữ liệu theo hợp đồng.",
+    "sources": [
+     {
+      "id": "L5-043",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (GAP-14, L5-043)"
+    ],
+    "scope": [
+     "Hỏi: 1/3 và 1/2 cố định toàn công ty hay đổi theo hợp đồng?",
+     "Nếu theo hợp đồng: đưa tỷ lệ vào rule_versions hoặc agreements (ADR-0006)",
+     "Trong lúc chờ: giữ hằng RATIOS ONE_THIRD 33 % / ONE_HALF 50 % chung cho mọi hợp đồng."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "GAP-14",
+     "L5-030"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-14",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Hỏi khách giao thức, đích và lịch của kho archive (arch-q:4)",
+   "body": {
+    "goal": "Biết giao thức, đích và lịch để giao gói ARCHIVE thật.",
+    "sources": [
+     {
+      "id": "arch-q:4",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §9 câu hỏi 4",
+     "specs/system-design/database-design/report-audit/EXPORT_PACKAGE_DB.md (Q3)"
+    ],
+    "scope": [
+     "Hỏi: giao thức (SFTP, HTTPS, khác), đích và lịch giao, hạn lưu theo retention",
+     "Trong lúc chờ: dựng và kiểm gói với đích thử; giao thức đặt sau adapter thay được. Chưa có giả định LAB-4, theo PR-D-04."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "E13-06.6"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-15",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Xác minh SLA, PITR, vùng thứ hai của gói Supabase / Vercel (arch-q:2)",
+   "body": {
+    "goal": "Số SLA, cửa sổ PITR, độ trễ WAL và vùng thứ hai trong Nhật của gói được chọn đã tra từ nguồn chính hãng.",
+    "sources": [
+     {
+      "id": "arch-q:2",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §9 câu hỏi 2",
+     "architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md (Giả định cần xác minh)"
+    ],
+    "scope": [
+     "Tra tài liệu chính hãng và báo giá: SLA, PITR, WAL, vùng thứ hai ở Nhật",
+     "Hỏi khách: sự cố cả vùng có thuộc RTO 4 giờ không; quy trình giấy tại kho khi hệ thống dừng",
+     "Trong lúc chờ: giả định theo ADR-0013 (D17) chưa tra nguồn; PITR bật ở prod và UAT."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "E14-06",
+     "E14-06.1",
+     "E14-06.3",
+     "E14-02"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-16",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "Chốt ngưỡng, kênh cảnh báo, người nhận, runbook cho job 要対応 (arch-q:5)",
+   "body": {
+    "goal": "Khách chốt ngưỡng, hộp thư vận hành và hạn giữ log để cảnh báo đi đúng người.",
+    "sources": [
+     {
+      "id": "arch-q:5",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md §9 câu hỏi 5",
+     "architecture/adr/ADR-0014-observability-correlation-id-structured-logs.md"
+    ],
+    "scope": [
+     "Hỏi: ngưỡng cảnh báo, hộp thư / kênh vận hành, ai trực",
+     "Hạn giữ log hỏi chung ở E15-FG09-02 (retention)",
+     "Trong lúc chờ: dùng ngưỡng và kênh mặc định của ADR-0014, mail tới ROLE-007 / ROLE-008 theo A-4."
+    ],
+    "outOfScope": [
+     "Sửa code — thuộc issue ở mục affects"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại",
+     "Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-04"
+    ],
+    "affects": [
+     "E14-04",
+     "E14-03.3",
+     "E14-12"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  }
+ ],
+ "notIssued": [
+  {
+   "id": "NFR-AVL-02",
+   "reason": "POD offline: đã phủ bởi L5-017 (FG-05); hồi quy E2E ở FG-05; phần xin URL lúc gửi lại có ở E14-05.7"
+  },
+  {
+   "id": "nfr:NFR-AVL-02",
+   "reason": "Như NFR-AVL-02: cơ chế hàng đợi IndexedDB là việc của L5-017 (FG-05), không có việc riêng ở E-14"
+  }
+ ],
+ "gaps": [
+  {
+   "spec": "ADR-0009 §7 điểm 4–5",
+   "text": "Phương án dự phòng khi JWT idp_sync_agent trượt (role Postgres LOGIN qua chuỗi kết nối) cần PoC riêng, chưa có issue.",
+   "suggestedHandling": "open",
+   "ref": "E13-01.2",
+   "id": "GAP-L5-40"
+  },
+  {
+   "spec": "ADM_JOB_WORKER_TECH Câu hỏi mở 1",
+   "text": "Độ dài lease và maxDuration chưa có số; E13-04/05 làm tham số cấu hình được, chờ E15-11.",
+   "suggestedHandling": "clarify-issue",
+   "ref": "E15-11",
+   "id": "GAP-L5-41"
+  },
+  {
+   "spec": "target-architecture.md §4 NFR-PERF-02",
+   "text": "Ghi thêm 4 index còn thiếu trên lots nhưng không liệt kê cột; E14-07.1 phải lấy từ INBOUND_INVENTORY_DB (mục 0.2.1).",
+   "suggestedHandling": "assumption",
+   "ref": "E14-07.1",
+   "id": "GAP-L5-42"
+  },
+  {
+   "spec": "target-architecture.md §3 (UAT)",
+   "text": "Dữ liệu UAT che khi nạp theo MIGRATION_DB nhưng không có danh sách cột phải che; E14-01 chỉ kiểm, không định nghĩa quy tắc.",
+   "suggestedHandling": "open",
+   "ref": "E14-01",
+   "id": "GAP-L5-43"
+  },
+  {
+   "spec": "ADR-0014 (Lựa chọn 2–3)",
+   "text": "Đích log drain và dịch vụ probe chưa chọn (\"chọn khi dựng môi trường\"); hạn giữ log chờ khách.",
+   "suggestedHandling": "clarify-issue",
+   "ref": "E15-16",
+   "id": "GAP-L5-44"
+  },
+  {
+   "spec": "PREMISE PR-D-02 (kiểm NFR)",
+   "text": "Threat model, SBOM + quét lỗ hổng, tự đánh giá WCAG, diễn tập restore không có dòng spec riêng trong LAB-4; lấy từ PR-D-02 nên nguồn của E14-08/09 chỉ là nguồn gần (NFR-SEC-03, OPS-ENV-01).",
+   "suggestedHandling": "premise",
+   "ref": "E14-08",
+   "id": "GAP-L5-45"
+  },
+  {
+   "spec": "ADR-0013 (Hệ quả xấu)",
+   "text": "Sự cố cả vùng hnd1 / Supabase Tokyo có thuộc RTO 4 giờ hay không chưa chốt; bản sao tệp cùng vùng chỉ chống mất ở mức project.",
+   "suggestedHandling": "clarify-issue",
+   "ref": "E15-15",
+   "id": "GAP-L5-46"
+  },
+  {
+   "spec": "ADR-0011 / MOCK-11",
+   "text": "ADR-0011 dự kiến 6 API nghiệp vụ gắn tệp; chưa rõ issue nào ở FG khác chịu việc gắn attachmentId, E14-05 chỉ cung cấp service dùng chung.",
+   "suggestedHandling": "open",
+   "ref": "E14-05",
+   "id": "GAP-L5-47"
+  }
+ ]
+}

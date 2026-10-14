@@ -1,0 +1,4404 @@
+{
+ "job": "J3",
+ "epics": [
+  "FG-08",
+  "FG-09",
+  "FG-10"
+ ],
+ "items": [
+  {
+   "id": "E15-FG08-01",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Hỏi khách chỗ ghi 3 cột truy xuất gạo/bò lúc nhập (L5-010)",
+   "body": {
+    "goal": "Có câu trả lời về nơi/nguồn giá trị rice_origin, rice_transaction_id, beef_individual_id khi nhận hàng để FG08-04 làm đúng.",
+    "sources": [
+     {
+      "id": "L5-010",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (DEV-021, L5-010)",
+     "specs/receiving/technical-design/RCV_CONFIRM_RECEIPT_TECH.md §5",
+     "specs/trace-recall/function-specifications/TRACEABILITY_FUNC.md §3"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Gửi câu hỏi (giả lập): giá trị 3 cột lấy từ đâu (màn nhập hàng, file nhà cung cấp, ERP), lane nào bắt buộc trường nào",
+     "Hỏi thêm: 米産地 là mã danh sách (都道府県/国) hay văn bản, có tìm theo một phần không (TRACEABILITY_FUNC câu hỏi mở 1)",
+     "Ghi câu trả lời vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue"
+    ],
+    "outOfScope": [
+     "Code ghi 3 cột — FG08-04 (làm theo giả định lane: gạo/bò/nội bộ của LAB-4)"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi, có ngày hỏi lại; issue Blocked nếu chờ",
+     "Khi có đáp án: spec RCV_CONFIRM_RECEIPT / YC_RECEIVING_RESULT / TRACEABILITY_FUNC cập nhật và FG08-04 được gỡ chặn"
+    ],
+    "affects": [
+     "FG08-04",
+     "FG08-04.1",
+     "FG08-04.2",
+     "FG08-03.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-FG08-02",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Xác nhận giả định thu hồi A-1, A-4, A-5, A-8 và 6 điểm còn mở của recall",
+   "body": {
+    "goal": "Khách xác nhận (hoặc đổi) cách đối soát, tự cách ly, thử lại mail, người duyệt để chỉ phải đổi tham số khi có đáp án.",
+    "sources": [
+     {
+      "id": "FR-TRC-02",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "FR-TRC-03",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-315",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-418",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/trace-recall/TRACE_RECALL_DB.md §5 (Q1–Q10)",
+     "specs/trace-recall/technical-design/TRC_RECALL_CASE_TECH.md §5 (câu hỏi mở 2, 3)",
+     "specs/trace-recall/function-specifications/RECALL_RECONCILIATION_FUNC.md §3"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Xác nhận A-1: đối soát theo lô, chụp số lúc 範囲確定, 3 kết quả loại trừ nhau, dòng bù; 範囲確定 tự cách ly tồn",
+     "Hỏi: có đóng case khi còn người nhận 送信失敗 không; lô nằm trong nhiều case mở cùng lúc không",
+     "Hỏi: danh sách phân phối nội bộ, có bắt buộc ≥ 1 người nhận nội bộ không; có cần vai trò duyệt riêng ngoài ROLE-003 khác",
+     "Xác nhận A-4 (thử lại mail), A-5 (lưu 3 năm từ closed_at), A-8 (ROLE-006 không xem case), A-14 (giới hạn độ dài chuỗi)",
+     "Ghi đáp án vào spec/PREMISE, đổi tham số, đóng issue"
+    ],
+    "outOfScope": [
+     "Code recall — FG08-01, FG08-02 (làm ngay theo giả định LAB-4)"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi, có ngày hỏi lại",
+     "Khi có đáp án: TRACE_RECALL_DB mục 5 và spec liên quan cập nhật; tham số đổi ở FG08-01/02 nếu khác giả định"
+    ],
+    "affects": [
+     "FG08-01",
+     "FG08-02"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "FG08-01",
+   "kind": "story",
+   "epicId": "FG-08",
+   "parentId": "EP-FG-08",
+   "title": "回収ケース管理 — Màn + RPC recall case 5 bước, đối soát theo lô (F-049, YC_RECALL_CASE)",
+   "body": {
+    "goal": "ROLE-003 mở case, chốt phạm vi (chụp số + tự cách ly), ghi kết quả 返品/未解決/廃棄, đối soát 差異 = 0 và đóng case; ROLE-008 chỉ xem.",
+    "sources": [
+     {
+      "id": "SPEC-YC-148",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-418",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-529",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-243",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-244",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-245",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-246",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-247",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-248",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-315",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "FR-TRC-02",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-049",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/screen-specification/YC_RECALL_CASE_SPEC.md",
+     "specs/trace-recall/technical-design/TRC_RECALL_CASE_TECH.md §3, §4.1–4.4, §4.6–4.7",
+     "specs/trace-recall/function-specifications/RECALL_RECONCILIATION_FUNC.md",
+     "specs/system-design/database-design/trace-recall/TRACE_RECALL_DB.md",
+     "specs/system-design/api-design/trace-recall/ (RECALL_CASES_*_API.md, 6 API)"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-08"
+    ],
+    "scope": [
+     "Case OPENED → SCOPED → NOTIFIED → RECONCILED → CLOSED, chỉ tiến; mỗi bước một RPC security definer, khoá recall_cases, ghi recall_case_events + audit_events cùng giao dịch",
+     "Chụp 現在庫 và 出荷済み theo lô lúc 範囲確定 và cách ly phần tồn trong cùng giao dịch",
+     "Đối soát theo lô: 差異 = 0 ở mọi lô mới RECONCILED; sai thì thêm dòng bù",
+     "Màn YC_RECALL_CASE + đường vào từ YC_TRACE_SEARCH; quyền ROLE-003 ghi, ROLE-008 xem, ROLE-006 không đọc (A-8)"
+    ],
+    "outOfScope": [
+     "Thông báo thu hồi — FG08-02",
+     "Huỷ soạn trả tồn cho đơn đã soạn lô thu hồi — L5-065",
+     "Gói bằng chứng audit của case — FG09-01"
+    ],
+    "dod": [
+     "Đủ DoD của 7 con; luồng 5 bước chạy end-to-end ở môi trường test",
+     "Assert SQL + E2E đạt các AC của YC_RECALL_CASE / TRC_RECALL_CASE"
+    ],
+    "blockedBy": [
+     "E15-FG08-02 (không chặn code, chỉ đổi tham số)",
+     "CORE_MASTER_DB customers.notification_email (FG-01) cho bước thông báo"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG08-01.1",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-01",
+   "title": "DB — recall_cases, recall_case_lots/tasks/returns/events, enum, RLS 7 bảng recall",
+   "body": {
+    "goal": "Có 5 bảng recall với RLS chỉ ROLE-003/008 đọc, ứng dụng không ghi trực tiếp.",
+    "sources": [
+     {
+      "id": "SPEC-YC-315",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/trace-recall/TRACE_RECALL_DB.md §4.1–4.5",
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md (khoá ngoài mail)"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Migration 5 bảng + enum recall_status, cột version, corrects_id (qty âm), giới hạn độ dài chuỗi theo PR-A-08",
+     "Index lot_id, recall_case_id theo TRACE_RECALL_DB",
+     "RLS: ROLE-003 / ROLE-008 đọc, không INSERT/UPDATE trực tiếp từ app"
+    ],
+    "outOfScope": [
+     "Bảng notice_versions / recipients — FG08-02.1"
+    ],
+    "dod": [
+     "Migration chạy dev → test, rollback được",
+     "Assert SQL: RLS chặn ghi trực tiếp, ROLE-006 không đọc, CHECK dòng bù"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG08-01.2",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-01",
+   "title": "RPC mở case, đổi phạm vi, task (create_recall_case, replace_recall_scope, task add/change)",
+   "body": {
+    "goal": "ROLE-003 mở case từ kết quả truy vết, đổi tập lô và quản lý task/hạn qua RPC có audit.",
+    "sources": [
+     {
+      "id": "SPEC-YC-243",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-244",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-247",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-248",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/technical-design/TRC_RECALL_CASE_TECH.md §4.1–4.3",
+     "specs/system-design/api-design/trace-recall/RECALL_CASES_POST_API.md",
+     "specs/system-design/api-design/trace-recall/RECALL_CASES_BY_ID_SCOPE_PUT_API.md",
+     "specs/system-design/api-design/trace-recall/RECALL_CASES_BY_ID_TASKS_POST_API.md"
+    ],
+    "scope": [
+     "create_recall_case (sourceAxis 8 giá trị TRACE_AXES), replace_recall_scope (lưu removedSnapshots ở SCOPE_CHANGED)",
+     "add_recall_task, change_recall_task_status; route chung 11 API recall, mã lỗi RECALL_VERSION_STALE",
+     "Ghi recall_case_events + audit_events cùng giao dịch"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test domain + assert SQL cho từng RPC, gồm version lệch và case đã qua OPENED",
+     "Lỗi trả đúng mã (409/422) theo TRC_RECALL_CASE §4"
+    ],
+    "blockedBy": [
+     "FG08-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG08-01.3",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-01",
+   "title": "RPC 範囲確定 — chụp số, tự cách ly, khoá có thứ tự (advance_recall_case → SCOPED)",
+   "body": {
+    "goal": "Chuyển SCOPED chụp đúng số tồn/xuất theo lô và cách ly phần tồn, không deadlock với xuất kho.",
+    "sources": [
+     {
+      "id": "SPEC-YC-245",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-418",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/technical-design/TRC_RECALL_CASE_TECH.md §4.4, §5",
+     "specs/system-design/api-design/trace-recall/RECALL_CASES_BY_ID_ADVANCE_POST_API.md",
+     "specs/inventory/technical-design/INV_LOT_STATUS_TRANSITION_TECH.md §5"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Khoá lots theo id rồi stock_units theo (lot_id, location_code) trong một câu, cùng thứ tự với record_shipping_check",
+     "Chụp on_hand_qty, shipped_qty, snapshot_at sau khi khoá",
+     "Ghi lot_status_events QUARANTINE cho lô AVAILABLE/RELEASED, giữ nguyên QUARANTINE/HOLD/SCRAPPED",
+     "Giới hạn ≤ 100 lô, mục tiêu ghi ≤ 3 giây (NFR-PERF-01)"
+    ],
+    "outOfScope": [
+     "Đo hiệu năng trên 3 năm dữ liệu — E-14 kiểm NFR"
+    ],
+    "dod": [
+     "Assert SQL: số chụp đúng, lô đã cách ly, không phân bổ/xuất thêm sau chụp (LOT_NOT_SHIPPABLE)",
+     "Test đồng thời với RPC xuất kho không deadlock"
+    ],
+    "blockedBy": [
+     "FG08-01.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG08-01.4",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-01",
+   "title": "RPC ghi kết quả, đối soát, đóng case + domain RECALL_RECONCILIATION",
+   "body": {
+    "goal": "Ghi 返品/未解決/廃棄 (dòng bù khi sai), tính 差異 theo lô và chặn chuyển trạng thái khi chưa khớp.",
+    "sources": [
+     {
+      "id": "SPEC-YC-246",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-529",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-418",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/function-specifications/RECALL_RECONCILIATION_FUNC.md §2.1–2.6",
+     "specs/trace-recall/technical-design/TRC_RECALL_CASE_TECH.md §4.6–4.7",
+     "specs/system-design/api-design/trace-recall/RECALL_CASES_BY_ID_RETURNS_POST_API.md"
+    ],
+    "scope": [
+     "Domain reconcileLot, reconcileCase, outcomeCapacity, correctionCapacity, nextRecallStatus, recallAdvanceBlockers",
+     "record_recall_outcome: 3 kết quả loại trừ nhau, 未解決 bắt buộc ghi chú, 廃棄 chỉ phần tồn",
+     "advance_recall_case sang NOTIFIED / RECONCILED / CLOSED chỉ khi đủ điều kiện (差異 = 0 ở mọi lô)"
+    ],
+    "outOfScope": [
+     "Chặn đóng khi còn người nhận 送信失敗 — chờ E15-FG08-02"
+    ],
+    "dod": [
+     "Unit test domain phủ các ca biên của từng hàm; assert SQL RPC đạt các mã lỗi",
+     "Ca bấm lặp ghi hai dòng được sửa bằng dòng bù có lý do"
+    ],
+    "blockedBy": [
+     "FG08-01.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG08-01.5",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-01",
+   "title": "Màn YC_RECALL_CASE — danh sách, 起票, phạm vi, 数量照合, task",
+   "body": {
+    "goal": "ROLE-003 điều hành case trên màn theo 5 bước; nút sang thông báo và gói audit.",
+    "sources": [
+     {
+      "id": "SPEC-YC-148",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "FR-TRC-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/screen-specification/YC_RECALL_CASE_SPEC.md §3–6"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Danh sách + chi tiết theo ?case=, form 起票 từ YC_TRACE_SEARCH (?new=1&axis=&value=)",
+     "Khối 数量照合, task/hạn, nút chuyển bước theo trạng thái và quyền",
+     "Chuỗi theo giới hạn cột DB, ngày giờ JST qua hàm dùng chung (PR-A-08)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Đạt AC mục 4–5 của YC_RECALL_CASE theo từng vai (003 ghi, 008 xem, 006 bị chặn)",
+     "Lỗi 409/422 hiện đúng thông báo, không mất dữ liệu đã nhập"
+    ],
+    "blockedBy": [
+     "FG08-01.2",
+     "FG08-01.3",
+     "FG08-01.4"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG08-01.6",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-01",
+   "title": "Design UI YC_RECALL_CASE theo wireframe LAB-4",
+   "body": {
+    "goal": "Có thiết kế UI màn recall case để FE dựng.",
+    "sources": [
+     {
+      "id": "SPEC-YC-148",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/screen-specification/YC_RECALL_CASE_SPEC.md §2 Layout, assets/",
+     "specs/_common/wireframe/ia-design.html"
+    ],
+    "scope": [
+     "Thiết kế danh sách, chi tiết, khối 数量照合, trạng thái từng bước theo wireframe",
+     "Trạng thái lỗi/trống/đọc-chỉ (ROLE-008)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Design được BrSE/PM xem và khớp Layout + item của spec",
+     "Bàn giao FE (Figma hoặc tương đương) trước khi FG08-01.5 bắt đầu"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG08-01.7",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-01",
+   "title": "Assert SQL vòng đời case + E2E recall case",
+   "body": {
+    "goal": "Kiểm tự động toàn bộ vòng đời case và quyền.",
+    "sources": [
+     {
+      "id": "FR-TRC-02",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-418",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/technical-design/TRC_RECALL_CASE_TECH.md §4–5",
+     "specs/trace-recall/screen-specification/YC_RECALL_CASE_SPEC.md §5"
+    ],
+    "scope": [
+     "Assert SQL: 5 bước, khoá lô, snapshot, dòng bù, 差異 = 0",
+     "E2E: 起票 từ trace-search → 範囲確定 → ghi kết quả → 照合 → đóng, theo vai",
+     "Ca ROLE-006 bị chặn, ROLE-008 chỉ xem"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Chạy trong CI, xanh với dữ liệu seed",
+     "Mỗi AC của YC_RECALL_CASE có ít nhất một kiểm"
+    ],
+    "blockedBy": [
+     "FG08-01.5"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG08-02",
+   "kind": "story",
+   "epicId": "FG-08",
+   "parentId": "EP-FG-08",
+   "title": "回収通知生成 — Thông báo thu hồi: phiên bản, duyệt, phát hành mail (F-050)",
+   "body": {
+    "goal": "ROLE-003 sinh thông báo từ case, xin duyệt (người duyệt ≠ người lập), phát hành thành mail xếp hàng đợi và gửi lại cho người nhận thất bại.",
+    "sources": [
+     {
+      "id": "SPEC-YC-149",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-530",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-249",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-250",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-251",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-252",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-253",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-315",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "FR-TRC-03",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-050",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/screen-specification/YC_RECALL_NOTICE_SPEC.md",
+     "specs/trace-recall/function-specifications/RECALL_NOTICE_VERSION_FUNC.md",
+     "specs/trace-recall/technical-design/TRC_RECALL_CASE_TECH.md §4.5, §4.8",
+     "specs/system-design/database-design/trace-recall/TRACE_RECALL_DB.md §4.6–4.7",
+     "specs/system-design/api-design/trace-recall/ (RECALL_NOTICES_*, RECALL_CASES_BY_ID_NOTICES_POST)"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-08"
+    ],
+    "scope": [
+     "Bản thông báo DRAFT → PENDING_APPROVAL → APPROVED → ISSUED, bản đã duyệt bất biến, sửa = bản mới",
+     "Chụp danh sách người nhận (khách đã nhận lô + nội bộ), chặn khi thiếu notification_email",
+     "Phát hành xếp mail vào mail_outbox qua enqueue_mail, khoá chống gửi trùng; gửi lại cho người 送信失敗",
+     "Màn YC_RECALL_NOTICE, đường vào từ case ?case="
+    ],
+    "outOfScope": [
+     "Hàng đợi mail, SMTP relay, thử lại — FG10-04 và E-13 outbox/worker",
+     "Bảng recall_cases — FG08-01.1"
+    ],
+    "dod": [
+     "Đủ DoD của 6 con",
+     "Một thông báo đi hết DRAFT → ISSUED và mail xếp hàng đợi ở môi trường test"
+    ],
+    "blockedBy": [
+     "FG08-01.1",
+     "FG10-04 (enqueue_mail)",
+     "CORE_MASTER_DB customers.notification_email (FG-01)"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG08-02.1",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-02",
+   "title": "DB — recall_notice_versions, recall_notice_recipients",
+   "body": {
+    "goal": "Có bảng phiên bản và người nhận với trạng thái gửi theo từng người.",
+    "sources": [
+     {
+      "id": "SPEC-YC-315",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-149",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/trace-recall/TRACE_RECALL_DB.md §4.6–4.7"
+    ],
+    "scope": [
+     "Migration 2 bảng, unique (case, version), cột người lập/người duyệt/ISSUED",
+     "Bảng recipients giữ chụp người nhận và trạng thái gửi theo người",
+     "RLS như 5 bảng recall"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy dev → test",
+     "Assert SQL: bản đã duyệt không UPDATE được, unique version"
+    ],
+    "blockedBy": [
+     "FG08-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG08-02.2",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-02",
+   "title": "RPC + domain tạo, xin duyệt, duyệt/trả lại (create, submit, decide)",
+   "body": {
+    "goal": "Tạo bản v+1, xin duyệt và duyệt/trả lại với người duyệt khác người lập.",
+    "sources": [
+     {
+      "id": "SPEC-YC-530",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-249",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-250",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-251",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/function-specifications/RECALL_NOTICE_VERSION_FUNC.md §2.1–2.5",
+     "specs/trace-recall/technical-design/TRC_RECALL_CASE_TECH.md §4.5"
+    ],
+    "scope": [
+     "Domain canCreateNoticeVersion, applyNoticeAction, checkApprover, snapshotRecipients, recipientBlockers",
+     "RPC create_recall_notice_version (chỉ từ SCOPED), submit_recall_notice, decide_recall_notice (NOTICE_RECIPIENT_MISSING, SELF_APPROVAL)",
+     "Audit + recall_case_events cùng giao dịch"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test domain các ca: tự duyệt, thiếu người nhận, case chưa SCOPED",
+     "Assert SQL ba RPC gồm khoá phiên bản"
+    ],
+    "blockedBy": [
+     "FG08-02.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG08-02.3",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-02",
+   "title": "RPC phát hành + gửi lại (issue_recall_notice, resend_recall_notice) xếp mail",
+   "body": {
+    "goal": "ISSUED xếp mail cho từng người nhận không trùng; gửi lại chỉ cho người thất bại.",
+    "sources": [
+     {
+      "id": "SPEC-YC-252",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-253",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-530",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/function-specifications/RECALL_NOTICE_VERSION_FUNC.md §2.6 (mailDedupeKey)",
+     "specs/trace-recall/technical-design/TRC_RECALL_CASE_TECH.md §4.5, §4.8",
+     "specs/system-design/api-design/trace-recall/RECALL_NOTICES_BY_ID_ISSUE_POST_API.md"
+    ],
+    "scope": [
+     "issue_recall_notice: APPROVED → ISSUED, gọi private.enqueue_mail trong cùng giao dịch, dedupe_key theo bản + người nhận",
+     "resend_recall_notice chỉ cho người nhận 送信失敗, job đang chạy không bị đụng",
+     "Không gửi mail trong giao dịch nghiệp vụ"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL: bấm phát hành hai lần không tạo mail trùng",
+     "Mail xếp đúng số người nhận; trạng thái người nhận cập nhật từ kết quả gửi"
+    ],
+    "blockedBy": [
+     "FG08-02.2",
+     "FG10-04.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG08-02.4",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-02",
+   "title": "Màn YC_RECALL_NOTICE — soạn, duyệt, phát hành, trạng thái từng người nhận",
+   "body": {
+    "goal": "ROLE-003 làm trọn luồng thông báo trên màn; thất bại cuối hiện ở khối G để gửi lại.",
+    "sources": [
+     {
+      "id": "SPEC-YC-149",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "FR-TRC-03",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/screen-specification/YC_RECALL_NOTICE_SPEC.md §3–6"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Nội dung 顧客向け / 社内向け sinh từ case, danh sách phiên bản, nút xin duyệt/duyệt/phát hành",
+     "Khối trạng thái gửi từng người nhận + nút gửi lại",
+     "Chuỗi theo giới hạn cột DB, ngày giờ JST (PR-A-08)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Đạt AC mục 4–5 của YC_RECALL_NOTICE theo vai",
+     "Thiếu ?case= hiện thông báo không tìm thấy; bản đã duyệt không sửa được trên màn"
+    ],
+    "blockedBy": [
+     "FG08-02.2",
+     "FG08-02.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG08-02.5",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-02",
+   "title": "Design UI YC_RECALL_NOTICE theo wireframe LAB-4",
+   "body": {
+    "goal": "Có thiết kế UI màn thông báo thu hồi.",
+    "sources": [
+     {
+      "id": "SPEC-YC-149",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/screen-specification/YC_RECALL_NOTICE_SPEC.md §2 Layout, assets/",
+     "specs/_common/wireframe/ia-design.html"
+    ],
+    "scope": [
+     "Thiết kế soạn/duyệt/phát hành, bảng người nhận với trạng thái gửi",
+     "Trạng thái lỗi, bản đã duyệt chỉ đọc"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Design khớp Layout và item của spec",
+     "Bàn giao FE trước khi FG08-02.4 bắt đầu"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG08-02.6",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-02",
+   "title": "Assert SQL + E2E luồng thông báo (có mail sandbox)",
+   "body": {
+    "goal": "Kiểm tự động DRAFT → ISSUED → gửi lại.",
+    "sources": [
+     {
+      "id": "FR-TRC-03",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-530",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/function-specifications/RECALL_NOTICE_VERSION_FUNC.md",
+     "specs/trace-recall/screen-specification/YC_RECALL_NOTICE_SPEC.md §5"
+    ],
+    "scope": [
+     "Assert SQL chống trùng, người duyệt ≠ người lập, bản bất biến",
+     "E2E: soạn → duyệt → phát hành → mail đến relay thử → ca thất bại → gửi lại"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Chạy trong CI với relay môi trường thử",
+     "Mọi AC của YC_RECALL_NOTICE có kiểm"
+    ],
+    "blockedBy": [
+     "FG08-02.4"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG08-03",
+   "kind": "story",
+   "epicId": "FG-08",
+   "parentId": "EP-FG-08",
+   "title": "トレースレーン詳細 — Màn chỉ đọc lane gạo/bò/nội bộ của một lô (F-048, YC_TRACE_LANE_DETAIL)",
+   "body": {
+    "goal": "ROLE-003/008 xem từng trường có kiểu của lane truy xuất và lần theo lô liên quan, đi tiếp sang case.",
+    "sources": [
+     {
+      "id": "SPEC-YC-150",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/screen-specification/YC_TRACE_LANE_DETAIL_SPEC.md",
+     "specs/trace-recall/function-specifications/TRACEABILITY_FUNC.md §3.1–3.2"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Màn ?lot=, 3 lane theo SKU (米: 5 trường; 牛: 個体識別番号 đúng 10 chữ số, 9 số thì 要確認 không làm tròn; 社内)",
+     "Chuỗi lô liên quan, link về trace-search và sang case",
+     "Index trục tìm trên lots còn thiếu, truy vấn 3 năm ≤ 60 giây (NFR-PERF-02)"
+    ],
+    "outOfScope": [
+     "Ghi 3 cột lúc nhập hàng — FG08-04",
+     "Đo tải NFR-PERF-02 — E-14"
+    ],
+    "dod": [
+     "Đủ DoD của 4 con",
+     "Lô đủ và thiếu dữ liệu đều hiện đúng lane/lý do"
+    ],
+    "blockedBy": [
+     "FG08-04 cho dữ liệu lane thật (màn dựng được trước với dữ liệu hiện có)"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:FE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG08-03.1",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-03",
+   "title": "DB + query — Index 4 trục truy vết trên lots và truy vấn lô liên quan",
+   "body": {
+    "goal": "Tìm theo mọi trục trực tiếp dùng index; truy vấn lô liên quan cho lane trả đủ.",
+    "sources": [
+     {
+      "id": "BR-TRACE-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/function-specifications/TRACEABILITY_FUNC.md §3.2",
+     "specs/system-design/database-design/INBOUND_INVENTORY_DB.md"
+    ],
+    "scope": [
+     "Migration 4 index trên lots",
+     "Truy vấn trả trường lane + lô liên quan (≤ 100 lô/lượt)",
+     "Giới hạn 101 áp cho lô khác nhau, không áp cho bút toán (sửa ca cắt không báo)"
+    ],
+    "outOfScope": [
+     "Đo thời gian trên dataset R-03 — E-14"
+    ],
+    "dod": [
+     "EXPLAIN hoặc assert SQL cho thấy 4 trục dùng index",
+     "Test ca > 100 lô trả cảnh báo cắt đúng"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG08-03.2",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-03",
+   "title": "Màn YC_TRACE_LANE_DETAIL — 3 lane, trường có kiểu, lô liên quan",
+   "body": {
+    "goal": "Màn chỉ đọc đúng spec với kiểm lane TRACEABILITY.",
+    "sources": [
+     {
+      "id": "SPEC-YC-150",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/screen-specification/YC_TRACE_LANE_DETAIL_SPEC.md §3–6",
+     "specs/trace-recall/function-specifications/TRACEABILITY_FUNC.md §2"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Hiện từng trường lane, nêu tên trường thiếu (lane gạo chặn xác nhận), 要確認 cho cá thể bò không đủ 10 số",
+     "Link lô liên quan cùng màn, link sang case nếu lô nằm trong case",
+     "Chuỗi theo cột DB, ngày giờ JST (PR-A-08)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Đạt AC mục 4–5 theo vai 003/008",
+     "Bò 9 chữ số hiện 要確認, không bị làm tròn"
+    ],
+    "blockedBy": [
+     "FG08-03.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG08-03.3",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-03",
+   "title": "Design UI YC_TRACE_LANE_DETAIL theo wireframe LAB-4",
+   "body": {
+    "goal": "Có thiết kế UI màn lane detail.",
+    "sources": [
+     {
+      "id": "SPEC-YC-150",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/screen-specification/YC_TRACE_LANE_DETAIL_SPEC.md §2 Layout, assets/",
+     "specs/_common/wireframe/ia-design.html"
+    ],
+    "scope": [
+     "Thiết kế 3 lane, trạng thái đủ/thiếu/要確認, chuỗi lô liên quan"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Design khớp Layout và item của spec",
+     "Bàn giao FE trước khi FG08-03.2 bắt đầu"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG08-03.4",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-03",
+   "title": "E2E màn lane detail 3 lane",
+   "body": {
+    "goal": "Kiểm tự động cả 3 lane và ca thiếu dữ liệu.",
+    "sources": [
+     {
+      "id": "SPEC-YC-150",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/screen-specification/YC_TRACE_LANE_DETAIL_SPEC.md §5"
+    ],
+    "scope": [
+     "E2E: lô gạo, lô bò đủ, lô bò 9 số, lô nội bộ, lô thiếu trường",
+     "Điều hướng từ trace-search sang lane và sang case"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Chạy trong CI",
+     "Mọi AC của YC_TRACE_LANE_DETAIL có kiểm"
+    ],
+    "blockedBy": [
+     "FG08-03.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-08",
+    "src:design-only"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG08-04",
+   "kind": "story",
+   "epicId": "FG-08",
+   "parentId": "EP-FG-08",
+   "title": "入荷検品 — Ghi 3 cột truy xuất gạo/bò khi nhận hàng đúng lane (L5-010)",
+   "body": {
+    "goal": "Lô lane gạo/bò có rice_origin, rice_transaction_id, beef_individual_id đúng giá trị ngay từ lúc confirm_receipt, trace-search tìm ra lô sau go-live.",
+    "sources": [
+     {
+      "id": "L5-010",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (DEV-021, L5-010)",
+     "specs/receiving/technical-design/RCV_CONFIRM_RECEIPT_TECH.md §5",
+     "specs/system-design/api-design/receiving/RECEIPTS_BY_ID_CONFIRM_POST_API.md",
+     "specs/trace-recall/function-specifications/TRACEABILITY_FUNC.md"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "confirm_receipt ghi 3 cột theo lane của SKU, kiểm bằng validateRiceLane/kiểm cá thể bò 10 số",
+     "Nguồn giá trị theo giả định lane LAB-4 (tham số), đổi khi E15-FG08-01 có đáp án",
+     "Nhập/hiện 3 trường ở YC_RECEIVING_RESULT khi chỗ ghi là màn nhập hàng"
+    ],
+    "outOfScope": [
+     "Câu hỏi chỗ ghi thật — E15-FG08-01",
+     "Màn lane detail — FG08-03"
+    ],
+    "dod": [
+     "Lô lane gạo/bò mới nhập có đủ 3 giá trị đúng, tìm được bằng trace-search",
+     "Đủ DoD của 3 con"
+    ],
+    "blockedBy": [
+     "E15-FG08-01 (chỉ khi đáp án khác giả định)"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-08",
+    "src:l5"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG08-04.1",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-04",
+   "title": "RPC confirm_receipt ghi 3 cột theo lane + domain kiểm",
+   "body": {
+    "goal": "confirm_receipt ghi đúng 3 cột theo lane của SKU và từ chối giá trị sai.",
+    "sources": [
+     {
+      "id": "L5-010",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/receiving/technical-design/RCV_CONFIRM_RECEIPT_TECH.md §5",
+     "specs/system-design/api-design/receiving/RECEIPTS_BY_ID_CONFIRM_POST_API.md"
+    ],
+    "scope": [
+     "Mở rộng input và INSERT lots: rice_origin, rice_transaction_id, beef_individual_id",
+     "Kiểm theo lane SKU: gạo cần đủ trường, bò đúng 10 chữ số không làm tròn, nội bộ không bắt",
+     "Không đổi hành vi lô lane nội bộ"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL: lô gạo/bò có đúng 3 giá trị; sai định dạng bị 422",
+     "Unit test domain các ca lane gạo, bò 9/10 số, nội bộ"
+    ],
+    "blockedBy": [
+     "E15-FG08-01 (giả định lane dùng trước)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-08",
+    "src:l5"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG08-04.2",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-04",
+   "title": "Màn YC_RECEIVING_RESULT — nhập và hiện 3 trường truy xuất theo lane",
+   "body": {
+    "goal": "Người nhận hàng nhập/thấy 3 trường theo lane của SKU lúc kiểm.",
+    "sources": [
+     {
+      "id": "L5-010",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/receiving/screen-specification/YC_RECEIVING_RESULT_SPEC.md (Câu hỏi mở DEV-021)"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Hiện trường theo lane SKU, nêu lỗi định dạng trước khi gửi",
+     "Chuỗi theo giới hạn cột DB (PR-A-08)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Đạt AC mục 4 của YC_RECEIVING_RESULT cho các trường mới",
+     "Giá trị gửi lên khớp .1"
+    ],
+    "blockedBy": [
+     "FG08-04.1",
+     "E15-FG08-01 (xác nhận nguồn là màn nhập hàng)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-08",
+    "src:l5"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG08-04.3",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "FG08-04",
+   "title": "Test lô lane gạo/bò → truy vết ra lô (AC L5-010)",
+   "body": {
+    "goal": "Chứng minh đường nhập → trace-search cho lô lane gạo/bò.",
+    "sources": [
+     {
+      "id": "L5-010",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "BR-TRACE-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/screen-specification/YC_TRACE_SEARCH_SPEC.md",
+     "specs/receiving/technical-design/RCV_CONFIRM_RECEIPT_TECH.md §5"
+    ],
+    "scope": [
+     "Assert SQL sau confirm_receipt: 3 cột đúng giá trị theo lane",
+     "E2E: nhập lô gạo/bò rồi tìm bằng 米産地 / mã cá thể / 取引ID"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Chạy trong CI xanh",
+     "Lô không có giá trị 3 cột không còn xuất hiện ở lô mới sau thay đổi"
+    ],
+    "blockedBy": [
+     "FG08-04.1",
+     "FG08-04.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-08",
+    "src:l5"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG08-05",
+   "kind": "task",
+   "epicId": "FG-08",
+   "parentId": "EP-FG-08",
+   "title": "多軸トレース検索 — Hồi quy E2E màn đã dựng của trace-recall (YC_TRACE_SEARCH)",
+   "body": {
+    "goal": "Kịch bản E2E phủ luồng chính của màn trace-search đã dựng theo AC của Screen Spec (DR-03), chạy được trong CI.",
+    "sources": [
+     {
+      "id": "FR-TRC-02",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/trace-recall/screen-specification/YC_TRACE_SEARCH_SPEC.md §4–5"
+    ],
+    "scope": [
+     "E2E 7 trục tìm (+ 米産地) ngược nhà cung cấp, xuôi khách hàng, thẻ lane đủ/thiếu",
+     "Đường vào 「回収ケースを起票」 mang ?new=1&axis=&value=",
+     "Ca > 100 lô cảnh báo cắt"
+    ],
+    "outOfScope": [
+     "Màn lane detail, recall case, thông báo — E2E nằm ở FG08-01/02/03"
+    ],
+    "dod": [
+     "Chạy trong CI trên dữ liệu seed, xanh",
+     "Mỗi AC của YC_TRACE_SEARCH có kiểm"
+    ],
+    "blockedBy": [
+     "FG08-04 cho ca 米産地 với dữ liệu mới"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-08",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E15-FG09-01",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Xin file mẫu 8 様式 帳票 FIG-021…FIG-028 (F-053)",
+   "body": {
+    "goal": "Có tên, bố cục, điều kiện, vai trò của 8 様式 để bật từng mẫu; biết FORM-REC-01 / FORM-DEV-01 ứng với FIG nào.",
+    "sources": [
+     {
+      "id": "SPEC-YC-152",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-053",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "SPEC-YC-238",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/screen-specification/YC_FORM_OUTPUT_SPEC.md §6",
+     "specs/system-design/database-design/report-audit/EXPORT_PACKAGE_DB.md §5 Q1",
+     "PREMISE A-12 (LAB-4, không đặt giả định cho tên mẫu)"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Gửi yêu cầu (giả lập) file mẫu thật của 8 様式",
+     "Hỏi FORM-REC-01 (phiếu 一時温度帯, F-014) và FORM-DEV-01 (隔離/逸脱) ứng FIG nào",
+     "Nhận mẫu → ghi vào spec, giao FG09-03 nạp từng mẫu"
+    ],
+    "outOfScope": [
+     "Dựng màn và RPC với 8 mẫu chưa bật — FG09-02 (làm được ngay)"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi, có ngày hỏi lại",
+     "Khi có mẫu: spec YC_FORM_OUTPUT + EXPORT_PACKAGE_DB cập nhật, FG09-03 gỡ chặn"
+    ],
+    "affects": [
+     "FG09-02",
+     "FG09-03"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-FG09-02",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Retention: xác nhận A-5, lịch dry-run, người đặt hold, chỗ thao tác purge",
+   "body": {
+    "goal": "Khách xác nhận hạn lưu và chốt 4 điểm vận hành để phiên bản chính sách chuyển source_verified = true và có chỗ thao tác purge.",
+    "sources": [
+     {
+      "id": "SPEC-YC-416",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-321",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "DR-RET-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0012",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/RETENTION_LEGAL_HOLD_DB.md §5 (Q1–Q6)",
+     "specs/administration/technical-design/ADM_RETENTION_PURGE_TECH.md §5",
+     "architecture/adr/ADR-0012-retention-legal-hold-two-phase-purge.md (Việc phải làm nếu đi production)"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Xác nhận số năm theo nhóm (A-5): 3 năm audit/khiếu nại/POD/HACCP; 1 năm gói xuất, log tích hợp, mail; master +3 năm sau 廃止; di trú hết hypercare + 1 năm",
+     "Hỏi: tần suất/giờ dry-run, cửa sổ chạy purge; ai đặt/gỡ legal hold, gỡ cần người thứ hai không",
+     "Hỏi: chỗ thao tác 起票/承認/hold là màn mới + API hay công cụ vận hành; có mail báo ROLE-007 khi có dry-run",
+     "Hỏi: có chuyển kho lạnh trước khi xoá; thời gian giữ backup/PITR sau purge"
+    ],
+    "outOfScope": [
+     "Code retention/purge — FG09-04 (chính sách mặc định source_verified = false nên lần purge đầu không xoá gì)"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi, có ngày hỏi lại",
+     "Khi có đáp án: ADR-0012/RETENTION_LEGAL_HOLD_DB cập nhật; thêm phiên bản retention_policies source_verified = true (FG09-04.3); nếu cần màn thì tạo issue mới"
+    ],
+    "affects": [
+     "FG09-04",
+     "FG09-04.3",
+     "FG09-04.4"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-FG09-03",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Gói xuất audit: nguồn thiếu SHA-256, trần dung lượng, loại case ngoài recall",
+   "body": {
+    "goal": "Chốt 3 điểm mở của gói bằng chứng audit để đổi tham số thay vì sửa thiết kế.",
+    "sources": [
+     {
+      "id": "SPEC-YC-151",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-421",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-314",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/report-audit/EXPORT_PACKAGE_DB.md §5 (Q2, Q4, Q5)",
+     "specs/report-audit/technical-design/RPT_EXPORT_PACKAGE_TECH.md §5 (câu hỏi mở 3)"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Hỏi: nguồn thiếu SHA-256 (dữ liệu cũ) thì xuất kèm 「ハッシュなし」 hay chặn",
+     "Hỏi: trần dung lượng gói và độ dài kỳ của gói ARCHIVE",
+     "Hỏi: loại case nào ngoài recall được xuất (EXPORT_PACKAGES_POST Q1)",
+     "Xác nhận giữ gói 1 năm (A-5, nhóm EXPORT_PACKAGE)"
+    ],
+    "outOfScope": [
+     "Code gói xuất — FG09-01 (làm theo giả định LAB-4)",
+     "Đích giao archive — E15-FG10-04"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi, có ngày hỏi lại",
+     "Khi có đáp án: đổi tham số ở FG09-01 và ghi vào spec"
+    ],
+    "affects": [
+     "FG09-01",
+     "FG09-01.2",
+     "FG09-01.4"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "FG09-01",
+   "kind": "story",
+   "epicId": "FG-09",
+   "parentId": "EP-FG-09",
+   "title": "audit証拠エクスポート — Gói bằng chứng audit có manifest SHA-256 tái tạo được (F-052)",
+   "body": {
+    "goal": "ROLE-008 xuất gói bằng chứng của một case tới 基準日時, tải gói đã kiểm manifest, và tái tạo để đối chiếu manifest giống hệt.",
+    "sources": [
+     {
+      "id": "SPEC-YC-151",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-421",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-536",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-235",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-236",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-237",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-314",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/screen-specification/YC_AUDIT_EXPORT_SPEC.md",
+     "specs/report-audit/technical-design/RPT_EXPORT_PACKAGE_TECH.md §3, §4.1–4.5, §4.7",
+     "specs/report-audit/function-specifications/EXPORT_MANIFEST_FUNC.md",
+     "specs/system-design/database-design/report-audit/EXPORT_PACKAGE_DB.md §4.1–4.2",
+     "specs/system-design/api-design/report-audit/ (EXPORT_PACKAGES_POST, RECREATE_POST, DOWNLOAD_GET)"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-08"
+    ],
+    "scope": [
+     "Xếp hàng gói AUDIT_EVIDENCE (202), worker dựng tệp dữ liệu tới as_of, index, manifest SHA-256, zip",
+     "Phát hành RELEASABLE chỉ khi đọc lại zip khớp manifest; lệch → REJECTED, không tải được",
+     "Tái tạo cùng as_of cho cùng manifest_sha256; tải gói đã kiểm",
+     "Màn YC_AUDIT_EXPORT, đường vào từ case ?case="
+    ],
+    "outOfScope": [
+     "Giao gói ARCHIVE tới kho khách — FG10-05",
+     "Khung worker/retry — E-13 outbox/worker (ADR-0007)",
+     "Giữ gói 1 năm và xoá — FG09-04"
+    ],
+    "dod": [
+     "Đủ DoD của 7 con",
+     "Dựng hai lần cùng as_of cho cùng manifest_sha256"
+    ],
+    "blockedBy": [
+     "E-13 outbox/worker (ADR-0007, job_worker)",
+     "E-14 kho tệp đính kèm (ADR-0011)",
+     "FG08-01 (case recall nguồn)"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-01.1",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-01",
+   "title": "DB — export_packages, export_package_files, bucket và RLS gói xuất",
+   "body": {
+    "goal": "Có bảng gói xuất với cột lease/attempt cho worker và bucket riêng cho zip.",
+    "sources": [
+     {
+      "id": "SPEC-YC-314",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-421",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/report-audit/EXPORT_PACKAGE_DB.md §4.1–4.2"
+    ],
+    "scope": [
+     "Migration 2 bảng: kind, as_of, manifest_sha256, status, lease_until, attempt_count, next_attempt_at, source_hash_missing",
+     "Policy Storage theo bucket gói xuất cho job_worker; ROLE-008 đọc",
+     "Chuỗi theo giới hạn cột (PR-A-08)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy dev → test",
+     "Assert SQL: RLS (ROLE-008 chỉ đọc gói của mình/quyền), job_worker không dùng service_role"
+    ],
+    "blockedBy": [
+     "E-13 outbox/worker (ADR-0007 job_worker JWT)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-01.2",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-01",
+   "title": "Domain EXPORT_MANIFEST — thứ tự tệp, index, manifest, verify, diff",
+   "body": {
+    "goal": "Hàm thuần cho gói tất định: cùng đầu vào cho cùng manifest.",
+    "sources": [
+     {
+      "id": "SPEC-YC-536",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/function-specifications/EXPORT_MANIFEST_FUNC.md §2.1–2.5"
+    ],
+    "scope": [
+     "orderPackageFiles, buildIndexCsv, buildManifest (SHA-256 manifest không nhúng giờ tạo), verifyPackage, diffManifests",
+     "Xử lý nguồn thiếu SHA-256 theo tham số (giả định LAB-4, chờ E15-FG09-03)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test: cùng đầu vào hai lần cho manifest giống hệt; đổi thứ tự đầu vào không đổi kết quả",
+     "Unit test verifyPackage phát hiện lệch 1 byte"
+    ],
+    "blockedBy": [
+     "E15-FG09-03 (chỉ đổi tham số)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-01.3",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-01",
+   "title": "RPC + API xếp hàng, tái tạo, tải (request/recreate_export_package, DOWNLOAD_GET)",
+   "body": {
+    "goal": "ROLE-008 xếp gói, tái tạo gói mới cùng as_of và tải gói đã RELEASABLE.",
+    "sources": [
+     {
+      "id": "SPEC-YC-235",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-236",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-237",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/technical-design/RPT_EXPORT_PACKAGE_TECH.md §4.1, §4.7",
+     "specs/system-design/api-design/report-audit/EXPORT_PACKAGES_POST_API.md"
+    ],
+    "scope": [
+     "request_export_package (202, kind AUDIT_EVIDENCE/ARCHIVE), recreate_export_package (gói mới, cùng as_of), recreate_match",
+     "DOWNLOAD_GET chỉ gói RELEASABLE, kèm checksum",
+     "Quyền ROLE-008 theo kind; audit mỗi lần xuất (NFR-AUD-01)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL + test route: gói REJECTED/FAILED không tải được",
+     "Tái tạo luôn là gói mới, không sửa gói đã dựng"
+    ],
+    "blockedBy": [
+     "FG09-01.1",
+     "FG09-01.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-01.4",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-01",
+   "title": "Worker buildExportPackage — dựng dữ liệu tới as_of, zip, kiểm và phát hành",
+   "body": {
+    "goal": "Gói được dựng bởi worker nền, đọc lại zip khớp manifest mới RELEASABLE.",
+    "sources": [
+     {
+      "id": "SPEC-YC-421",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-320",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-536",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/technical-design/RPT_EXPORT_PACKAGE_TECH.md §4.2–4.5",
+     "specs/system-design/database-design/ATTACHMENT_DB.md"
+    ],
+    "scope": [
+     "claim_export_package (SKIP LOCKED, lease), dựng CSV/PDF case, sự kiện, tệp đính kèm + ソースハッシュ tới as_of",
+     "complete_export_package_build ghi index, manifest, zip; finish_export_package đọc lại và so manifest",
+     "Lỗi xác định → FAILED; hết lượt → thử lại theo A-4 do E-13",
+     "Log jobId/packageId, không ghi nội dung hồ sơ"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test: dựng hai lần cùng as_of cho cùng manifest_sha256; zip bị sửa → REJECTED",
+     "Gói lớn vượt lease về hàng đợi, không tạo hai gói"
+    ],
+    "blockedBy": [
+     "FG09-01.1",
+     "FG09-01.2",
+     "E-13 outbox/worker (ADR-0007)",
+     "E-14 kho tệp đính kèm (ADR-0011)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-01.5",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-01",
+   "title": "Màn YC_AUDIT_EXPORT — yêu cầu, tiến độ, tải, 再作成して照合",
+   "body": {
+    "goal": "ROLE-008 xuất, theo dõi trạng thái và đối chiếu manifest ngay trên màn.",
+    "sources": [
+     {
+      "id": "SPEC-YC-151",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-236",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/screen-specification/YC_AUDIT_EXPORT_SPEC.md §3–6"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Form ?case=, danh sách gói + trạng thái, nút tải, 「再作成して照合」 hiện khớp/lệch",
+     "Nút 「証跡エクスポート」 từ YC_RECALL_CASE sang màn",
+     "Ngày giờ JST, chuỗi theo cột DB (PR-A-08)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Đạt AC mục 4–5 của YC_AUDIT_EXPORT",
+     "ROLE khác 008 bị chặn đúng"
+    ],
+    "blockedBy": [
+     "FG09-01.3",
+     "FG08-01.5"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG09-01.6",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-01",
+   "title": "Design UI YC_AUDIT_EXPORT theo wireframe LAB-4",
+   "body": {
+    "goal": "Có thiết kế UI màn xuất bằng chứng audit.",
+    "sources": [
+     {
+      "id": "SPEC-YC-151",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/screen-specification/YC_AUDIT_EXPORT_SPEC.md §2 Layout, assets/",
+     "specs/_common/wireframe/ia-design.html"
+    ],
+    "scope": [
+     "Thiết kế form, danh sách gói, kết quả đối chiếu manifest, trạng thái REJECTED/FAILED"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Design khớp Layout và item của spec",
+     "Bàn giao FE trước khi FG09-01.5 bắt đầu"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG09-01.7",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-01",
+   "title": "Test tất định manifest + E2E xuất/tái tạo/tải",
+   "body": {
+    "goal": "Kiểm tự động tính ổn định của gói và luồng màn.",
+    "sources": [
+     {
+      "id": "SPEC-YC-536",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-151",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/technical-design/RPT_EXPORT_PACKAGE_TECH.md §5",
+     "specs/report-audit/screen-specification/YC_AUDIT_EXPORT_SPEC.md §5"
+    ],
+    "scope": [
+     "Dựng hai lần cùng as_of cho cùng manifest_sha256 (kể cả thư viện PDF/zip)",
+     "E2E: xuất → RELEASABLE → tải → tái tạo khớp; ca zip hỏng REJECTED",
+     "Tái tạo sau khi lô bị bỏ khỏi phạm vi case vẫn khớp (removedSnapshots)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Chạy trong CI xanh",
+     "Mọi AC của YC_AUDIT_EXPORT có kiểm"
+    ],
+    "blockedBy": [
+     "FG09-01.5"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG09-02",
+   "kind": "story",
+   "epicId": "FG-09",
+   "parentId": "EP-FG-09",
+   "title": "帳票出力 — Xuất PDF theo 8 様式 FIG-021…028, dựng được khi mẫu chưa bật (F-053)",
+   "body": {
+    "goal": "ROLE-001/003/004 chọn 様式, kỳ/đối tượng, xem プレビュー và xuất PDF; mỗi 様式 tự hoạt động khi có mẫu, mỗi lần xuất có audit.",
+    "sources": [
+     {
+      "id": "SPEC-YC-152",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-238",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-053",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "SPEC-YC-314",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/screen-specification/YC_FORM_OUTPUT_SPEC.md §3, §6",
+     "specs/system-design/api-design/report-audit/FORM_OUTPUTS_POST_API.md",
+     "specs/system-design/database-design/report-audit/EXPORT_PACKAGE_DB.md §4.3"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-08"
+    ],
+    "scope": [
+     "Bảng form_output_templates, trạng thái mẫu chưa bật/đã bật",
+     "record_form_output sinh PDF theo mẫu hiện hành + audit \"export\"",
+     "Màn chọn 様式, kỳ, プレビュー, 「帳票を出力する」; ROLE-008 chỉ xem"
+    ],
+    "outOfScope": [
+     "Nạp nội dung 8 mẫu thật — FG09-03",
+     "Hỏi khách mẫu — E15-FG09-01"
+    ],
+    "dod": [
+     "Đủ DoD của 4 con",
+     "Với mẫu thử bật, PDF xuất được và audit ghi đủ; mẫu chưa bật hiện trạng thái rõ"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-02.1",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-02",
+   "title": "DB + RPC — form_output_templates, record_form_output, sinh PDF",
+   "body": {
+    "goal": "Có kho mẫu và RPC xuất PDF + audit, chạy với mẫu chưa bật.",
+    "sources": [
+     {
+      "id": "SPEC-YC-238",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-314",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/report-audit/EXPORT_PACKAGE_DB.md §4.3",
+     "specs/system-design/api-design/report-audit/FORM_OUTPUTS_POST_API.md"
+    ],
+    "scope": [
+     "Migration form_output_templates (cột tên/bố cục/điều kiện/vai trò cho phép NULL tới khi có mẫu)",
+     "record_form_output: kiểm mẫu đã bật, vai trò, kỳ/đối tượng; sinh PDF; audit export",
+     "Mẫu chưa bật → mã lỗi rõ, không xuất"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL + unit test: mẫu chưa bật bị từ chối, mẫu thử bật xuất PDF",
+     "Audit event ghi mỗi lần xuất"
+    ],
+    "blockedBy": [
+     "E15-FG09-01 (chỉ cho nội dung mẫu thật)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-02.2",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-02",
+   "title": "Màn YC_FORM_OUTPUT — chọn 様式, kỳ, プレビュー, xuất",
+   "body": {
+    "goal": "Người dùng xuất 帳票 từ màn, đúng vai trò.",
+    "sources": [
+     {
+      "id": "SPEC-YC-152",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-053",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/screen-specification/YC_FORM_OUTPUT_SPEC.md §3–6"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Chọn 1 trong 8 様式 (mẫu chưa bật hiện rõ trạng thái), kỳ/đối tượng, プレビュー",
+     "Link vào từ YC_REPORT_CATALOG 「帳票様式で出力する」",
+     "Ngày giờ JST, chuỗi theo cột DB (PR-A-08)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Đạt AC mục 4–5 của YC_FORM_OUTPUT",
+     "ROLE-008 chỉ xem, không có nút xuất"
+    ],
+    "blockedBy": [
+     "FG09-02.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "FE-1"
+  },
+  {
+   "id": "FG09-02.3",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-02",
+   "title": "Design UI YC_FORM_OUTPUT theo wireframe LAB-4",
+   "body": {
+    "goal": "Có thiết kế UI màn xuất 帳票.",
+    "sources": [
+     {
+      "id": "SPEC-YC-152",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/screen-specification/YC_FORM_OUTPUT_SPEC.md §2 Layout, assets/",
+     "specs/_common/wireframe/ia-design.html"
+    ],
+    "scope": [
+     "Thiết kế chọn 様式, プレビュー, trạng thái mẫu chưa bật"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Design khớp Layout và item của spec",
+     "Bàn giao FE trước khi FG09-02.2 bắt đầu"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG09-02.4",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-02",
+   "title": "Assert SQL + E2E xuất 帳票 với mẫu thử",
+   "body": {
+    "goal": "Kiểm tự động luồng xuất và quyền.",
+    "sources": [
+     {
+      "id": "SPEC-YC-238",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-152",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/screen-specification/YC_FORM_OUTPUT_SPEC.md §5"
+    ],
+    "scope": [
+     "E2E: chọn mẫu thử đã bật → プレビュー → xuất PDF; mẫu chưa bật bị chặn",
+     "Quyền 001/003/004 xuất, 008 chỉ xem; audit ghi mỗi lần xuất"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Chạy trong CI xanh",
+     "Mọi AC của YC_FORM_OUTPUT có kiểm"
+    ],
+    "blockedBy": [
+     "FG09-02.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG09-03",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "EP-FG-09",
+   "title": "帳票出力 — Nạp mẫu 8 様式 FIG-021…028 khi khách giao (F-053)",
+   "body": {
+    "goal": "Mỗi 様式 có tên, bố cục, điều kiện và bật được, PDF xuất đúng mẫu hiện hành.",
+    "sources": [
+     {
+      "id": "SPEC-YC-152",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-053",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/screen-specification/YC_FORM_OUTPUT_SPEC.md §6 (Dựng khi chưa có tên 様式)",
+     "specs/system-design/database-design/report-audit/EXPORT_PACKAGE_DB.md §4.3"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Nạp từng mẫu vào form_output_templates theo file khách giao",
+     "Bật mẫu, kiểm PDF với dữ liệu seed",
+     "Cập nhật spec cho tên và bố cục thật"
+    ],
+    "outOfScope": [
+     "Phần mẫu khách chưa giao: để mẫu ở trạng thái chưa bật"
+    ],
+    "dod": [
+     "Mỗi mẫu bật có PDF khớp file mẫu của khách (so mắt có biên bản)",
+     "Spec YC_FORM_OUTPUT và EXPORT_PACKAGE_DB mục 4.3 cập nhật tên/bố cục thật"
+    ],
+    "blockedBy": [
+     "E15-FG09-01",
+     "FG09-02.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-04",
+   "kind": "story",
+   "epicId": "FG-09",
+   "parentId": "EP-FG-09",
+   "title": "保持期間・リーガルホールド・定期パージ — Hạn lưu có phiên bản, hold, purge hai pha (F-069)",
+   "body": {
+    "goal": "Hồ sơ hết hạn được dọn qua một đường duy nhất: dry-run → 起票 → 承認 (hai người khác nhau) → xoá DB một giao dịch → xoá object; legal hold chặn mọi xoá.",
+    "sources": [
+     {
+      "id": "SPEC-YC-416",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-321",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-537",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-320",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-069",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "ADR-0012",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "DR-RET-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_RETENTION_PURGE_TECH.md §3, §4.1–4.5",
+     "specs/system-design/database-design/RETENTION_LEGAL_HOLD_DB.md",
+     "specs/_common/RETENTION_FUNC.md",
+     "architecture/adr/ADR-0012-retention-legal-hold-two-phase-purge.md",
+     "specs/system-design/database-design/ATTACHMENT_DB.md"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "retention_policies theo phiên bản (source_verified = false tới khi khách xác nhận nên purge đầu không xoá gì), legal_holds, purge_runs",
+     "Bốn tầng chặn: chính sách chưa xác minh, legal hold (dry-run, lúc chạy, trước từng tệp), bản ghi còn được tham chiếu (REFERENCED), phạm vi không vượt số đã duyệt",
+     "Pha DB một giao dịch, pha object chạy sau commit, lặp lại được, xoá cả bucket bản sao (ADR-0013)",
+     "Thay private.truncate_demo_data (DEV-008) bằng đường purge có duyệt"
+    ],
+    "outOfScope": [
+     "Xác nhận A-5 và chỗ thao tác (màn hay công cụ) — E15-FG09-02, chưa có màn trong spec",
+     "Gỡ truncate_demo_data khỏi production và kiểm backup/PITR — E-14",
+     "Cache bản đồ travel_times không thuộc purge — FG10-03"
+    ],
+    "dod": [
+     "Đủ DoD của 7 con",
+     "Purge chạy trên dữ liệu thử: không xoá hồ sơ bị hold hoặc chưa xác minh; audit_events ghi đủ"
+    ],
+    "blockedBy": [
+     "E-13 outbox/worker (ADR-0007, job_worker)",
+     "E-14 kho tệp đính kèm (ADR-0011) và bucket bản sao (ADR-0013)"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-04.1",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-04",
+   "title": "DB — retention_policies, legal_holds, purge_runs, enum, seed phiên bản đầu",
+   "body": {
+    "goal": "Có 3 bảng retention với phiên bản chính sách đầu source_verified = false và cột purge_run_id ở attachments.",
+    "sources": [
+     {
+      "id": "SPEC-YC-321",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-320",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "DR-RET-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/RETENTION_LEGAL_HOLD_DB.md §2, §4.1–4.4",
+     "specs/system-design/database-design/ATTACHMENT_DB.md (purge_run_id, CHECK 4)"
+    ],
+    "scope": [
+     "Migration 3 bảng + enum retention_class, legal_hold_scope, purge_run_status; cột lease_until, attempt_count, next_attempt_at ở purge_runs",
+     "Seed phiên bản đầu theo A-5, mọi dòng source_verified = false",
+     "attachments.purge_run_id + CHECK; RLS chung nhóm (mục 4.4)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy dev → test",
+     "Assert SQL: purge_runs và hold không bị xoá, người 起票 ≠ người 承認 ép ở CHECK/RPC"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-04.2",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-04",
+   "title": "Domain RETENTION + bộ ca chung với hàm SQL",
+   "body": {
+    "goal": "Luật tính hạn có hai bản (TS và SQL) và một bộ ca chung giữ chúng khớp.",
+    "sources": [
+     {
+      "id": "SPEC-YC-537",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-069",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/RETENTION_FUNC.md §2.1–2.6",
+     "architecture/adr/ADR-0012-retention-legal-hold-two-phase-purge.md (Hệ quả)"
+    ],
+    "scope": [
+     "retentionBasisDate, isPastRetention, retentionExpiryDate, findBlockingHold, evaluatePurgeCandidate, kiểu export",
+     "Bộ ca chung (bảng ca JSON) chạy được cả ở unit test TS và assert SQL",
+     "Ngày thuần theo JST qua hàm dùng chung"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test TS và assert SQL cùng chạy bộ ca chung, kết quả giống nhau",
+     "Ca biên: hold lúc dry-run vs lúc chạy, mốc closed_at, source_verified = false"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-04.3",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-04",
+   "title": "RPC chính sách + legal hold (propose/approve policy, place/release hold)",
+   "body": {
+    "goal": "Chính sách đổi bằng phiên bản mới được duyệt; hold đặt/gỡ có người và giờ, không xoá dòng.",
+    "sources": [
+     {
+      "id": "SPEC-YC-416",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-321",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_RETENTION_PURGE_TECH.md §4.3",
+     "specs/system-design/database-design/RETENTION_LEGAL_HOLD_DB.md §4.1–4.2"
+    ],
+    "scope": [
+     "propose_retention_policy, approve_retention_policy (hai người), thêm phiên bản không sửa bản cũ",
+     "place_legal_hold (ENTITY / RETENTION_CLASS + khoảng ngày), release_legal_hold",
+     "Mã lỗi LEGAL_HOLD_ALREADY_RELEASED, SELF_APPROVAL, EFFECTIVE_DATE_PASSED"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL: phiên bản cũ không đổi, tự duyệt bị chặn, hold gỡ rồi không đặt lại dòng cũ",
+     "Audit ghi đủ cho mỗi RPC"
+    ],
+    "blockedBy": [
+     "FG09-04.1",
+     "E15-FG09-02 (người đặt/gỡ hold)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-04.4",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-04",
+   "title": "Dry-run định kỳ + RPC 起票/承認/huỷ (create_purge_dry_run, submit/approve/cancel)",
+   "body": {
+    "goal": "Dry-run định kỳ lập danh sách đủ điều kiện; purge chỉ chạy khi đã 起票 và 承認 bởi hai người.",
+    "sources": [
+     {
+      "id": "SPEC-YC-416",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-069",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_RETENTION_PURGE_TECH.md §4.1–4.2"
+    ],
+    "scope": [
+     "private.create_purge_dry_run qua pg_cron, private.purge_candidates dùng evaluatePurgeCandidate",
+     "submit_purge_run, approve_purge_run, cancel_purge_run, PURGE_RUN_ACTIVE_EXISTS",
+     "Tần suất/giờ dry-run là tham số"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL: dry-run loại hold, REFERENCED và nhóm source_verified = false",
+     "Một purge hoạt động tại một thời điểm; huỷ ghi audit purge_run.cancelled"
+    ],
+    "blockedBy": [
+     "FG09-04.2",
+     "FG09-04.3",
+     "E15-FG09-02 (tần suất, chỗ thao tác)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-04.5",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-04",
+   "title": "Pha DB — private.execute_purge_run một giao dịch, thay truncate_demo_data",
+   "body": {
+    "goal": "Xoá dòng trong một giao dịch, lỗi thì rollback, chỉ chạy với lần purge đã duyệt.",
+    "sources": [
+     {
+      "id": "SPEC-YC-416",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "DR-RET-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_RETENTION_PURGE_TECH.md §4.4"
+    ],
+    "scope": [
+     "execute_purge_run kiểm lại hold, phạm vi không vượt dry-run, chính sách không đổi từ dry-run",
+     "Xoá dòng nhóm đủ điều kiện; attachments không bị xoá dòng, chỉ đánh dấu",
+     "lock_timeout, chạy giờ thấp điểm; ghi result_summary",
+     "Cấm truncate_demo_data ở production (DEV-008)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL: lỗi giữa chừng rollback sạch; hold chen giữa chặn xoá",
+     "Test đo thời gian trên dữ liệu cỡ lớn ghi lại (chưa đo ở LAB-4)"
+    ],
+    "blockedBy": [
+     "FG09-04.4"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-04.6",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-04",
+   "title": "Pha object — claim_purge_objects, mark_attachments_purged, xoá cả bucket bản sao",
+   "body": {
+    "goal": "Xoá byte trong kho file sau commit DB, lặp lại được, có thử lại, kiểm hold trước từng tệp.",
+    "sources": [
+     {
+      "id": "SPEC-YC-416",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-320",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "ADR-0012",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_RETENTION_PURGE_TECH.md §4.5",
+     "specs/system-design/database-design/ATTACHMENT_DB.md"
+    ],
+    "scope": [
+     "Route nội bộ worker + claim_purge_objects (lease), xoá object ở bucket chính và bản sao (ADR-0013)",
+     "mark_attachments_purged, report_purge_object_failure, thử lại A-4, object đã mất coi như xong",
+     "Kiểm hold ngay trước khi xoá từng tệp; FAILED ghi rõ objects_pending"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test: object lỗi giữa chừng, lần chạy sau dọn tiếp, không mất byte khi metadata còn VERIFIED",
+     "Tệp bị hold không bị xoá kể cả khi hold đặt sau dry-run"
+    ],
+    "blockedBy": [
+     "FG09-04.5",
+     "E-13 outbox/worker (ADR-0007)",
+     "E-14 kho tệp đính kèm (ADR-0011)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-04.7",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "FG09-04",
+   "title": "Assert SQL bốn tầng chặn + test E2E vòng purge",
+   "body": {
+    "goal": "Chứng minh purge không xoá nhầm.",
+    "sources": [
+     {
+      "id": "SPEC-YC-416",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-537",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "DR-RET-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_RETENTION_PURGE_TECH.md §3, §5",
+     "specs/_common/RETENTION_FUNC.md"
+    ],
+    "scope": [
+     "Bốn tầng: source_verified = false, legal hold, REFERENCED, phạm vi vượt số đã duyệt",
+     "Chạy vòng dry-run → 起票 → 承認 → chạy → kiểm audit_events (YC_AUDIT_LOG AC-6)",
+     "Ca hai người khác nhau, tự duyệt bị chặn"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Chạy trong CI xanh",
+     "Chạy đầu với chính sách mặc định không xoá gì"
+    ],
+    "blockedBy": [
+     "FG09-04.6"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-09",
+    "src:design-only"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG09-05",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "EP-FG-09",
+   "title": "レポートカタログ — Áp trần 10.000 dòng cho báo cáo CSV còn thiếu (L5-034)",
+   "body": {
+    "goal": "Mọi báo cáo CSV có trần rõ ràng khớp với comment và spec, không có báo cáo vô hạn ngoài ý muốn.",
+    "sources": [
+     {
+      "id": "L5-034",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (GAP-05, L5-034)",
+     "specs/system-design/api-design/report-audit/REPORTS_KIND_GET_API.md §5",
+     "specs/report-audit/screen-specification/YC_REPORT_CATALOG_SPEC.md §6"
+    ],
+    "scope": [
+     "Đối chiếu code với bảng §5: báo cáo chưa có .limit(10_000) (quarantine, haccp-completeness; temperature-excursion, alarm-sla đang lấy 100 mới nhất)",
+     "Thêm .limit(10_000) cho phần còn thiếu, hoặc sửa comment page.tsx nếu cố ý không cap, rồi cập nhật spec cho khớp",
+     "Màn báo hiện khi CSV bị cắt"
+    ],
+    "outOfScope": [
+     "Báo cáo 回収照合 — FG09-08"
+    ],
+    "dod": [
+     "Test từng báo cáo: dữ liệu > 10.000 dòng chỉ trả 10.000 và có dấu hiệu bị cắt",
+     "Bảng giới hạn dòng ở REPORTS_KIND_GET_API §5 và YC_REPORT_CATALOG khớp code"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:l5"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-06",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "EP-FG-09",
+   "title": "レポートカタログ — Dùng jstDateOf cho ngày giao ở 配送実績 và mở rộng test quét (L5-047)",
+   "body": {
+    "goal": "Giao trước 09:00 JST không bị tính sang ngày hôm trước ở báo cáo 配送実績.",
+    "sources": [
+     {
+      "id": "L5-047",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/_common/deviation-table.md (GAP-20, L5-047)",
+     "specs/_common/DATES_FUNC.md §2.4 (jstDateOf)"
+    ],
+    "scope": [
+     "Sửa classifyDeliveryTiming dùng jstDateOf(deliveredAtIso) thay slice(0, 10) trong report-shape.ts",
+     "Mở rộng test quét no-utc-calendar-day.test.ts sang mẫu <timestamp>.slice(0, 10) trong src/lib/queries"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test: giao 08:30 JST của ngày D được tính ngày D, không phải D-1",
+     "Test quét mới đỏ trên code cũ và xanh trên code mới, không còn mẫu slice(0, 10) trong src/lib/queries"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-09",
+    "src:l5"
+   ],
+   "owner": "BE-1"
+  },
+  {
+   "id": "FG09-07",
+   "kind": "task",
+   "epicId": "FG-09",
+   "parentId": "EP-FG-09",
+   "title": "レポートカタログ — Hồi quy E2E màn đã dựng của report-audit (YC_REPORT_CATALOG)",
+   "body": {
+    "goal": "Kịch bản E2E phủ luồng chính của màn báo cáo đã dựng theo AC của Screen Spec (DR-03), chạy được trong CI.",
+    "sources": [],
+    "specRefs": [
+     "specs/report-audit/screen-specification/YC_REPORT_CATALOG_SPEC.md §4–5"
+    ],
+    "scope": [
+     "E2E chọn từng báo cáo trong 11 loại, lọc ?report=&from=&to=, bảng 500 dòng đầu, xuất CSV",
+     "Quyền 4 vai ROLE-003/004/006/008 ở chế độ thao tác",
+     "Ca báo cáo bị cắt 10.000 dòng (sau FG09-05)"
+    ],
+    "outOfScope": [
+     "Màn xuất bằng chứng, 帳票 — E2E ở FG09-01/02"
+    ],
+    "dod": [
+     "Chạy trong CI trên dữ liệu seed, xanh",
+     "Mỗi AC của YC_REPORT_CATALOG có kiểm"
+    ],
+    "blockedBy": [
+     "FG09-05",
+     "FG09-06"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-09",
+    "src:hardening"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "E15-FG10-01",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — ERP CSV: giờ batch, thư mục SFTP, cỡ file, ack, 引当 tự động, schema cột (IF-ERP-01)",
+   "body": {
+    "goal": "Chốt 6 điểm mở của ERP hai chiều để đổi tham số, không sửa thiết kế.",
+    "sources": [
+     {
+      "id": "L5-015",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-ERP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-413",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-532",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_ERP_SFTP_EXCHANGE_TECH.md §5 (câu hỏi mở 1–6)",
+     "specs/administration/function-specifications/ERP_FILE_FUNC.md §3"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Hỏi giờ batch ngày của từng file và quy ước thư mục SFTP (nhận/gửi/đã xử lý/reject), ai dọn file",
+     "Hỏi cỡ file tối đa (quyết định có chia job theo giới hạn thời gian route), ERP báo nhận/từ chối file gửi bằng gì",
+     "Hỏi đơn ERP có chạy 引当 tự động sau nạp không; schema cột, file điều khiển, version, idempotency key",
+     "Xác nhận A-9 (ERP hai chiều qua managed SFTP, 4 tên file)"
+    ],
+    "outOfScope": [
+     "Code ERP — FG10-02 (làm theo giả định A-9 của LAB-4)"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi, có ngày hỏi lại",
+     "Khi có đáp án: ERP_FILE / ADM_ERP_SFTP_EXCHANGE cập nhật, tham số đổi ở FG10-02"
+    ],
+    "affects": [
+     "FG10-02",
+     "FG10-02.2",
+     "FG10-02.3",
+     "FG10-02.4",
+     "FG10-02.5"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-FG10-02",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Dịch vụ bản đồ: sản phẩm, licence, hạn mức, môi trường thử (IF-MAP-01, Q-26)",
+   "body": {
+    "goal": "Biết dịch vụ bản đồ của khách để chọn adapter, đặt hạn mức gọi và có tài khoản thử.",
+    "sources": [
+     {
+      "id": "L5-014",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-MAP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "if:IF-MAP-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md (IF-MAP-01, Q-26)",
+     "specs/administration/screen-specification/YC_INTEGRATION_MONITOR_SPEC.md §5 (Q1, Q3)"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Hỏi sản phẩm bản đồ có licence của khách, endpoint, hạn mức gọi/ngày, tài khoản môi trường thử",
+     "Xác nhận A-4 (timeout 3 giây, thử lại 1 lần, cache 7 ngày) và A-11 (24 giờ là thời gian ước tính)"
+    ],
+    "outOfScope": [
+     "Code adapter bản đồ — FG10-03 (làm theo giả định A-4)"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi, có ngày hỏi lại",
+     "Khi có đáp án: ghi vào target-architecture/PREMISE, đổi tham số ở FG10-03"
+    ],
+    "affects": [
+     "FG10-03",
+     "FG10-03.2",
+     "FG10-03.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-FG10-03",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Mail relay: mẫu thư JA, bounce, timeout, người nhận khi nghỉ việc (IF-MAIL-01)",
+   "body": {
+    "goal": "Chốt 4 điểm mở của mail relay và duyệt mẫu thư.",
+    "sources": [
+     {
+      "id": "L5-016",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-MAIL-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-420",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_MAIL_OUTBOX_TECH.md §5 (câu hỏi mở 1–4)"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Hỏi mẫu thư (tiêu đề/nội dung JA) từng event_type lưu ở đâu, ai duyệt",
+     "Hỏi có theo dõi bounce không, timeout gọi relay, người đã nghỉ ở IdP còn nhận INTEGRATION_FAILURE không",
+     "Xác nhận A-4 (5 lần, 1·2·4·8·16 phút, không SMS) và thông tin relay (host, TLS, tài khoản thử)"
+    ],
+    "outOfScope": [
+     "Code mail — FG10-04 (làm theo giả định A-4)"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi, có ngày hỏi lại",
+     "Khi có đáp án: ADM_MAIL_OUTBOX cập nhật, tham số/mẫu đổi ở FG10-04"
+    ],
+    "affects": [
+     "FG10-04",
+     "FG10-04.2",
+     "FG10-04.3",
+     "FG10-04.4"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "E15-FG10-04",
+   "kind": "task",
+   "epicId": "E-15",
+   "parentId": "EP-E-15",
+   "title": "顧客確認 — Kho archive: đích, giao thức, lịch export theo retention (IF-ARCH-01)",
+   "body": {
+    "goal": "Biết đích và giao thức giao gói ARCHIVE; hiện giao thức là TBD trong thiết kế.",
+    "sources": [
+     {
+      "id": "IF-ARCH-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "if:IF-ARCH-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-057",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md (IF-ARCH-01)",
+     "specs/system-design/database-design/report-audit/EXPORT_PACKAGE_DB.md §5 (Q3, Q5)",
+     "specs/report-audit/technical-design/RPT_EXPORT_PACKAGE_TECH.md §4.6"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Hỏi đích kho archive của khách, giao thức, xác thực, môi trường thử",
+     "Hỏi lịch export theo retention có tự chạy không, trần dung lượng/kỳ của gói ARCHIVE",
+     "Ghi vào spec, đổi tham số ở FG10-05"
+    ],
+    "outOfScope": [
+     "Code giao archive — FG10-05"
+    ],
+    "dod": [
+     "Câu hỏi đã gửi, có ngày hỏi lại",
+     "Khi có đáp án: EXPORT_PACKAGE_DB và RPT_EXPORT_PACKAGE cập nhật; FG10-05 gỡ chặn"
+    ],
+    "affects": [
+     "FG10-05",
+     "FG10-05.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BrSE",
+    "epic:E-15",
+    "src:clarify"
+   ],
+   "owner": "BrSE"
+  },
+  {
+   "id": "FG10-01",
+   "kind": "story",
+   "epicId": "FG-10",
+   "parentId": "EP-FG-10",
+   "title": "外部連携モニタ — Màn theo dõi 4 kết nối ngoài, job reject/lỗi, 再実行 (F-054..057)",
+   "body": {
+    "goal": "ROLE-007 thấy trạng thái từng kết nối (ERP, bản đồ, mail, archive), job nào reject và vì sao, và 再実行 job lỗi; ROLE-008 chỉ xem và yêu cầu/tải archive.",
+    "sources": [
+     {
+      "id": "SPEC-YC-154",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-234",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-312",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-054",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "F-055",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "F-056",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "F-057",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_INTEGRATION_MONITOR_SPEC.md",
+     "specs/administration/function-specifications/INTEGRATION_RETRY_FUNC.md §2.5–2.9",
+     "specs/system-design/api-design/administration/INTEGRATION_JOBS_BY_ID_RETRY_POST_API.md",
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Trạng thái mỗi kết nối (connectionStatus), danh sách job + lần thử + mã reject có nhãn JA, 要対応",
+     "retry_integration_job chỉ ROLE-007 (A-8), chặn khi không đủ điều kiện (operatorRetryBlocker)",
+     "Dòng bản đồ đọc travel_times, dòng logger đọc temp_imports (không có job MAP/LOGGER, D23)",
+     "Mỗi môi trường một bản monitor, dữ liệu ngoài production mask (OPS-ENV-01)"
+    ],
+    "outOfScope": [
+     "Bảng integration_jobs/attempts, worker, retry A-4 — E-13 outbox/worker (ADR-0007, ADR-0008)",
+     "idp_group_role_map — FG-11",
+     "Giao archive — FG10-05"
+    ],
+    "dod": [
+     "Đủ DoD của 5 con",
+     "ROLE-007 chạy lại một job FAILED_FINAL ở môi trường test và trạng thái cập nhật"
+    ],
+    "blockedBy": [
+     "E-13 outbox/worker (ADR-0007, ADR-0008)"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:FE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG10-01.1",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-01",
+   "title": "Domain INTEGRATION_RETRY cho monitor + RPC retry_integration_job",
+   "body": {
+    "goal": "Luật 要対応, trạng thái kết nối và 再実行 thủ công đúng một nơi.",
+    "sources": [
+     {
+      "id": "SPEC-YC-234",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-054",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/function-specifications/INTEGRATION_RETRY_FUNC.md §2.6–2.9",
+     "specs/system-design/api-design/administration/INTEGRATION_JOBS_BY_ID_RETRY_POST_API.md"
+    ],
+    "scope": [
+     "operatorRetryBlocker, isNeedsAction (định nghĩa duy nhất của 要対応), connectionStatus, nhãn JA INTEGRATION_LABELS_JA",
+     "RPC retry_integration_job: chỉ ROLE-007, đưa job về QUEUED, cho FAILED_FINAL → QUEUED của mail khi job cha chạy lại",
+     "Audit mỗi lần chạy lại"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test các hàm domain gồm ca biên; assert SQL RPC theo quyền",
+     "ROLE-008 gọi bị 403, job đang chạy bị từ chối"
+    ],
+    "blockedBy": [
+     "E-13 outbox/worker (bảng integration_jobs, settle)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-01.2",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-01",
+   "title": "Query đọc monitor — 4 kết nối, job, lần thử, yêu cầu/tải archive",
+   "body": {
+    "goal": "API đọc cho màn theo từng môi trường, có phân trang và mask ngoài production.",
+    "sources": [
+     {
+      "id": "SPEC-YC-154",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-312",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-055",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "F-057",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_INTEGRATION_MONITOR_SPEC.md §4.3",
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md §4.1–4.3"
+    ],
+    "scope": [
+     "Truy vấn trạng thái 4 dòng kết nối + IF-LOG-01 (temp_imports) + IF-MAP (travel_times)",
+     "Danh sách job lọc theo kết nối/trạng thái, chi tiết lần thử",
+     "Cho ROLE-008 gọi yêu cầu/tải gói ARCHIVE (FG09-01.3)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL: RLS theo vai (007, 008), không lộ nội dung mail",
+     "Phân trang và lọc đúng trên dữ liệu seed"
+    ],
+    "blockedBy": [
+     "FG10-01.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-01.3",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-01",
+   "title": "Màn YC_INTEGRATION_MONITOR — 4 kết nối, job lỗi, 再実行",
+   "body": {
+    "goal": "Người vận hành thấy mọi lỗi tích hợp trên một màn, không có lỗi im lặng.",
+    "sources": [
+     {
+      "id": "SPEC-YC-154",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-054",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "F-055",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "F-056",
+      "confidence": "EXTRACTED"
+     },
+     {
+      "id": "F-057",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_INTEGRATION_MONITOR_SPEC.md §3–6"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Bảng 4 kết nối + badge 要対応, chi tiết job/lần thử, nút 再実行 (007)",
+     "Link từ job lỗi sang báo cáo vận hành (008); yêu cầu/tải archive (008)",
+     "Không có ô chuyển môi trường; ngày giờ JST (PR-A-08)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Đạt AC mục 4–5 của YC_INTEGRATION_MONITOR theo vai 007/008",
+     "Job FAILED_FINAL hiện đúng 要対応 và mã lỗi có nhãn JA"
+    ],
+    "blockedBy": [
+     "FG10-01.1",
+     "FG10-01.2"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG10-01.4",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-01",
+   "title": "Design UI YC_INTEGRATION_MONITOR theo wireframe LAB-4",
+   "body": {
+    "goal": "Có thiết kế UI màn monitor tích hợp.",
+    "sources": [
+     {
+      "id": "SPEC-YC-154",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_INTEGRATION_MONITOR_SPEC.md §2 Layout, assets/",
+     "specs/_common/wireframe/ia-design.html"
+    ],
+    "scope": [
+     "Thiết kế bảng 4 kết nối, chi tiết job, trạng thái 要対応/RETRY_WAIT/FAILED_FINAL"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Design khớp Layout và item của spec",
+     "Bàn giao FE trước khi FG10-01.3 bắt đầu"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:Design",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "Design"
+  },
+  {
+   "id": "FG10-01.5",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-01",
+   "title": "E2E monitor (job lỗi, 再実行, quyền 007/008)",
+   "body": {
+    "goal": "Kiểm tự động hiển thị lỗi và chạy lại.",
+    "sources": [
+     {
+      "id": "SPEC-YC-154",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-234",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/screen-specification/YC_INTEGRATION_MONITOR_SPEC.md §5"
+    ],
+    "scope": [
+     "E2E: job RETRY_WAIT, FAILED_FINAL, REJECTED hiện đúng; 007 chạy lại, 008 không có nút",
+     "Dữ liệu ngoài production bị mask"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Chạy trong CI xanh",
+     "Mọi AC của YC_INTEGRATION_MONITOR có kiểm"
+    ],
+    "blockedBy": [
+     "FG10-01.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG10-02",
+   "kind": "story",
+   "epicId": "FG-10",
+   "parentId": "EP-FG-10",
+   "title": "ERP連携 — CSV hai chiều qua SFTP: nhận orders/inbound, gửi tồn và kết quả xuất (L5-015)",
+   "body": {
+    "goal": "Đơn và lịch nhập từ ERP được nạp theo batch ngày (reject cả file khi sai), tồn cuối ngày và kết quả xuất được gửi lại, mỗi file là một job có log.",
+    "sources": [
+     {
+      "id": "L5-015",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-413",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-532",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-ERP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "if:IF-ERP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-054",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_ERP_SFTP_EXCHANGE_TECH.md §3, §4.1–4.5",
+     "specs/administration/function-specifications/ERP_FILE_FUNC.md §2",
+     "architecture/target-architecture.md (IF-ERP-01)",
+     "specs/system-design/database-design/order-shipping/ORDERS_ALLOCATION_DELIVERY_DB.md (T5)"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-08"
+    ],
+    "scope": [
+     "Nhận orders-YYYYMMDD.csv, inbound-YYYYMMDD.csv; gửi inventory-result-/shipment-result-YYYYMMDD.csv (CSV UTF-8, schema version, idempotency key)",
+     "Checksum lệch, key trùng, file sai → reject cả file, không nạp một phần, không tự thử lại",
+     "Lỗi kỹ thuật (SFTP/mạng/timeout) thử lại theo A-4 rồi FAILED_FINAL + mail",
+     "Đơn ERP hiện cùng đơn nhập tay (YC_ORDER_ENTRY), lịch nhập ở YC_RECEIVING_APPOINTMENT"
+    ],
+    "outOfScope": [
+     "Khung worker, outbox, retry A-4, sandbox SFTP, harness contract test — E-13 outbox/worker (ADR-0007, ADR-0008)",
+     "引当 tự động sau nạp — chờ E15-FG10-01",
+     "Màn monitor — FG10-01"
+    ],
+    "dod": [
+     "Đủ DoD của 7 con",
+     "Một cặp file orders + inbound nạp, một cặp file gửi đi ở SFTP môi trường thử, contract test xanh"
+    ],
+    "blockedBy": [
+     "E-13 outbox/worker (ADR-0007, ADR-0008)",
+     "E-13 tài khoản môi trường thử (SFTP)",
+     "E15-FG10-01 (chỉ đổi tham số)"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-02.1",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-02",
+   "title": "DB — nguồn ERP cho orders và receipts, loại tệp ERP_FILE",
+   "body": {
+    "goal": "Đơn và lịch nhập mang nguồn ERP và khoá chống nạp trùng.",
+    "sources": [
+     {
+      "id": "SPEC-YC-413",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "L5-015",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/order-shipping/ORDERS_ALLOCATION_DELIVERY_DB.md (T5)",
+     "specs/system-design/database-design/INBOUND_INVENTORY_DB.md",
+     "specs/administration/technical-design/ADM_ERP_SFTP_EXCHANGE_TECH.md §5 (lệch #3, #4)"
+    ],
+    "scope": [
+     "orders.source / source_job_id (T5) đã đặc tả; receipts thêm source, source_job_id, supplier_ref + unique (supplier_code, supplier_ref)",
+     "attachment_purpose ERP_FILE (nhóm INTEGRATION_LOG), uploaded_by NULL",
+     "Cột theo giới hạn độ dài (PR-A-08)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy dev → test",
+     "Assert SQL: nạp trùng supplier_ref bị chặn bởi unique"
+    ],
+    "blockedBy": [
+     "E-13 outbox/worker (integration_jobs)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-02.2",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-02",
+   "title": "Domain ERP_FILE — tên file, kiểm file nhận, idempotency key, dựng file gửi",
+   "body": {
+    "goal": "Luật file ERP thuần, kiểm được bằng unit test, nhãn lỗi JA.",
+    "sources": [
+     {
+      "id": "SPEC-YC-532",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-ERP-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/function-specifications/ERP_FILE_FUNC.md §2.1–2.5"
+    ],
+    "scope": [
+     "parseErpFileName, verifyErpInboundFile (checksum, key, schema version, dòng vi phạm), erpExportIdempotencyKey",
+     "buildErpExportFile cho inventory-result và shipment-result, ERP_ISSUE_LABELS_JA",
+     "Mã reject FILE_FORMAT_INVALID, ROW_RULE_VIOLATION, CUSTOMER_REF_ALREADY_IMPORTED (mã issue)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test từng hàm gồm ca file sai, key trùng, checksum lệch",
+     "Cùng đầu vào cho cùng file gửi (tất định)"
+    ],
+    "blockedBy": [
+     "E15-FG10-01 (schema cột, chỉ đổi tham số)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-02.3",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-02",
+   "title": "Nhận file đơn — schedule_erp_batch, handler ERP_ORDERS_IMPORT, RPC import_erp_orders",
+   "body": {
+    "goal": "File orders-YYYYMMDD.csv thành đơn có source = ERP, hoặc reject cả file.",
+    "sources": [
+     {
+      "id": "L5-015",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-413",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_ERP_SFTP_EXCHANGE_TECH.md §4.1–4.3"
+    ],
+    "scope": [
+     "private.schedule_erp_batch lập job theo ngày; handler tải file, lưu ERP_FILE, kiểm bằng domain",
+     "import_erp_orders một giao dịch, all-or-nothing, ghi source_job_id",
+     "Không tự 引当 (chờ E15-FG10-01); log jobId, correlationId, không ghi dữ liệu thật"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL: file hợp lệ nạp đủ, file có 1 dòng sai không nạp dòng nào",
+     "Contract test với SFTP môi trường thử: tải, lưu, reject, thử lại lỗi kỹ thuật"
+    ],
+    "blockedBy": [
+     "FG10-02.1",
+     "FG10-02.2",
+     "E-13 outbox/worker (ADR-0007)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-02.4",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-02",
+   "title": "Nhận file lịch nhập — handler ERP_INBOUND_IMPORT, RPC import_erp_inbound",
+   "body": {
+    "goal": "File inbound-YYYYMMDD.csv thành lịch nhập (receipts) có nguồn ERP, không nạp trùng.",
+    "sources": [
+     {
+      "id": "L5-015",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-413",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_ERP_SFTP_EXCHANGE_TECH.md §4.2–4.3",
+     "specs/receiving/screen-specification/YC_RECEIVING_APPOINTMENT_SPEC.md"
+    ],
+    "scope": [
+     "Handler ERP_INBOUND_IMPORT, RPC import_erp_inbound một giao dịch",
+     "Khoá chống trùng (supplier_code, supplier_ref); file gửi lại cùng customer_ref bị reject cả file"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL: nạp trùng bị reject cả file",
+     "Lịch nhập hiện ở YC_RECEIVING_APPOINTMENT cùng lịch nhập tay"
+    ],
+    "blockedBy": [
+     "FG10-02.1",
+     "FG10-02.2",
+     "FG10-02.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-02.5",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-02",
+   "title": "Gửi file — read_erp_export_rows, register_erp_export_file, gửi SFTP",
+   "body": {
+    "goal": "Tồn cuối ngày và kết quả xuất được dựng, lưu và gửi lên SFTP, idempotent.",
+    "sources": [
+     {
+      "id": "L5-015",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-413",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_ERP_SFTP_EXCHANGE_TECH.md §4.4–4.5"
+    ],
+    "scope": [
+     "read_erp_export_rows + register_erp_export_file (idempotency key theo ngày/loại)",
+     "Gửi SFTP, lỗi kỹ thuật thử lại A-4, hết lượt FAILED_FINAL + mail ROLE-007/008",
+     "Bấm chạy lại không gửi file trùng"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL idempotency; contract test: file lên SFTP môi trường thử đúng tên và nội dung",
+     "Lỗi mạng giả lập đi qua RETRY_WAIT → FAILED_FINAL"
+    ],
+    "blockedBy": [
+     "FG10-02.2",
+     "E-13 outbox/worker (ADR-0007)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-02.6",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-02",
+   "title": "Hiện nguồn ERP ở YC_ORDER_ENTRY và YC_RECEIVING_APPOINTMENT",
+   "body": {
+    "goal": "Người dùng thấy đơn/lịch nhập từ ERP, phân biệt được với nhập tay.",
+    "sources": [
+     {
+      "id": "L5-015",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-413",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_ERP_SFTP_EXCHANGE_TECH.md §3",
+     "specs/order-shipping/screen-specification/YC_ORDER_ENTRY_SPEC.md",
+     "specs/receiving/screen-specification/YC_RECEIVING_APPOINTMENT_SPEC.md"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Nhãn nguồn ERP + link job ở danh sách đơn và lịch nhập",
+     "Đơn ERP không sửa được các trường do ERP sở hữu theo spec"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Đạt AC của hai màn cho dòng nguồn ERP",
+     "Chuỗi/ngày giờ theo PR-A-08"
+    ],
+    "blockedBy": [
+     "FG10-02.3",
+     "FG10-02.4"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG10-02.7",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-02",
+   "title": "Contract test + E2E luồng ERP với SFTP môi trường thử",
+   "body": {
+    "goal": "Kiểm tự động hai chiều, reject và thử lại.",
+    "sources": [
+     {
+      "id": "L5-015",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-ERP-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_ERP_SFTP_EXCHANGE_TECH.md §2, §4",
+     "specs/administration/function-specifications/ERP_FILE_FUNC.md"
+    ],
+    "scope": [
+     "Bộ file mẫu: hợp lệ, checksum lệch, key trùng, cột sai, file chưa tới",
+     "E2E: file vào → đơn hiện ở danh sách; file ra đúng; job hiện ở monitor"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Chạy trong CI với SFTP môi trường thử",
+     "Có log correlation ID cho mỗi job"
+    ],
+    "blockedBy": [
+     "FG10-02.5",
+     "FG10-02.6",
+     "E-13 contract test harness"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG10-03",
+   "kind": "story",
+   "epicId": "FG-10",
+   "parentId": "EP-FG-10",
+   "title": "マッピング連携 — Gọi dịch vụ bản đồ thật khi lập tuyến, cache, hạn mức (L5-014)",
+   "body": {
+    "goal": "Lập/sửa/改版 tuyến lấy phút di chuyển từ dịch vụ bản đồ của khách với timeout, thử lại, cache 7 ngày và đủ cặp điểm-điểm cho tuyến nhiều khách.",
+    "sources": [
+     {
+      "id": "L5-014",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-MAP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "if:IF-MAP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-055",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md (IF-MAP-01)",
+     "specs/dispatch/technical-design/DSP_ROUTE_REVISION_TECH.md (sequence, §4)",
+     "specs/administration/screen-specification/YC_INTEGRATION_MONITOR_SPEC.md §3, §5 (Q3)",
+     "specs/_common/deviation-table.md (MOCK-02, L5-014)"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Adapter gọi đồng bộ khi tạo/sửa/改版 tuyến, timeout 3 giây, thử lại 1 lần, không qua job (D23)",
+     "Cache ở travel_times (nguồn MAP, 7 ngày, theo cặp điểm × khung giờ), mở rộng đủ cặp điểm-điểm",
+     "Hạn mức gọi và chặn khi vượt, ghi vào trạng thái kết nối ở monitor"
+    ],
+    "outOfScope": [
+     "Chặn công bố khi TRAVEL_ESTIMATE_INVALID (> 24 giờ ước tính, cache quá 7 ngày) — FG-06 (route-planning/DSP_ROUTE_REVISION)",
+     "Giới hạn giờ lái 2024 — FG-06",
+     "Câu hỏi sản phẩm/licence — E15-FG10-02"
+    ],
+    "dod": [
+     "Đủ DoD của 3 con",
+     "Tuyến nhiều khách có phút di chuyển cho mọi chặng từ dịch vụ thử, lần sau lấy từ cache"
+    ],
+    "blockedBy": [
+     "E15-FG10-02 (chỉ khi cần endpoint/licence thật)",
+     "E-13 tài khoản môi trường thử",
+     "E-13 contract test harness"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-03.1",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-03",
+   "title": "DB — mở rộng travel_times đủ cặp điểm-điểm, nguồn MAP/SEED, hạn cache",
+   "body": {
+    "goal": "Bảng travel_times chứa được ước tính điểm-điểm cho tuyến nhiều khách với nguồn và hạn.",
+    "sources": [
+     {
+      "id": "L5-014",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-MAP-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/technical-design/DSP_ROUTE_REVISION_TECH.md §4 (travel_times)",
+     "specs/_common/deviation-table.md (MOCK-02)"
+    ],
+    "scope": [
+     "Migration: khoá (from_code, to_code, time_slot), cột source SEED/MAP, fetched_at",
+     "Giữ dữ liệu SEED DEPOT↔khách hiện có",
+     "Không còn map_route_cache (đã bỏ, D23)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy dev → test, seed cũ còn nguyên",
+     "Assert SQL: cache MAP quá 7 ngày bị coi là hết hạn"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-03.2",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-03",
+   "title": "Adapter bản đồ — gọi HTTPS, timeout 3 giây, thử lại 1 lần, cache, hạn mức",
+   "body": {
+    "goal": "Một adapter dùng chung cho tạo tuyến và 改版 trả phút di chuyển hoặc lỗi rõ ràng.",
+    "sources": [
+     {
+      "id": "L5-014",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-MAP-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "if:IF-MAP-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "architecture/target-architecture.md (IF-MAP-01)",
+     "specs/dispatch/technical-design/DSP_ROUTE_REVISION_TECH.md §4"
+    ],
+    "scope": [
+     "Gọi dịch vụ bản đồ có licence của khách, parse phút, lưu travel_times (MAP, 7 ngày)",
+     "Timeout 3 giây, thử lại 1 lần, mã lỗi rõ khi không lấy được; giới hạn số lần gọi theo hạn mức",
+     "Giờ mở kho thành tham số (rule_versions, mặc định 06:00 JST) thay hằng trong build-route-payload.ts (PR-A-11)",
+     "Log correlation ID, không ghi toạ độ/địa chỉ thật"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test adapter với phản hồi giả lập: thành công, timeout, 5xx, vượt hạn mức",
+     "Lần gọi thứ hai cùng cặp trong 7 ngày không gọi dịch vụ",
+     "Đổi tham số giờ mở kho thì payload tuyến đổi theo, không sửa code"
+    ],
+    "blockedBy": [
+     "FG10-03.1",
+     "E15-FG10-02 (endpoint/licence)"
+    ],
+    "premise": [
+     "PR-A-11"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-03.3",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-03",
+   "title": "Contract test dịch vụ bản đồ môi trường thử + E2E lập tuyến nhiều khách",
+   "body": {
+    "goal": "Chứng minh adapter chạy với dịch vụ thật ở môi trường thử.",
+    "sources": [
+     {
+      "id": "L5-014",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-MAP-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/dispatch/technical-design/DSP_ROUTE_REVISION_TECH.md",
+     "architecture/target-architecture.md (IF-MAP-01)"
+    ],
+    "scope": [
+     "Contract test với tài khoản thử: cặp điểm hợp lệ, timeout, hạn mức",
+     "E2E lập tuyến 3+ khách: mọi chặng có phút, lần sửa dùng cache"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Chạy trong CI với môi trường thử của bên kia",
+     "Hết hạn mức hiện ở monitor, không im lặng"
+    ],
+    "blockedBy": [
+     "FG10-03.2",
+     "E-13 contract test harness"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG10-04",
+   "kind": "story",
+   "epicId": "FG-10",
+   "parentId": "EP-FG-10",
+   "title": "メールリレー通知 — Gửi mail thật qua SMTP relay khách cho alarm, duyệt, báo cáo, recall (L5-016)",
+   "body": {
+    "goal": "Mọi thông báo đi qua mail_outbox và SMTP relay của khách với mẫu thư JA, thử lại A-4, không gửi trùng; lỗi cuối hiện 要対応 và báo ROLE-007/008.",
+    "sources": [
+     {
+      "id": "L5-016",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-420",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-312",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-MAIL-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "if:IF-MAIL-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-056",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_MAIL_OUTBOX_TECH.md §3, §4.1–4.5",
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md §4.3",
+     "architecture/target-architecture.md (IF-MAIL-01)",
+     "specs/_common/deviation-table.md (MOCK-04, L5-016)"
+    ],
+    "premise": [
+     "PR-D-04",
+     "PR-A-08"
+    ],
+    "scope": [
+     "private.enqueue_mail trong giao dịch nghiệp vụ cho alarm/deviation, 承認, レポート, recall, POD_SYNC_CONFLICT, INTEGRATION_FAILURE",
+     "Handler MAIL_SEND gửi SMTP TLS, chốt trạng thái SENT / FAILED_FINAL vào mail_outbox",
+     "Mẫu thư JA theo event_type; không SMS; không gửi mail báo lỗi của chính mail",
+     "Màn nguồn hiện trạng thái gửi"
+    ],
+    "outOfScope": [
+     "Khung worker, retry A-4, outbox giao dịch — E-13 outbox/worker (ADR-0007, ADR-0008)",
+     "Thông báo recall (nội dung, duyệt) — FG08-02",
+     "Câu hỏi mẫu thư/bounce — E15-FG10-03"
+    ],
+    "dod": [
+     "Đủ DoD của 6 con",
+     "Alarm ở môi trường test gửi mail tới relay thử, không còn nhánh chỉ ghi log"
+    ],
+    "blockedBy": [
+     "E-13 outbox/worker (ADR-0007, ADR-0008)",
+     "E-13 tài khoản môi trường thử (relay)",
+     "E15-FG10-03 (chỉ đổi mẫu/tham số)"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-04.1",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-04",
+   "title": "DB — mail_outbox, khoá dedupe, trạng thái theo người nhận",
+   "body": {
+    "goal": "Hàng đợi mail một dòng một người nhận, không gửi trùng.",
+    "sources": [
+     {
+      "id": "SPEC-YC-312",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-420",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "L5-016",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/system-design/database-design/administration/INTEGRATION_DB.md §4.3",
+     "specs/administration/technical-design/ADM_MAIL_OUTBOX_TECH.md §5 (lệch #1–3)"
+    ],
+    "scope": [
+     "Migration mail_outbox: event_type, dedupe_key UNIQUE (integration-failure:<job>:<attempt>:<user>), status, last_error_code",
+     "FAILED_FINAL → QUEUED chỉ khi job cha được chạy lại; MAIL_RELAY_REJECTED ánh xạ FAILED_FINAL",
+     "Retention nhóm INTEGRATION_LOG 1 năm"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Migration chạy dev → test",
+     "Assert SQL: dedupe_key chặn trùng, app không UPDATE/DELETE trực tiếp"
+    ],
+    "blockedBy": [
+     "E-13 outbox/worker (integration_jobs)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-04.2",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-04",
+   "title": "RPC private.enqueue_mail + nối nơi gọi (alarm/deviation thay nhánh ghi log)",
+   "body": {
+    "goal": "Các sự kiện nghiệp vụ xếp mail trong cùng giao dịch thay vì ghi log.",
+    "sources": [
+     {
+      "id": "L5-016",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-420",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_MAIL_OUTBOX_TECH.md §3, §4.1",
+     "specs/_common/deviation-table.md (MOCK-04)"
+    ],
+    "scope": [
+     "enqueue_mail xếp 1 dòng + 1 job MAIL/MAIL_SEND mỗi người nhận",
+     "Thay chỗ ghi log ở cảnh báo alarm/deviation; nối 承認, レポート, POD_SYNC_CONFLICT",
+     "Danh sách người nhận theo vai/khách"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Assert SQL: rollback giao dịch nghiệp vụ thì không còn mail",
+     "Test từng event_type xếp đúng người nhận"
+    ],
+    "blockedBy": [
+     "FG10-04.1"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-04.3",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-04",
+   "title": "Handler MAIL_SEND + chốt trạng thái + mail INTEGRATION_FAILURE",
+   "body": {
+    "goal": "Worker gửi SMTP thật, thử lại, lỗi cuối báo ROLE-007/008.",
+    "sources": [
+     {
+      "id": "L5-016",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-420",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-MAIL-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_MAIL_OUTBOX_TECH.md §4.2–4.5"
+    ],
+    "scope": [
+     "Gửi SMTP TLS tới relay, timeout, ánh xạ lỗi: lỗi kỹ thuật RETRY_WAIT, relay từ chối FAILED_FINAL",
+     "Chép trạng thái sang mail_outbox; enqueue_integration_failure_mail cho ERP/ARCH (không cho mail)",
+     "再実行 job MAIL từ monitor"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Contract test với relay môi trường thử: gửi, từ chối, timeout, thử lại đủ 5 lần",
+     "Không có chuyện lỗi im lặng: FAILED_FINAL luôn có mã và hiện ở monitor"
+    ],
+    "blockedBy": [
+     "FG10-04.1",
+     "FG10-04.2",
+     "E-13 outbox/worker (ADR-0007)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-04.4",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-04",
+   "title": "Mẫu thư JA theo event_type (tiêu đề, nội dung) và nơi lưu",
+   "body": {
+    "goal": "Mỗi event_type có mẫu JA mặc định, đổi được không cần deploy.",
+    "sources": [
+     {
+      "id": "L5-016",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "SPEC-YC-420",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_MAIL_OUTBOX_TECH.md §5 (câu hỏi mở 1)"
+    ],
+    "scope": [
+     "Bảng/kho mẫu theo event_type, biến thay thế, mặc định JA",
+     "Không đưa email/nội dung nhạy cảm vào log",
+     "Mẫu duyệt qua E15-FG10-03"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Unit test render mẫu cho mọi event_type với dữ liệu seed",
+     "Đổi mẫu có hiệu lực cho mail mới, không đổi mail đã xếp"
+    ],
+    "blockedBy": [
+     "FG10-04.2",
+     "E15-FG10-03 (duyệt nội dung)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-04.5",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-04",
+   "title": "Hiện trạng thái gửi mail ở màn nguồn (alarm, deviation, recall notice)",
+   "body": {
+    "goal": "Người dùng thấy mail đã gửi/thất bại ngay ở màn nguồn.",
+    "sources": [
+     {
+      "id": "L5-016",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-056",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_MAIL_OUTBOX_TECH.md §3",
+     "specs/temperature-quality/screen-specification/YC_TEMP_IMPORT_SPEC.md"
+    ],
+    "premise": [
+     "PR-A-08"
+    ],
+    "scope": [
+     "Badge trạng thái gửi (chờ/đã gửi/thất bại cuối) ở các màn xếp mail",
+     "Không hiện nội dung mail, chỉ trạng thái và mã lỗi có nhãn JA"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Đạt AC các màn nguồn cho phần trạng thái gửi",
+     "Ngày giờ JST (PR-A-08)"
+    ],
+    "blockedBy": [
+     "FG10-04.3"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:FE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "FE-2"
+  },
+  {
+   "id": "FG10-04.6",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-04",
+   "title": "Contract test relay + E2E alarm → mail",
+   "body": {
+    "goal": "Kiểm tự động toàn đường mail với relay môi trường thử.",
+    "sources": [
+     {
+      "id": "L5-016",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "IF-MAIL-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/administration/technical-design/ADM_MAIL_OUTBOX_TECH.md §2, §4"
+    ],
+    "scope": [
+     "E2E: nạp CSV logger có alarm → mail đến relay thử → trạng thái SENT",
+     "Ca relay từ chối/timeout → FAILED_FINAL → mail INTEGRATION_FAILURE → hiện ở monitor"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Chạy trong CI với relay thử",
+     "Log có correlation ID"
+    ],
+    "blockedBy": [
+     "FG10-04.3",
+     "FG10-04.5",
+     "E-13 contract test harness"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "QA-Auto"
+  },
+  {
+   "id": "FG10-05",
+   "kind": "story",
+   "epicId": "FG-10",
+   "parentId": "EP-FG-10",
+   "title": "archive export — Giao gói ARCHIVE tới kho khách, kiểm SHA-256 phía nhận (IF-ARCH-01)",
+   "body": {
+    "goal": "Gói ARCHIVE RELEASABLE được giao tới kho archive của khách; SHA-256 phía nhận khác thì reject, hết lượt thì báo ROLE-007/008.",
+    "sources": [
+     {
+      "id": "IF-ARCH-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "if:IF-ARCH-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-057",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/technical-design/RPT_EXPORT_PACKAGE_TECH.md §4.6",
+     "architecture/target-architecture.md (IF-ARCH-01)",
+     "specs/system-design/database-design/report-audit/EXPORT_PACKAGE_DB.md §5 (Q3, Q5)"
+    ],
+    "premise": [
+     "PR-D-04"
+    ],
+    "scope": [
+     "Job ARCH/ARCHIVE_DELIVERY nhận gói RELEASABLE, giao theo giao thức khách chọn (TBD)",
+     "SHA-256 phía nhận khác expected_sha256 → REJECTED MANIFEST_SHA256_MISMATCH, không thử lại",
+     "Lỗi kết nối thử lại A-4 rồi FAILED_FINAL + mail; gói FAILED thì job FAILED_FINAL cùng giao dịch",
+     "Lịch export theo retention (TBD)"
+    ],
+    "outOfScope": [
+     "Dựng gói ARCHIVE — FG09-01",
+     "Màn monitor — FG10-01",
+     "Khung worker/retry — E-13 outbox/worker (ADR-0007)"
+    ],
+    "dod": [
+     "Đủ DoD của 2 con",
+     "Gói giao thành công tới đích thử và hiện ở monitor"
+    ],
+    "blockedBy": [
+     "E15-FG10-04 (đích, giao thức)",
+     "FG09-01.4",
+     "E-13 outbox/worker (ADR-0007)"
+    ]
+   },
+   "labels": [
+    "type:story",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-05.1",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-05",
+   "title": "Handler ARCHIVE_DELIVERY — giao gói, kiểm SHA-256 phía nhận, thử lại, FAILED_FINAL",
+   "body": {
+    "goal": "Gói ARCHIVE tới kho khách đúng nội dung hoặc bị reject có lý do.",
+    "sources": [
+     {
+      "id": "IF-ARCH-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "F-057",
+      "confidence": "EXTRACTED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/technical-design/RPT_EXPORT_PACKAGE_TECH.md §4.6"
+    ],
+    "scope": [
+     "Worker D13 nhận job ARCH (SKIP LOCKED), ghi integration_job_attempts",
+     "So SHA-256 phía nhận với expected_sha256; REJECTED không thử lại",
+     "Hết lượt: FAILED_FINAL + mail INTEGRATION_FAILURE; 再実行 tay chỉ ROLE-007 (A-8)"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Test: giao thành công, SHA lệch REJECTED, mạng lỗi RETRY_WAIT → FAILED_FINAL",
+     "Gói FAILED làm job FAILED_FINAL có 1 lần thử hệ thống"
+    ],
+    "blockedBy": [
+     "E15-FG10-04",
+     "FG09-01.4",
+     "E-13 outbox/worker (ADR-0007)"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:BE",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "BE-2"
+  },
+  {
+   "id": "FG10-05.2",
+   "kind": "task",
+   "epicId": "FG-10",
+   "parentId": "FG10-05",
+   "title": "Contract test kho archive môi trường thử + ca reject/hết lượt",
+   "body": {
+    "goal": "Chứng minh đường giao archive với đích thử.",
+    "sources": [
+     {
+      "id": "IF-ARCH-01",
+      "confidence": "INFERRED"
+     },
+     {
+      "id": "if:IF-ARCH-01",
+      "confidence": "INFERRED"
+     }
+    ],
+    "specRefs": [
+     "specs/report-audit/technical-design/RPT_EXPORT_PACKAGE_TECH.md §4.6",
+     "architecture/target-architecture.md (IF-ARCH-01)"
+    ],
+    "scope": [
+     "Contract test với đích thử: giao đúng, SHA lệch, timeout",
+     "E2E: yêu cầu gói ARCHIVE → giao → hiện ở monitor"
+    ],
+    "outOfScope": [],
+    "dod": [
+     "Chạy trong CI với môi trường thử của bên kia",
+     "Không còn trạng thái giao im lặng"
+    ],
+    "blockedBy": [
+     "FG10-05.1",
+     "E-13 contract test harness"
+    ]
+   },
+   "labels": [
+    "type:task",
+    "team:QA",
+    "epic:E-10",
+    "src:integration"
+   ],
+   "owner": "QA-Auto"
+  }
+ ],
+ "notIssued": [
+  {
+   "id": "L5-038",
+   "reason": "Không phải task (xác nhận, không cần sửa): F-049 recall nằm ngoài phạm vi prototype, code đã disable và gắn nhãn; phần dựng thật nằm ở FG08-01/02"
+  }
+ ],
+ "gaps": [
+  {
+   "spec": "deviation-table L5-010 / DEV-021",
+   "text": "Task ghi \"chờ P8 xác nhận chỗ ghi\" nhưng gói LAB-4 không định nghĩa P8 và không nêu giá trị 3 cột lấy từ đâu (màn nhập, file NCC hay ERP).",
+   "suggestedHandling": "clarify-issue",
+   "ref": "E15-FG08-01",
+   "id": "GAP-L5-24"
+  },
+  {
+   "spec": "deviation-table L5-034 (GAP-05) vs REPORTS_KIND_GET_API §5",
+   "text": "Task nói 6 báo cáo thiếu trần 10.000; spec nói audit-change, expiry-near đã có trần, còn thiếu quarantine, haccp-completeness (và 2 loại giới hạn 100 mới nhất).",
+   "suggestedHandling": "assumption",
+   "ref": "FG09-05",
+   "id": "GAP-L5-25"
+  },
+  {
+   "spec": "REPORTS_KIND_GET_API; YC_REPORT_CATALOG",
+   "text": "Danh mục đích có 12 báo cáo, prototype 11, thiếu 「回収照合」; không có task L5 hay nguồn nào giao việc thêm báo cáo này.",
+   "suggestedHandling": "open",
+   "ref": "specs/system-design/api-design/report-audit/REPORTS_KIND_GET_API.md:38",
+   "id": "GAP-L5-26"
+  },
+  {
+   "spec": "RETENTION_LEGAL_HOLD_DB Q4; ADM_RETENTION_PURGE_TECH",
+   "text": "F-069 không có màn: chỗ thao tác 起票/承認 purge, đặt/gỡ hold, duyệt chính sách chưa chốt (màn + API hay công cụ vận hành); backlog chỉ dựng RPC, chưa có issue UI.",
+   "suggestedHandling": "clarify-issue",
+   "ref": "E15-FG09-02",
+   "id": "GAP-L5-27"
+  },
+  {
+   "spec": "INTEGRATION_DB; ADM_JOB_WORKER_TECH",
+   "text": "Ranh giới sở hữu chưa rõ: bảng integration_jobs/attempts do E-13 hay FG-10 dựng. Backlog gán E-13 (bảng + worker + retry), FG-10 giữ mail_outbox, monitor và nghiệp vụ.",
+   "suggestedHandling": "assumption",
+   "ref": "FG10-01",
+   "id": "GAP-L5-28"
+  },
+  {
+   "spec": "deviation-table MOCK-02 (L5-014)",
+   "text": "build-route-payload.ts dùng giờ mở kho cố định 06:00 JST; spec không nêu nguồn giờ mở kho thật (master hay tham số), task chỉ nêu API bản đồ và travel_times.",
+   "suggestedHandling": "open",
+   "ref": "FG10-03.2",
+   "id": "GAP-L5-29"
+  },
+  {
+   "spec": "TRACEABILITY_FUNC §3.2; INBOUND_INVENTORY_DB",
+   "text": "Index cho supplier_lot_no, beef_individual_id, rice_transaction_id, rice_origin chưa có ở DB mà NFR-PERF-02 yêu cầu; không task L5 nào giao, đã gom vào lane detail.",
+   "suggestedHandling": "assumption",
+   "ref": "FG08-03.1",
+   "id": "GAP-L5-30"
+  },
+  {
+   "spec": "ADM_ERP_SFTP_EXCHANGE_TECH §5 lệch #3",
+   "text": "receipts chưa có source/source_job_id/supplier_ref như T5 của orders nên không chặn được nạp trùng lịch nhập; đề xuất chưa áp vào INBOUND_INVENTORY_DB.",
+   "suggestedHandling": "assumption",
+   "ref": "FG10-02.1",
+   "id": "GAP-L5-31"
+  },
+  {
+   "spec": "RETENTION_FUNC; ADR-0012",
+   "text": "Luật tính hạn có hai bản (TS và SQL) chỉ giữ khớp bằng bộ ca chung; spec chưa nêu vị trí và định dạng bộ ca, backlog đặt trong FG09-04.2.",
+   "suggestedHandling": "assumption",
+   "ref": "FG09-04.2",
+   "id": "GAP-L5-32"
+  }
+ ]
+}
