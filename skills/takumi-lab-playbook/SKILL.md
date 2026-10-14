@@ -18,7 +18,7 @@ allowed-tools:
   - Grep
   - AskUserQuestion
   - Skill
-argument-hint: "[lab1|status|next] [--step E<n>]"
+argument-hint: "[lab1|lab5|status|next] [--step E<n>]"
 metadata:
   author: huongnv-0154
   version: "0.1.0"
@@ -127,6 +127,7 @@ Bước E2 là pass riêng, **không gộp vào E1**. Checklist theo sản phẩ
 | Lệnh | Việc |
 |---|---|
 | `lab1` | chạy pipeline LAB-1 từ bước dở dang |
+| `lab5` | chạy LAB-5 theo [`references/lab5-pipeline.md`](references/lab5-pipeline.md): phase P0–P5, mỗi phase một phiên `/tkm:takumi … --auto` |
 | `status` | quét `project/` + `plans/`, báo bước nào xong, gate nào đang chặn |
 | `next` | chỉ chạy bước kế tiếp rồi dừng ở gate |
 | `--step E<n>` | chạy đúng một bước |

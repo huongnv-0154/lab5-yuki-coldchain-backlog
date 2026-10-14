@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-10-14T14:25:00.601Z",
+  "method": "GET không cookie, không token",
+  "results": [
+    {
+      "name": "Repo",
+      "url": "https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog",
+      "status": 200,
+      "ok": true
+    },
+    {
+      "name": "GitHub Project",
+      "url": "https://github.com/users/huongnv-0154/projects/2",
+      "status": 404,
+      "ok": false
+    },
+    {
+      "name": "Báo cáo HTML (raw)",
+      "url": "https://raw.githubusercontent.com/huongnv-0154/lab5-yuki-coldchain-backlog/main/swp-report/report.html",
+      "status": 200,
+      "ok": true
+    }
+  ]
+}
