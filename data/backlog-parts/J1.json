@@ -301,12 +301,13 @@
      }
     ],
     "specRefs": [
-     "specs mới của FG01-03.1"
+     "architecture/adr/ADR-0006-versioned-thresholds-as-data.md"
     ],
     "premise": [
      "PR-A-08"
     ],
     "scope": [
+     "Theo spec màn tham số viết ở FG01-03.1",
      "Danh sách theo rule_key, phiên bản hiệu lực, source_verified",
      "Form 起票 theo schema params",
      "Thêm màn vào ma trận quyền màn"

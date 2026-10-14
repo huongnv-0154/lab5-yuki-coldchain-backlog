@@ -4401,7 +4401,7 @@
   },
   {
    "spec": "target-architecture.md §4 NFR-PERF-02",
-   "text": "Ghi thêm 4 index còn thiếu trên lots nhưng không liệt kê cột; E14-07.1 phải lấy từ INBOUND_INVENTORY_DB (mục 0.2.1).",
+   "text": "Ghi thêm 4 index còn thiếu trên lots nhưng không liệt kê cột; FG08-03.1 phải lấy từ INBOUND_INVENTORY_DB (mục 0.2.1).",
    "suggestedHandling": "assumption",
    "ref": "E14-07.1",
    "id": "GAP-L5-42"

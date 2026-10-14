@@ -37,6 +37,24 @@
       "body.blockedBy": [
         "FG08-03.1"
       ]
+    },
+    "FG06-01": {
+      "body.constraintWhy": "Giới hạn tuần / tháng / năm và trung bình 2 tuần là luật giờ lái 2024 riêng của Product B; giá trị là tham số có phiên bản, nguồn chưa xác minh (PR-A-07, PR-S-04)"
+    },
+    "E15-FG06-01": {
+      "body.constraintWhy": "Tra lại nguồn luật là cổng trước go-live; tách khỏi phần code để không chặn sprint (PR-S-04)"
+    },
+    "FG06-02": {
+      "body.constraintWhy": "Kiểm giờ lái phải là kiểm cứng phía server: gọi thẳng RPC cũng không ghi được kết quả đạt để công bố tuyến vi phạm (L5-066)"
+    },
+    "FG06-03": {
+      "body.constraintWhy": "Khi kiểm giờ lái báo vi phạm, điều phối viên phải sửa tuyến ngay; luồng này chỉ có vì giới hạn 2024 (L5-035)"
+    },
+    "FG06-04": {
+      "body.constraintWhy": "Công bố và 改版 tuyến kiểm lại theo phiên bản luật giờ lái đang hiệu lực (LAB-4 A-2); đổi luật thì tuyến cũ vẫn truy được phiên bản đã dùng"
+    },
+    "FG06-05": {
+      "body.constraintWhy": "Sự kiện bất khả kháng được ghi riêng, không trộn vào số liệu tuân thủ giờ lái (YC_INCIDENT_RECORD_SPEC, FR-SCH-05)"
     }
   },
   "blockingQuestionsAllowed": {
@@ -509,5 +527,19 @@
     "E13-01.3": [
       "E13-01.4"
     ]
-  }
+  },
+  "addLabels": [
+    {
+      "label": "constraint:driver-hours-2024",
+      "ids": [
+        "FG06-05",
+        "FG06-05.1",
+        "FG06-05.2",
+        "FG06-05.3",
+        "FG06-05.4",
+        "FG06-05.5"
+      ],
+      "why": "Sự kiện bất khả kháng được tách khỏi kết quả tuân thủ giờ lái (YC_INCIDENT_RECORD_SPEC, FR-SCH-05) — review task-breakdown 2026-10-14"
+    }
+  ]
 }
