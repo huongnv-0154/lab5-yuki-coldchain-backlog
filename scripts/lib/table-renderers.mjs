@@ -2,20 +2,20 @@
 // Mỗi renderer nhận ctx { snapshot, data(name), options } (options = k=v ghi trong thẻ GENERATED) và trả markdown;
 // phase sau thêm renderer vào đây.
 
+import { table } from './markdown-table.mjs';
+import { breakdownRenderers } from './breakdown-renderers.mjs';
+
 const STATUS_ORDER = ['Todo', 'In Progress', 'Blocked', 'Done'];
 const sum = (xs) => xs.reduce((a, b) => a + (b ?? 0), 0);
 const fmt = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(1));
 
-export const table = (head, rows) => [
-  `| ${head.join(' | ')} |`,
-  `|${head.map(() => '---').join('|')}|`,
-  ...rows.map((r) => `| ${r.join(' | ')} |`),
-].join('\n');
+export { table };
 
 // Item lá = không có sub-issue; SWP chỉ cộng trên lá để cha không bị đếm hai lần
 export const leaves = (items) => items.filter((i) => i.subIssueNumbers.length === 0);
 
 export const renderers = {
+  ...breakdownRenderers,
   // Trạng thái theo snapshot (progress-report §1); --sprint lọc theo iteration
   'status-summary': ({ snapshot, options }) => {
     const pool = leaves(snapshot.items).filter((i) => !options.sprint || i.sprint === options.sprint);

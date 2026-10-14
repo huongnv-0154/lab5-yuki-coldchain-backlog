@@ -1,4 +1,4 @@
-// Đọc bảng markdown (GFM) thành mảng object theo tiêu đề cột, và lọc câu trích RFP khỏi excerpt.
+// Đọc / viết bảng markdown (GFM): đọc thành mảng object theo tiêu đề cột, viết từ mảng dòng; lọc câu trích RFP khỏi excerpt.
 
 // Tách một dòng bảng thành ô; bỏ qua `|` nằm trong `code` và \| đã escape
 export function splitRow(line) {
@@ -48,3 +48,10 @@ export function excerpt(text, max = 120) {
     .trim();
   return plain.length > max ? `${plain.slice(0, max - 1)}…` : plain;
 }
+
+// Viết bảng markdown từ tiêu đề và các dòng (mỗi dòng là mảng ô đã escape)
+export const table = (head, rows) => [
+  `| ${head.join(' | ')} |`,
+  `|${head.map(() => '---').join('|')}|`,
+  ...rows.map((r) => `| ${r.join(' | ')} |`),
+].join('\n');

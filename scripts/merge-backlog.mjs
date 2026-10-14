@@ -5,15 +5,16 @@
 //   data/gaps.json    — chỗ hở phát hiện khi break, mã GAP-L5-nn (đánh số theo thứ tự job, rồi thứ tự trong job), kèm cách xử lý
 // Đọc thêm data/sources.json (đổi mã dòng bảng chênh lệch DEV-/MOCK-/GAP-xx → task L5) và backlog.json cũ (giữ liên kết GitHub).
 // Khoá của backlog-adjustments.json, theo thứ tự áp:
-//   addItems, addBlockedBy   — thêm item / liên kết bị bỏ sót (id không có → dừng)
+//   addItems, addBlockedBy   — thêm item / liên kết bị bỏ sót (addBlockedBy: id không có → dừng)
 //   removeItems, mergeItems  — bỏ item; gộp item trùng vào item giữ lại (cộng sources / affects / specRefs, bỏ item gộp cùng con của nó)
 //   refAliases               — chữ trong blockedBy / affects → id issue, khi không phải mã nguồn
-//   removeLabels, patches    — gỡ nhãn theo epic / id; ghi đè trường theo đường dẫn "a.b.c"
+//   blockingQuestionsAllowed — issue được phép bị câu hỏi E-15 chặn (áp cùng bước chuẩn hoá tham chiếu, xem dưới)
+//   addLabels, removeLabels  — thêm nhãn theo id ({label, ids}); gỡ nhãn theo epic / id ({label, epics, ids})
+//   patches                  — ghi đè trường theo đường dẫn "a.b.c" (id không có → dừng)
 //   dropGaps, gapHandling    — bỏ mục không phải chỗ hở spec; mọi gap giữ lại phải có gapHandling, thiếu thì dừng
-//   blockingQuestionsAllowed — issue được phép bị câu hỏi E-15 chặn (xem dưới)
 // Tham chiếu blockedBy / affects ghi bằng mã nguồn hay chữ được đổi sang id issue; không đổi được thì chuyển vào body.notes.
 // blockedBy trỏ tới câu hỏi E-15 không chặn (PR-D-04) → chuyển sang body.questions, trừ issue có trong blockingQuestionsAllowed.
-// Giữ number/nodeId/itemId của backlog.json cũ (sau khi tạo issue) để chạy lại không mất liên kết.
+// Giữ number/nodeId/itemId (và bodySha/fieldsSet/blockedByLinked) của backlog.json cũ (sau khi tạo issue) để chạy lại không mất liên kết.
 // Dùng: node scripts/merge-backlog.mjs   (không có cờ; in một dòng JSON gồm total, byKind, notIssued, gaps)
 import { existsSync, readdirSync } from 'node:fs';
 import { readJson, writeJson } from './lib/gh-graphql.mjs';
@@ -98,6 +99,9 @@ for (const it of items) {
 }
 
 // 4. Nhãn và sửa nội dung theo DR-04
+for (const rule of adj.addLabels || []) {
+  for (const it of items) if (rule.ids.includes(it.id) && !it.labels.includes(rule.label)) it.labels.push(rule.label);
+}
 for (const rule of adj.removeLabels) {
   for (const it of items) if (rule.epics.includes(it.epicId) || rule.ids.includes(it.id)) it.labels = it.labels.filter((l) => l !== rule.label);
 }
@@ -117,6 +121,7 @@ const previous = existsSync('data/backlog.json') ? new Map(readJson('data/backlo
 for (const it of items) {
   const old = previous.get(it.id);
   Object.assign(it, { number: old?.number ?? null, nodeId: old?.nodeId ?? null, itemId: old?.itemId ?? null });
+  for (const key of ['bodySha', 'fieldsSet', 'blockedByLinked']) if (old?.[key] !== undefined) it[key] = old[key];
 }
 
 // 6. Chỗ hở: bỏ mục không phải chỗ hở spec, gắn cách xử lý; ref trống → issue lấy gap làm nguồn

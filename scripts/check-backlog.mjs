@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // Cổng G2 phần backlog (trước khi tạo issue): đối chiếu data/backlog.json với data/sources.json và luật chia
-// (task-breakdown §1); đọc thêm blockingQuestionsAllowed trong data/backlog-adjustments.json. Không gọi mạng.
+// (task-breakdown §1); đọc thêm data/gaps.json và blockingQuestionsAllowed trong data/backlog-adjustments.json. Không gọi mạng.
 // Kiểm: cấu trúc cha – con, ≥ 2 DoD, owner, nhãn, blockedBy / affects / questions trỏ id có thật (câu hỏi E-15 chỉ chặn
 // issue có trong blockingQuestionsAllowed), độ phủ nguồn (nguồn có epic phải thành issue hoặc có lý do trong notIssued),
-// không câu 「」 dài > 20 ký tự. Luật tham chiếu trong chữ: id viết ở title / body (FGnn-nn, E13-nn, E14-nn, E15-…)
-// phải là item có thật — bắt id đã gộp / đã bỏ.
+// không câu 「」 dài > 20 ký tự. Nguồn chạm giờ lái 2024 (FR-SCH-02…05, L5-007, L5-021, L5-066, MOCK-09, DEV-014)
+// bắt buộc có nhãn constraint:driver-hours-2024. Luật tham chiếu trong chữ: id viết ở title / body của item và ở
+// text / ref / note của chỗ hở (gaps.json) (FGnn-nn, E13-nn, E14-nn, E15-…) phải là item có thật — bắt id đã gộp / đã bỏ.
 // In "✗" cho mỗi lỗi (exit 1 nếu có lỗi) và "!" cho cảnh báo không làm fail (tiêu đề > 90 ký tự).
 // Dùng: node scripts/check-backlog.mjs [--max-items 450]   (trần số item, mặc định 450 theo DR-04; vượt thì lỗi)
 import { readJson, parseArgs } from './lib/gh-graphql.mjs';
@@ -31,7 +32,7 @@ const ALLOWED = new Set([
   'graded:br-temp-02', 'graded:br-date-01',
 ]);
 const isQuestion = (id) => /^E15-/.test(id);
-const DRIVER_HOURS = /^(FR-SCH-0[234]|L5-021|L5-066|MOCK-09|DEV-014|L5-007)$/;
+const DRIVER_HOURS = /^(FR-SCH-0[2345]|L5-021|L5-066|MOCK-09|DEV-014|L5-007)$/;
 
 // 1. Cấu trúc từng item
 const byId = new Map();
@@ -95,6 +96,13 @@ for (const s of sources.filter((x) => x.kind === 'design-only-spec' || (x.kind =
   if (!covered.has(s.id)) fail(`${s.id} (${s.kind}) chưa có issue`);
 }
 for (const id of skipped.keys()) if (!sources.some((s) => s.id === id)) fail(`notIssued có id lạ: ${id}`);
+
+// Chỗ hở (gaps.json): id backlog nhắc trong mô tả / ref cũng phải có thật
+for (const g of readJson('data/gaps.json').gaps) {
+  for (const ref of `${g.text} ${g.ref ?? ''} ${g.note ?? ''}`.match(/\b(?:FG\d{2}-\d{2}(?:\.\d+)?|E1[34]-\d{2}(?:\.\d+)?|E15-(?:FG\d{2}-)?\d{2})\b/g) || []) {
+    if (!byId.has(ref)) fail(`${g.id} nhắc tới ${ref} nhưng không có item này`);
+  }
+}
 
 if (items.length > maxItems) fail(`${items.length} item > trần ${maxItems}`);
 for (const w of warnings) console.log(`! ${w}`);
