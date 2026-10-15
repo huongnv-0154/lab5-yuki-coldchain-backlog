@@ -1,5 +1,5 @@
 {
-  "count": 50,
+  "count": 52,
   "dropped": {
     "GAP-L5-09": "Lỗi gắn nhãn của backlog, không phải chỗ hở spec — đã sửa nhãn",
     "GAP-L5-13": "Quy ước mã của job, không phải chỗ hở spec",
@@ -555,6 +555,28 @@
       "handling": "premise",
       "premise": "PR-S-05",
       "note": null
+    },
+    {
+      "id": "GAP-L5-54",
+      "spec": "INSPECTION_FUNC; YC_TEMP_IMPORT_SPEC",
+      "text": "Mâu thuẫn trong LAB-4, lộ ra qua bài chấm LAB-3 (2026-10-15, sau khi đăng issue): nhập file nhiệt độ có alarm ngoài dải thì tự mở hồ sơ sai lệch (case OPEN), còn kiểm hàng nhập đo nhiệt ngoài dải chỉ chặn và đòi lý do khi 却下 / 隔離, không tự mở case với người, giờ, vị trí, số đo.",
+      "suggestedHandling": "open",
+      "ref": null,
+      "job": "LAB3-GRADE",
+      "handling": "open",
+      "premise": null,
+      "note": "chưa có issue; PM + BrSE chốt có tự mở case khi kiểm hàng hay không ở buổi tinh chỉnh đầu Sprint 2 (2026-12-14); nếu có thì thêm issue dưới FG-02 / FG-07 và chấm SWP — effort chưa nằm trong 1437 SWP"
+    },
+    {
+      "id": "GAP-L5-55",
+      "spec": "DELIVERY_WINDOW_FUNC (ONE_THIRD)",
+      "text": "Mơ hồ cần hỏi khách, lộ ra qua bài chấm LAB-3 (2026-10-15): spec tính quy tắc 1/3 là 33 % làm tròn xuống theo hình của RFP, hạn 30 ngày ra cửa sổ 9 ngày; nếu khách hiểu đúng một phần ba thì là 10 ngày. Câu hỏi khách E15-FG04-01 chỉ hỏi phạm vi USE_BY.",
+      "suggestedHandling": "open",
+      "ref": "E15-FG04-01",
+      "job": "LAB3-GRADE",
+      "handling": "open",
+      "premise": null,
+      "note": "BrSE hỏi thêm cách làm tròn ở lượt hỏi lại E15-FG04-01 đầu Sprint 2 (2026-12-14); giữ 33 % làm tròn xuống tới khi khách trả lời; nếu đổi thì sửa cùng #65"
     }
   ]
 }
