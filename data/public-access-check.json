@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-14T14:25:00.601Z",
+  "checkedAt": "2026-10-15T01:49:33.534Z",
   "method": "GET không cookie, không token",
   "results": [
     {
@@ -11,8 +11,8 @@
     {
       "name": "GitHub Project",
       "url": "https://github.com/users/huongnv-0154/projects/2",
-      "status": 404,
-      "ok": false
+      "status": 200,
+      "ok": true
     },
     {
       "name": "Báo cáo HTML (raw)",

@@ -26,6 +26,8 @@ metadata:
 
 > Bản sao công khai trong repo LAB-5: đã lược thông tin riêng của RFP (barem, trang, mã mục). Các đường dẫn `~/.claude/skills/...` là skill/tài liệu nội bộ trên máy tác giả, không nằm trong repo này; các thư mục `client-docs/`, `project/`, `submit/`, `plans/...` trong bảng "Ủy quyền thư mục" là cây làm việc LAB-1 của tác giả, cũng không có trong repo này.
 
+> **Chạy độc lập vs phụ thuộc kit riêng.** Chạy độc lập được: `references/lab5-pipeline.md` (bảng phase ↔ cổng ↔ script của repo này), dùng cùng các script trong `scripts/`. Phụ thuộc kit riêng của chủ repo, nên **không chạy ngoài máy tác giả**: `~/.claude/skills/bid-pack/…`, `bids/product-b/`, các lệnh LAB-1 (`lab1`, G7 `check-consistency.py`). Đọc phần đó như tài liệu tham khảo.
+
 # Takumi Lab Playbook
 
 Điều phối bài thực hành bidding. Không tự làm thay việc của skill con — nó quyết định **gọi cái gì,

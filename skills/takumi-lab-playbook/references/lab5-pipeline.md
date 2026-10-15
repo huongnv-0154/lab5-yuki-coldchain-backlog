@@ -13,6 +13,7 @@ Một phase = một phiên, chạy bằng `/tkm:takumi plans/…/plan.md --auto`
 | P3 | Chấm SWP bằng `tkm:estimate-swp --level high --no-push-kpi`; DR 5 đại diện; agent ghi Story Point; quy giờ | `extract-swp.mjs`, `set-field.mjs --value-key`, `derive-hours.mjs` | G3: Story Point = payload HTML; giờ = SWP × k; lá ≤ 16 giờ | estimate.md, swp-report/report.html |
 | P4 | Chọn phạm vi sprint, giả lập, đưa lên Project, rủi ro | `plan-sprint.mjs`, `simulate-sprint.mjs`, `apply-sprint-log.mjs`, `render-burndown-svg.mjs`, `tkm:predict-risks`, `check-progress.mjs` | G4: bảng = snapshot; burndown cuối = SWP chưa Done; rủi ro có issue, mốc, vai, ngày | progress-report.md, PREMISE (giả định giả lập) |
 | P5 | README, AI-report, skills/, cổng nộp, review 6 file, go / no-go | `check-public-access.mjs` (GET không đăng nhập → `data/public-access-check.json`), `render-tables.mjs --check`, `check-lab5.mjs`, `tkm:review-doc` | G5: đủ phần đúng thứ tự, không TODO, không token / email / câu RFP dài, link tương đối và `#số` khớp repo / snapshot, bảng = data; kết quả mở thử không đăng nhập ghi vào README | README.md, AI-report.md |
+| P6 | Cross review trước khi nộp: brief chung cho model khác (Fable, Codex), sửa theo phát hiện, dự báo tới mốc M-03, sửa thân issue trên GitHub | `project-milestone-capacity.mjs` (năng lực theo kế hoạch nhân sự LAB-1 → `data/milestone-projection.json`), `fix-issue-hygiene.mjs` (mặc định dry-run, `--apply` chạy lại được), `render-tables.mjs --only` | G4 thêm: số MD / ngày ở dòng rủi ro phải có trong file dự báo; G5 như P5 | 6 file nộp, `skills/decision-review/` |
 
 ## Bài học dùng lại
 
@@ -23,3 +24,5 @@ Một phase = một phiên, chạy bằng `/tkm:takumi plans/…/plan.md --auto`
 - Tham số giả lập chọn tay (hệ số tập trung) phải công khai là giả định kèm độ nhạy.
 - Cổng kiểm mới: thử phá trên bản sao để chắc cổng không PASS sai; `--dry-run` và `--help` không được ghi file.
 - Tải sprint tính theo vai, không cộng gộp.
+- Cross review bằng model khác theo một brief chung (đề nguyên văn, checklist, luật chỉ đọc) bắt được lỗi mà review nội bộ cùng họ model bỏ sót: khai sai so với gói LAB-4, báo cáo tiến độ thiếu dự báo tới mốc.
+- Dự báo tới mốc tính theo từng vai, không dồn chung: dồn chung che mất vai thiếu người.

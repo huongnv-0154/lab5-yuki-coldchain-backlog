@@ -21,10 +21,8 @@
 | Báo cáo HTML của skill chấm SWP | [swp-report/report.html](swp-report/report.html) — tải file về mở bằng trình duyệt (một file, không cần mạng) |
 
 <!-- GENERATED:incognito-check -->
-Đã mở thử không đăng nhập (như cửa sổ ẩn danh — GET không cookie, không token), 2026-10-14 14:25 UTC: Repo 200 ✓ · GitHub Project 404 ✗ · Báo cáo HTML (raw) 200 ✓.
+Đã mở thử không đăng nhập (như cửa sổ ẩn danh — GET không cookie, không token), 2026-10-15 01:49 UTC: Repo 200 ✓ · GitHub Project 200 ✓ · Báo cáo HTML (raw) 200 ✓.
 <!-- /GENERATED -->
-
-GitHub Project **giữ private** theo quyết định của chủ repo (2026-10-14): người ngoài chưa đăng nhập sẽ gặp 404; người review cần xem Project sẽ được chủ repo mời trực tiếp khi gửi link. Repo và báo cáo HTML mở được không cần đăng nhập.
 
 ## Cấu trúc repo
 
@@ -34,14 +32,14 @@ GitHub Project **giữ private** theo quyết định của chủ repo (2026-10-
 | `PREMISE.md` | Khác biệt so với LAB-4: spec thêm / sửa, giả định bổ sung, hướng đã chốt |
 | `task-breakdown.md` | Nguyên tắc chia task, Spec → issue, hạng mục chịu ràng buộc giờ lái, chỗ hở / mâu thuẫn của spec LAB-4 |
 | `estimate.md` | Issue mẫu skill chọn để kiểm, cách quy ra giờ, tổng theo epic, so với estimate LAB-1 |
-| `progress-report.md` | Báo cáo tiến độ Sprint 1 giả lập: trạng thái, burndown, rủi ro trễ |
+| `progress-report.md` | Báo cáo tiến độ Sprint 1 giả lập: trạng thái, burndown, dự báo tới M-03, rủi ro trễ; cuối file là ghi chú kỹ thuật về mô hình giả lập |
 | `AI-report.md` | Skill và prompt cho từng việc, cách review output AI, điểm đặc biệt |
 | `premise-revisions/` | Bản sửa thiết kế lớn được PREMISE trỏ tới (kiểm đảo ngày xuất hàng) |
 | `swp-report/` | Báo cáo HTML của skill `estimate-swp` (payload kiểm toán nhúng trong file) |
-| `data/` | Dữ liệu sinh và kiểm các bảng: nguồn LAB-4 đã gắn epic, backlog 433 item, chỗ hở, ảnh chụp Project, điểm SWP, giờ, kế hoạch và log Sprint 1 |
-| `scripts/` | Script Node (không dependency) dựng Project, tạo issue, ghi field, giả lập sprint, sinh bảng và các cổng kiểm |
+| `data/` | Dữ liệu sinh và kiểm các bảng: nguồn LAB-4 đã gắn epic, backlog 433 item, chỗ hở, ảnh chụp Project, điểm SWP, giờ, kế hoạch và log Sprint 1, độ nhạy Sprint 1, dự báo tới M-03, kế hoạch sửa vệ sinh issue |
+| `scripts/` | Script Node (không dependency) dựng Project, tạo issue, ghi field, giả lập sprint, dự báo mốc, sinh bảng, các cổng kiểm và kế hoạch sửa vệ sinh issue (mặc định chỉ đọc, không ghi GitHub) |
 | `images/` | Ảnh burndown Sprint 1 (SVG) |
-| `skills/` | Bản sao skill tự viết `takumi-lab-playbook` dùng điều phối các lab |
+| `skills/` | Bản sao hai skill tự viết: `takumi-lab-playbook` (điều phối các lab; `references/lab5-pipeline.md` là bảng phase ↔ cổng ↔ script của repo này) và `decision-review` (phản biện quyết định, sinh các brief DR-01…DR-08) |
 | `.gitignore` | Bỏ `plans/` (sổ ghi chép nội bộ, brief, bằng chứng kiểm), file tạm `data/*.tmp.json`, file `*.local.*`, `node_modules/` |
 
 Bảng nằm giữa cặp chú thích HTML `GENERATED` trong các file nộp được sinh từ `data/` bằng `node scripts/render-tables.mjs`; `--check` báo lệch nếu bảng cũ hơn dữ liệu.

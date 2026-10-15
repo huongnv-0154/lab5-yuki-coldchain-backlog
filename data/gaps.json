@@ -42,7 +42,7 @@
     {
       "id": "GAP-L5-04",
       "spec": "deviation-table GAP-17 / L5-045",
-      "text": "Cùng lớp lỗi ô trống thành 0 ở 受入数量 của 入荷検査入力 (FG-02), nhưng L5-045 chỉ nêu countedQty nên FG03-03 không phủ.",
+      "text": "GAP-17 đã mô tả ca ô 受入数量 trống thành 0 ở 入荷検査入力 (FG-02), nhưng cột Việc của L5-045 chỉ nêu countedQty nên FG03-03 không phủ; tách phần 受入数量 khỏi L5-045.",
       "suggestedHandling": "open",
       "ref": "FG02-13",
       "job": "J1",
@@ -75,7 +75,7 @@
     {
       "id": "GAP-L5-07",
       "spec": "YC_INVENTORY_MOVE_SPEC §6 (quét mã); LOT_LABEL_FUNC",
-      "text": "Màn đích đọc GS1-128 từ nhãn nhưng LOT_LABEL_FUNC chỉ có hàm dựng chuỗi, không có hàm giải chuỗi quét; FG03-05.3 chỉ làm ô quét kiểu bàn phím.",
+      "text": "LAB-4 chưa thiết kế hàm giải chuỗi quét GS1-128: LOT_LABEL_FUNC chỉ có buildGs1Data. L5-026 giao đọc GS1-128/QR qua SDK ở màn soạn hàng (FG04-01); LAB-5 bổ sung hàm giải dùng chung cho ô quét màn di chuyển (FG03-07), FG04-01 dùng lại. FG03-05.3 chỉ làm ô quét kiểu bàn phím.",
       "suggestedHandling": "open",
       "ref": "FG03-07",
       "job": "J1",
@@ -108,7 +108,7 @@
     {
       "id": "GAP-L5-11",
       "spec": "YC_ALLOCATION_RESULT_SPEC (dòng 製造日); ORD_DELIVERY_WINDOW_TECH",
-      "text": "Phân bổ phải đọc 製造日 thật thay giá trị suy ngược; phần này ở FG-04 và cần issue riêng ở job FG-04, FG02-02 chỉ làm phía nhập / lưu.",
+      "text": "L5-024 đã giao dừng suy ngược 製造日, nhưng FG02-02 chỉ làm ô nhập và lưu vào lô; tách phần bước 4 phân bổ đọc 製造日 thật khỏi L5-024 thành issue của FG-04.",
       "suggestedHandling": "open",
       "ref": "FG04-15, FG04-15.1, FG04-15.2",
       "job": "J1",
@@ -174,7 +174,7 @@
     {
       "id": "GAP-L5-18",
       "spec": "DEV-014 / L5-007 (gộp vào L5-021)",
-      "text": "L5-066 chỉ nêu luật ngày + tháng / năm, còn DRIVER_HOURS_FUNC §3 có thêm trung bình 2 ngày / 2 tuần; backlog đưa cả bốn luật vào FG06-02 theo FG06-01.",
+      "text": "L5-066 chỉ nêu 4 kiểm trong ngày (luật nhiều ngày để sau L5-021), còn DRIVER_HOURS_FUNC §3 có thêm tháng / năm và trung bình 2 ngày / 2 tuần; backlog đưa cả luật nhiều ngày vào FG06-02, làm sau FG06-01.",
       "suggestedHandling": "assumption",
       "ref": "FG06-02",
       "job": "J2",
@@ -261,8 +261,8 @@
     },
     {
       "id": "GAP-L5-26",
-      "spec": "REPORTS_KIND_GET_API; YC_REPORT_CATALOG",
-      "text": "Danh mục đích có 12 báo cáo, prototype 11, thiếu 「回収照合」; không có task L5 hay nguồn nào giao việc thêm báo cáo này.",
+      "spec": "REPORTS_KIND_GET_API; YC_REPORT_CATALOG; deviation-table L5-038",
+      "text": "Mâu thuẫn trong LAB-4: L5-038 và REPORTS_KIND_GET_API ghi 「回収照合」 (F-049) ngoài phạm vi theo docs/scope.md, còn YC_REPORT_CATALOG ghi bản đích là link báo cáo thứ 12 và A-1 chốt cách đối soát. scope.md là phạm vi prototype LAB-3, sản phẩm đích có F-049, nên LAB-5 đảo L5-038.",
       "suggestedHandling": "open",
       "ref": "FG09-08, FG09-08.1, FG09-08.2, FG09-08.3",
       "job": "J3",
@@ -316,8 +316,8 @@
     },
     {
       "id": "GAP-L5-31",
-      "spec": "ADM_ERP_SFTP_EXCHANGE_TECH §5 lệch #3",
-      "text": "receipts chưa có source/source_job_id/supplier_ref như T5 của orders nên không chặn được nạp trùng lịch nhập; đề xuất chưa áp vào INBOUND_INVENTORY_DB.",
+      "spec": "ADM_ERP_SFTP_EXCHANGE_TECH §5 lệch #3; INBOUND_INVENTORY_DB T5",
+      "text": "Mâu thuẫn tài liệu: INBOUND_INVENTORY_DB 0.2.1 đã thêm T5 (source, source_job_id, supplier_ref cho receipts), nhưng §5 lệch #3 của tech design ERP chưa ghi Đã áp như lệch #1, #2, #4. Backlog bám T5.",
       "suggestedHandling": "assumption",
       "ref": "FG10-02.1",
       "job": "J3",

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
 <title id="t">Burndown Sprint 1 (giả lập)</title>
-<desc id="d">SWP còn lại theo ngày: kế hoạch tuyến tính từ 139 về 0, thực tế còn 39 ở ngày 10; phạm vi giảm từ 139 xuống 129.</desc>
+<desc id="d">SWP còn lại theo ngày: kế hoạch tuyến tính từ 139 về 0, mô phỏng còn 39 ở ngày 10; phạm vi giảm từ 139 xuống 129.</desc>
 <rect width="760" height="400" fill="#ffffff"/>
 <text x="56" y="26" font-size="16" font-weight="600" fill="#1f2328">Burndown Sprint 1 — giả lập 2026-11-30 → 2026-12-11</text>
 <rect x="192" y="64" width="204" height="280" fill="#fff4e5"/>
@@ -54,7 +54,7 @@
 <circle cx="736" cy="266" r="3.5" fill="#0969da"><title>Ngày 10: còn 39 SWP</title></circle>
 <text x="728" y="284" font-size="12" font-weight="600" text-anchor="end" fill="#0969da">còn 39</text>
 <line x1="56" y1="44" x2="84" y2="44" stroke="#0969da" stroke-width="2.5"/>
-<text x="90" y="48" font-size="12" fill="#1f2328">Thực tế</text>
+<text x="90" y="48" font-size="12" fill="#1f2328">Mô phỏng</text>
 <line x1="236" y1="44" x2="264" y2="44" stroke="#8c959f" stroke-width="2.5" stroke-dasharray="6 4"/>
 <text x="270" y="48" font-size="12" fill="#1f2328">Kế hoạch tuyến tính</text>
 <line x1="416" y1="44" x2="444" y2="44" stroke="#bf8700" stroke-width="2.5" stroke-dasharray="2 4"/>
