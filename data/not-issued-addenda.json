@@ -1,0 +1,4 @@
+{
+  "note": "Bổ sung cho lý do 'không thành issue' của data/backlog.json (notIssued, đóng băng sau khi đăng issue). breakdown-renderers.mjs nối câu ở đây vào sau lý do gốc trong bảng task-breakdown.md §2.",
+  "L5-038": "phần báo cáo 回収照合 của L5-038 bị đảo ở PREMISE PR-S-05 → #184 (task-breakdown.md mục 1, GAP-L5-26)"
+}

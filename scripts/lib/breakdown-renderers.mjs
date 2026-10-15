@@ -22,7 +22,10 @@ function context(data) {
   };
   const bySource = new Map();
   for (const it of items) for (const s of it.body?.sources || []) bySource.set(s.id, [...(bySource.get(s.id) || []), it]);
-  return { items, byId, link, bySource, notIssued: new Map(notIssued.map((x) => [x.id, x.reason])) };
+  // Lý do gốc lấy từ backlog.json (đóng băng); câu bổ sung về sau nằm ở data/not-issued-addenda.json
+  const addenda = data('not-issued-addenda');
+  const reason = (x) => (addenda[x.id] ? `${x.reason}; ${addenda[x.id]}` : x.reason);
+  return { items, byId, link, bySource, notIssued: new Map(notIssued.map((x) => [x.id, reason(x)])) };
 }
 
 // Issue nhận nguồn: hiện issue gốc (không phải sub) kèm số sub cùng nhận nguồn; sub mà cha không nhận nguồn thì hiện riêng

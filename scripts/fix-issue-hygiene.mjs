@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Sửa ba lỗi vệ sinh issue từ cross-review (X-16, X-17, X-12) — mặc định CHỈ ĐỌC (dry-run), ghi kế hoạch ra data/issue-hygiene-fixes.json.
+// Sửa ba lỗi vệ sinh issue từ cross-review (X-16, X-17, X-12) — mặc định chỉ đọc GitHub (dry-run), ghi kế hoạch ra file tạm data/issue-hygiene-fixes.tmp.json
+// (bị .gitignore). File chính data/issue-hygiene-fixes.json (bằng chứng lần ghi đã duyệt) chỉ ghi khi --apply có việc để làm.
 //   X-16: 9 dòng "Ghi chú" của #103 #104 #78 #168 #169 #170 #172 #175 #176 ghi mã spec → thay bằng #issue (giữ mã trong ngoặc) hoặc nêu lý do.
 //         Kèm một dòng Phạm vi thêm vào #284 (migration customers.notification_email mà #103/#104 cần — chỗ sót phát hiện khi kiểm X-16).
 //   X-17: tick `- [ ]` → `- [x]` chỉ trong mục "Định nghĩa xong (DoD)" của các issue đã đóng; tập đóng trên GitHub phải khớp final Done của
@@ -15,12 +16,13 @@ import { createMutator, sleep } from './lib/github-mutation.mjs';
 
 const args = parseArgs();
 if (args.help) {
-  console.log('Dùng: node scripts/fix-issue-hygiene.mjs [--apply] [--delay 1000]\n  (mặc định dry-run: đọc GitHub, in diff, ghi data/issue-hygiene-fixes.json; --apply mới ghi lên GitHub)');
+  console.log('Dùng: node scripts/fix-issue-hygiene.mjs [--apply] [--delay 1000]\n  (mặc định dry-run: đọc GitHub, in diff, ghi kế hoạch ra data/issue-hygiene-fixes.tmp.json; --apply mới ghi lên GitHub và data/issue-hygiene-fixes.json)');
   process.exit(0);
 }
 const delayMs = Number(args.delay ?? 1000);
 if (!(delayMs >= 0)) throw new Error('--delay phải là số mili-giây ≥ 0');
 const OUT = 'data/issue-hygiene-fixes.json';
+const OUT_TMP = 'data/issue-hygiene-fixes.tmp.json';
 const sha = (s) => createHash('sha256').update(s).digest('hex').slice(0, 16);
 const gh = (...a) => JSON.parse(execFileSync('gh', ['api', ...a], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 }));
 const rest = (path) => gh('--paginate', '--slurp', path).flat();
@@ -97,7 +99,9 @@ const plan = {
   x17: { closedOnGitHub: closedNums.length, doneInLog: doneInLog.length, mismatch },
   issues, comments,
 };
-writeJson(OUT, plan);
+// Dry-run hoặc --apply không còn việc: không đè file chính
+const hasWork = plan.totals.issues > 0 || plan.totals.comments > 0;
+writeJson(args.apply && hasWork ? OUT : OUT_TMP, plan);
 for (const i of issues) {
   console.log(`#${i.number} [${i.fixes.join('+')}]`);
   for (const c of i.changes) console.log(`${c.old === null ? '' : `  - ${c.old}\n`}${c.new === null ? '' : `  + ${c.new}`}`);

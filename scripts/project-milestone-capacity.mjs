@@ -85,6 +85,10 @@ function finishDate(needHours, perDayHours) {
 }
 
 const windowDays = workdays(from, to);
+// Vai viết code (Backend, Frontend) xong trước khi pha 開発・実装 của LAB-1 kết thúc — biến thể chặt hơn của cửa sổ tới M-03
+const CODE_GROUPS = ['Backend', 'Frontend'];
+const codeEnd = staffing.codePhaseEnd;
+const codeDays = workdays(from, codeEnd);
 const runs = FOCUS.map((focus) => {
   const capMD = (g) => windowDays.reduce((t, d) => t + dailyMD(g, d), 0) * focus;
   const byRole = Object.fromEntries(groups.map((g) => {
@@ -108,6 +112,10 @@ const runs = FOCUS.map((focus) => {
     shortRoles,
     finishDateByRole: roleFinish.at(-1),
     byRole,
+    codePhase: Object.fromEntries(CODE_GROUPS.map((g) => {
+      const capacityMD = round1(codeDays.reduce((t, d) => t + dailyMD(g, d), 0) * focus);
+      return [g, { capacityMD, marginMD: round1(capacityMD - byRole[g].remainingMD) }];
+    })),
   };
 });
 
@@ -118,6 +126,7 @@ writeJson(OUT, {
     + `Sinh bởi scripts/project-milestone-capacity.mjs.`,
   milestone: MILESTONE,
   window: { from, to, workdays: windowDays.length },
+  codePhaseWindow: { from, to: codeEnd, workdays: codeDays.length },
   workdaysByMonth: monthDays,
   holidays: [...JP_HOLIDAYS],
   yearEndBreak: YEAR_END,

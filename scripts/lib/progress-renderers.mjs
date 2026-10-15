@@ -53,7 +53,7 @@ export const progressRenderers = {
     const focusText = (r) => `dành ${pct(r.focus)} giờ cho issue${r.focus === p.sprint1Focus ? ' (như Sprint 1)' : ''}`;
     const lines = [
       `**Dự báo tới ${p.milestone} (${p.window.to}).** Sau Sprint 1 còn ${num(p.remaining.hours)} giờ việc (${num(p.remaining.md)} MD, 1 MD = ${p.hoursPerMD} giờ). `
-        + `Năng lực từ ${p.window.from} tới ${p.milestone} theo kế hoạch nhân sự LAB-1, trừ PM (${p.window.workdays} ngày làm việc theo lịch Nhật): `
+        + `Năng lực từ ${p.window.from} tới ${p.milestone} theo kế hoạch nhân sự của bản đề xuất, trừ PM (${p.window.workdays} ngày làm việc theo lịch Nhật): `
         + p.runs.map((r) => `${num(r.capacityHours)} giờ nếu ${focusText(r)}`).join(', ') + '.',
       '',
       'Dồn chung mọi vai thì ' + p.runs.map((r) => `${gap(r.marginMD)} ở ${pct(r.focus)} (xong khoảng ${r.finishDatePooled})`).join(', ') + '.',
@@ -68,7 +68,12 @@ export const progressRenderers = {
         + ` Phần dư nhiều nhất nằm ở ${listVi(spare)}, không chuyển ngay sang ${listVi(short)} được.`
         + ` Ngày xong sau tháng ${monthVi(p.lastStaffingMonth)} tính với mức nhân sự tháng ${monthVi(p.lastStaffingMonth)}.`);
     }
-    lines.push('', 'Giả định chính: kế hoạch nhân sự LAB-1 còn gánh cả diễn tập chuyển đổi dữ liệu và giai đoạn test, nên năng lực thật cho backlog thấp hơn các số trên — phần thiếu thực tế còn lớn hơn.');
+    // Biến thể chặt hơn: vai viết code phải xong trước khi pha phát triển của bản đề xuất kết thúc
+    const cw = p.codePhaseWindow;
+    const codeGap = (g) => p.runs.map((r) => `${gap(r.codePhase[g].marginMD)} ở ${pct(r.focus)}`).join(', ');
+    lines.push('', `Nếu phần code phải xong trước khi pha phát triển của bản đề xuất kết thúc (${cw.to}, ${cw.workdays} ngày làm việc), `
+      + `Backend ${codeGap('Backend')}; Frontend ${codeGap('Frontend')}.`);
+    lines.push('', 'Giả định chính: kế hoạch nhân sự của bản đề xuất còn gánh cả diễn tập chuyển đổi dữ liệu và giai đoạn test, nên năng lực thật cho backlog thấp hơn các số trên — phần thiếu thực tế còn lớn hơn.');
     return lines.join('\n');
   },
 

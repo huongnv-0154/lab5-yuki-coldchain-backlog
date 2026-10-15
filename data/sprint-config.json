@@ -84,6 +84,8 @@
   "workingDays": "Ngày làm việc theo lịch Nhật như LAB-1: nghỉ 土日祝日 và 12/29〜1/3.",
   "unit": "MD",
   "hoursPerMD": 8,
+  "codePhaseEnd": "2027-03-05",
+  "codePhaseEndSource": "LAB-1 schedule.md §1: 開発・実装 2026-11-30 → 2027-03-05 (単体・結合テスト tới 2027-04-02 = M-03)",
   "roleMap": {
    "Backend": [
     "BE-1",
