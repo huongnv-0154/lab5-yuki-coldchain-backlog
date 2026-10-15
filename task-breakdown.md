@@ -418,7 +418,7 @@ Product B chịu giới hạn giờ lái xe tải áp dụng từ năm 2024. Cá
 
 ## 4. Chỗ hở / mâu thuẫn của spec LAB-4 phát hiện khi break
 
-Chỗ hở do các job viết backlog phát hiện khi đọc spec (`data/gaps.json`, mã `GAP-L5-nn`), cách xử lý chốt ở review quyết định DR-04: sửa thiết kế → dòng `PR-S` của PREMISE; giả định → dòng `PR-A`; hỏi khách → issue E-15; để mở → kèm lý do. Ba mục phát hiện được không phải chỗ hở của spec (lỗi gắn nhãn, quy ước mã, nguồn của việc kiểm NFR) đã bỏ khỏi bảng.
+Chỗ hở do các job viết backlog phát hiện khi đọc spec (`data/gaps.json`, mã `GAP-L5-nn`), cách xử lý chốt ở review quyết định DR-04: sửa thiết kế → dòng `PR-S` của PREMISE; giả định → dòng `PR-A`; hỏi khách → issue E-15; để mở → kèm lý do. Ba mục phát hiện được không phải chỗ hở của spec (lỗi gắn nhãn, quy ước mã, nguồn của việc kiểm NFR) đã bỏ khỏi bảng. GAP-L5-54 và GAP-L5-55 lộ ra qua bài chấm LAB-3 (2026-10-15), sau khi đã đăng issue.
 
 <!-- GENERATED:gaps -->
 | Mã | Spec | Chỗ hở / mâu thuẫn | Xử lý |
@@ -473,4 +473,15 @@ Chỗ hở do các job viết backlog phát hiện khi đọc spec (`data/gaps.j
 | GAP-L5-51 | YC_MASTER_SKU_SPEC §6 (DR-MST-01) | Spec chỉ nói giao dịch xong giữ phiên bản SKU lúc phát sinh, không liệt kê bảng nào phải trỏ phiên bản; phạm vi ảnh hưởng rộng (lô, đơn, phân bổ). | Để mở — Danh sách bảng phải trỏ phiên bản SKU chốt ở buổi tinh chỉnh FG01-05; phạm vi rộng nên theo dõi như rủi ro ([#13](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/issues/13) FG01-05.1) |
 | GAP-L5-52 | MIGRATION_RECONCILIATION_FUNC Q1 | Ngôn ngữ công cụ migration chưa chốt (Tech Lead, open). FG12-08 giả định TypeScript để dùng lại FG12-01; nếu khác thì 2.4–2.6 là đặc tả cài lại. | Giả định — [PR-A-11](PREMISE.md) · [#185](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/issues/185) FG12-08 |
 | GAP-L5-53 | ADR-0011 (6 API gắn tệp) | Phía màn của kiểm hàng, POD và deviation chưa có issue nối hook tải lên E14-05.7 vào form; chỉ FG07-02.4 và FG06-05.3 có. FG02-14, FG05-11, FG07-08 làm riêng phía API. | Đã sửa thiết kế — [PR-S-05](PREMISE.md) · [#191](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/issues/191) FG02-15, [#192](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/issues/192) FG05-12, [#193](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/issues/193) FG07-09 |
+| GAP-L5-54 | INSPECTION_FUNC; YC_TEMP_IMPORT_SPEC | Mâu thuẫn trong LAB-4, lộ ra qua bài chấm LAB-3 (2026-10-15, sau khi đăng issue): nhập file nhiệt độ có alarm ngoài dải thì tự mở hồ sơ sai lệch (case OPEN), còn kiểm hàng nhập đo nhiệt ngoài dải chỉ chặn và đòi lý do khi 却下 / 隔離, không tự mở case với người, giờ, vị trí, số đo. | Để mở — chưa có issue; PM + BrSE chốt có tự mở case khi kiểm hàng hay không ở buổi tinh chỉnh đầu Sprint 2 (2026-12-14); nếu có thì thêm issue dưới FG-02 / FG-07 và chấm SWP — effort chưa nằm trong 1437 SWP |
+| GAP-L5-55 | DELIVERY_WINDOW_FUNC (ONE_THIRD) | Mơ hồ cần hỏi khách, lộ ra qua bài chấm LAB-3 (2026-10-15): spec tính quy tắc 1/3 là 33 % làm tròn xuống theo hình của RFP, hạn 30 ngày ra cửa sổ 9 ngày; nếu khách hiểu đúng một phần ba thì là 10 ngày. Câu hỏi khách E15-FG04-01 chỉ hỏi phạm vi USE_BY. | Để mở — BrSE hỏi thêm cách làm tròn ở lượt hỏi lại E15-FG04-01 đầu Sprint 2 (2026-12-14); giữ 33 % làm tròn xuống tới khi khách trả lời; nếu đổi thì sửa cùng #65 ([#78](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/issues/78) E15-FG04-01) |
 <!-- /GENERATED -->
+
+**Lỗi prototype tìm sau khi đăng issue.** Người chấm LAB-3 (2026-10-15) tìm thêm 4 lỗi hành vi của prototype. Đây không phải chỗ hở của spec LAB-4 nên không nằm trong bảng trên:
+
+- Lập tuyến bỏ trống 作業時間 thì tuyến kẹt ở bước kiểm giờ lái, không sửa / xoá được. Thiết kế đích có banner 作業時間 chưa nhập ở màn kết quả kiểm, và sửa bản nháp tuyến bằng `replace_route_stops` (một phần của [#98](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/issues/98)); chưa có issue riêng cho lỗi tuyến kẹt.
+- 受注一覧 vẫn ghi ピッキング済み sau khi POD xong — chưa có issue.
+- 拘束時間チェック結果 hiện giờ UTC, trái quy ước JST của LAB-4 (`api-conventions.md` §5) — chưa có issue sửa riêng.
+- Dòng rỗng 「1 （）」 sau khi tạo tuyến — chưa lần ra nguồn, chưa có issue.
+
+Effort sửa các lỗi này chưa nằm trong 1437 SWP. PM đưa vào buổi tinh chỉnh đầu Sprint 2 (2026-12-14) để tạo issue và chấm SWP.

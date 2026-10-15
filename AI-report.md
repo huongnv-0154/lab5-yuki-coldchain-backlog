@@ -82,6 +82,7 @@ Comment và issue đóng trên GitHub là **lịch sử giả lập** của Spri
 | P4 | Giả lập lần đầu Done 88% (chỉ có sự kiện chặn, 100% giờ cho issue; script hiện tại không tái lập được số này nên progress-report không dùng) — quá đẹp | agent | Thêm hệ số tập trung 0,8, công khai là giả định kèm độ nhạy (PR-A-13) |
 | P4 | Cổng G4 vẫn PASS khi xoá vai, đổi mốc thành M-99; quá tải tính gộp che quá tải theo vai | reviewer Opus thử phá trên bản sao | Cổng kiểm vai từng mệnh đề + danh sách mốc LAB-1; tính tải theo vai (136–167%) |
 | P6 | PREMISE lệch gói LAB-4 ở 2 dòng (PR-S-06, PR-A-08) và chưa khai mâu thuẫn 回収照合; báo cáo tiến độ thiếu dự báo tới M-03, còn mã nội bộ; 9 issue ghi phụ thuộc bằng mã spec, 28 issue Done chưa tick DoD; Project private trái luật đề | cross review Fable 5.1 (0 critical · 5 major · 22 minor) | Sửa PREMISE theo gói LAB-4; thêm dự báo M-03 theo nhân sự LAB-1 — tách theo vai thì Backend, QA tự động thiếu người, thành rủi ro số 1; dời chi tiết nội bộ xuống ghi chú kỹ thuật; sửa thân 38 issue + 1 comment bằng `fix-issue-hygiene.mjs` (dry-run trước, ghi sau khi user duyệt); khi kiểm lại thấy migration `customers.notification_email` chưa có issue → thêm một dòng Phạm vi vào #284; Project chuyển public |
+| Sau P6 | Bài chấm LAB-3 (2026-10-15) tìm 6 lỗi chưa có trong backlog: 2 là chỗ hở / mơ hồ của spec LAB-4 (tự mở hồ sơ sai lệch khi kiểm hàng, cách làm tròn quy tắc 1/3), 4 là lỗi hành vi prototype | người chấm LAB-3, chuyển sang qua session LAB-3/4; DR-09 | 2 dòng GAP-L5-54/55 (để mở, có người và ngày); 4 lỗi prototype ghi riêng dưới bảng mục 4 của task-breakdown; chưa tạo issue, effort ngoài 1437 SWP |
 
 ### Quyết định đã review (DR)
 
@@ -97,6 +98,7 @@ PREMISE.md trỏ mã `DR-0n` về đây.
 | DR-06 | Quy giờ k = 1,5 giờ/SWP | quick · bid | Sửa có điều kiện: nêu rõ phần không tính |
 | DR-07 | Phạm vi + kịch bản giả lập Sprint 1 | quick · tech | Sửa có điều kiện: công khai hệ số tập trung, thay "tách sub" bằng "mở lại sau lỗi hồi quy" |
 | DR-08 | Go / no-go nộp bài | quick · qa | Giữ (go): cổng kiểm và review đều đạt; Project private là quyết định của user (sau cross review, user đổi Project sang public ngày 2026-10-15); kết luận estimate mục 4 vẫn đứng khi k lệch +33% |
+| DR-09 | Đưa phát hiện của bài chấm LAB-3 vào bài đã push | standard · ba | Sửa có điều kiện: tách chỗ hở spec khỏi lỗi prototype, không ngụ ý issue cũ đã phủ, nói rõ effort ngoài 1437 SWP |
 
 ### Chỗ lệch quy trình đã khai
 
