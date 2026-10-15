@@ -18,7 +18,7 @@ Skill tự chọn 5 issue bằng luật cố định: nhỏ nhất, trung vị, 
 | [#9](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/issues/9) FG01-03.1 Spec — Màn quản lý rule_versions, API và DB đích (maker-checker) | 3 × 1 → **4** (dễ) | 5 | Sửa: 3 × 2 → **5** (dễ) | Sửa 4 → 5: mẫu BM-2-901 quy định hình thức, không giảm quyết định nội dung — phải chốt vai trò lập/duyệt, hiển thị source_verified, luồng 起票→承認 (C2); assessor 2 cũng chấm 5. Không có issue cùng nhóm. |
 <!-- /GENERATED -->
 
-Ba chỗ sửa chỉ áp cho chính issue đó, không lan sang issue cùng nhóm: nhóm cùng loại của #360 đang trải từ 6 đến 10 SWP, của #246 từ 3 đến 6 (12 issue cùng chữ ký scope / complexity, vai QA), nên lan một bậc sẽ ghi đè các điểm vốn đã phân biệt đúng. Sau khi chốt, tổng vẫn 1437 SWP (+1, +1, −2).
+Ba chỗ sửa chỉ áp cho chính issue đó, không lan sang issue cùng nhóm: nhóm cùng loại của #360 đang trải từ 6 đến 10 SWP, của #246 từ 3 đến 6 (đếm lại theo chữ ký scope / complexity và vai QA: 12 issue khác, 13 kể cả #246; lý do ghi lúc chốt DR-05 ở bảng trên nói 11), nên lan một bậc sẽ ghi đè các điểm vốn đã phân biệt đúng. Sau khi chốt, tổng vẫn 1437 SWP (+1, +1, −2).
 
 Hai assessor được so trên 39 issue rủi ro (độ tin cậy thấp — chủ yếu câu hỏi khách E-15): 7 trùng, 24 lệch một bậc, 8 khác nhóm phân loại, không issue nào lệch từ hai bậc. Issue 10 SWP (#227, #360) không thuộc tập rủi ro nên chỉ có một assessor — đây là lý do mình phản biện kỹ hai issue này.
 

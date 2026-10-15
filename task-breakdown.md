@@ -17,13 +17,13 @@ Quan hệ cha – con dùng sub-issue có sẵn của GitHub (`Parent issue`, `S
 ### 1.2 Độ hạt — chia tới đâu thì dừng
 
 - Việc lá **≤ 16 giờ** (tối đa 2 ngày công), mục tiêu 4–12 giờ, **một vai chính** (field `Owner`).
-- Tách sub-issue khi một việc chạm **≥ 2 lớp** (UI · API/RPC · DB/migration · test · tài liệu) **hoặc ≥ 2 vai**. Ví dụ: một màn chỉ thiết kế = User Story, con gồm DB + RPC (BE), màn (FE), test E2E (QA-Auto).
-- Dừng tách khi việc lá thuộc một lớp, một vai, ≤ 16 giờ và có điều kiện xong kiểm được. Không tách nhỏ hơn mức đó chỉ để có thêm issue.
+- Tách sub-issue khi một việc cần **≥ 2 vai**. Một vai mà chạm hai lớp (UI · API/RPC · DB/migration · test · tài liệu) thì giữ một lá nếu ≤ 12 giờ, vượt 12 giờ thì tách theo lớp. Ví dụ: một màn chỉ thiết kế = User Story, con gồm DB + RPC (BE), màn (FE), test E2E (QA-Auto).
+- Dừng tách khi việc lá thuộc một vai, ≤ 16 giờ (lá chạm hai lớp thì ≤ 12 giờ) và có điều kiện xong kiểm được. Không tách nhỏ hơn mức đó chỉ để có thêm issue.
 - Task `L5-xxx` của bảng chênh lệch giữ nguyên một việc. Task gộp (`L5-001` → `L5-013`, `L5-007` → `L5-021`) không thành issue riêng. Task ghi "không phải task" (`L5-037`, `L5-038`) không thành issue; riêng phần báo cáo 回収照合 của `L5-038` bị đảo ở PREMISE PR-S-05 (#184).
 - Mỗi feature đã dựng ở prototype có **một Task kiểm hồi quy E2E** cho các màn đã dựng, thay cho issue "đưa lên production" chung chung (DR-03).
 - Ngoại lệ đã biết (đếm trên `data/project-snapshot.json`, 353 lá, 284 lá trong 4–12 giờ):
-  - 8 lá 13,5–15 giờ (#227 #251 #253 #266 #300 #312 #313 #322) vượt mục tiêu 4–12 giờ nhưng dưới trần 16 giờ. Mỗi lá gộp các bước liền nhau của cùng một vai (RPC + route, migration đổi bảng, worker, service worker + IndexedDB). Đây là ngoại lệ có chủ đích; lá nào kẹt khi xếp sprint thì tách lúc đó, như #253 ở [progress-report.md](progress-report.md) mục 3.
-  - 11 lá ghép hai lớp trong một việc của cùng một vai BE: `DB / Migration + RPC` ở #196 #198 #216 #237 #304 #343, `RPC + route / domain` ở #10 #14 #244 #285 #424. Chữ luật ở trên nói tách khi ≥ 2 lớp, nhưng backlog thực tế chỉ tách khi ≥ 2 vai; hai lớp cùng một vai và ≤ 16 giờ thì giữ một lá.
+  - 8 lá 13,5–15 giờ (#227 #251 #253 #266 #300 #312 #313 #322) vượt mục tiêu 4–12 giờ nhưng dưới trần 16 giờ. Mỗi lá gộp các bước liền nhau của cùng một vai (RPC + route, migration đổi bảng, worker, service worker + IndexedDB), nên cũng vượt ngưỡng 12 giờ của luật tách hai lớp ở trên. Đây là ngoại lệ có chủ đích cho cả hai luật; lá nào kẹt khi xếp sprint thì tách lúc đó, như #253 ở [progress-report.md](progress-report.md) mục 3.
+  - 11 lá ghép hai lớp trong một việc của cùng một vai BE: `DB / Migration + RPC` ở #196 #198 #216 #237 #304 #343, `RPC + route / domain` ở #10 #14 #244 #285 #424. Cả 11 lá ≤ 12 giờ nên đúng luật ở trên. Luật này được viết lại ngày 2026-10-15 cho khớp cách đã chia; bản trước ghi "tách khi ≥ 2 lớp", không khớp 11 lá này (cross review phát hiện).
 
 ### 1.3 Định nghĩa xong (DoD) theo loại issue
 
@@ -379,7 +379,7 @@ Mỗi dòng là một nguồn trong gói LAB-4 (task `L5-xxx` của bảng chên
 | L5-001 · task L5 — Gộp vào L5-013 (cùng việc SSO + map vai trò + MFA; ADR-0009) | — | — | Gộp vào L5-013 (bảng chênh lệch LAB-4) |
 | L5-007 · task L5 — Gộp vào L5-021 (kiểm tháng / năm / trung bình 2 ngày / 2 tuần sau khi nguồn luật xác nhận) | — | — | Gộp vào L5-021 (bảng chênh lệch LAB-4) |
 | L5-037 · task L5 — Không phải task (xác nhận, không cần sửa): đúng như docs/scope.md — inventory-move ngoài phạm vi, MOVE là enum dự phòng… | FG-03 | — | Không phải task (xác nhận không cần sửa). Màn inventory-move nay được dựng ở story FG03-05 (SPEC-YC-133, SPEC-YC-256), MOVE không còn là enum dự phòng |
-| L5-038 · task L5 — Không phải task (xác nhận, không cần sửa): khớp đúng scope.md F-049 ngoài phạm vi, code đã disable + gắn nhãn rõ ràng, … | FG-08 | — | Không phải task (xác nhận, không cần sửa): F-049 recall nằm ngoài phạm vi prototype, code đã disable và gắn nhãn; phần dựng thật nằm ở FG08-01/02 |
+| L5-038 · task L5 — Không phải task (xác nhận, không cần sửa): khớp đúng scope.md F-049 ngoài phạm vi, code đã disable + gắn nhãn rõ ràng, … | FG-08 | — | Không phải task (xác nhận, không cần sửa): F-049 recall nằm ngoài phạm vi prototype, code đã disable và gắn nhãn; phần dựng thật nằm ở FG08-01/02; phần báo cáo 回収照合 của L5-038 bị đảo ở PREMISE PR-S-05 → #184 (task-breakdown.md mục 1, GAP-L5-26) |
 | DR-PRIV-01 · yêu cầu chưa đủ — YC_DRIVER_ITINERARY, YC_INCIDENT_RECORD, YC_VISITOR_LOG, YC_RECALL_CASE · ADM_MAIL_OUTBOX, TRC_RECALL_CASE | FG-11 | — | Yêu cầu hệ thống: dữ liệu cá nhân tối thiểu do màn của FG-06, FG-07, FG-08 dựng; phần FG-11 chỉ là hồ sơ SSO, nằm trong FG11-01.1 và FG11-01.2 (không log nhóm, claim thô). |
 | NFR-AVL-02 · yêu cầu chưa đủ — YC_POD_CAPTURE, YC_POD_QUEUE, YC_INCIDENT_RECORD, YC_LOT_LABEL · POD_OFFLINE_QUEUE, DLV_POD_OFFLINE_SYNC, RCV_LOT_LABEL… | E-14 | — | POD offline: đã phủ bởi L5-017 (FG-05); hồi quy E2E ở FG-05; phần xin URL lúc gửi lại có ở E14-05.7 |
 | OPS-TRN-01 · yêu cầu chưa đủ — Kế hoạch dự án / tiêu chí nghiệm thu | — | — | Việc vận hành / quản trị dự án, không đến từ detail design (PR-D-02) |

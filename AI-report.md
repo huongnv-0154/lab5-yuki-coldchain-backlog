@@ -47,7 +47,7 @@ Comment và issue đóng trên GitHub là **lịch sử giả lập** của Spri
 |---|---|---|
 | Dự báo tới M-03 | `project-milestone-capacity.mjs` (tất định, không gọi mạng) → `data/milestone-projection.json`; `check-progress.mjs` chặn số MD và ngày ở dòng rủi ro lệch dự báo | Bảng dự báo trong progress-report §3 và dòng rủi ro đầu tiên |
 | Độ nhạy hệ số tập trung | `simulate-sprint.mjs` → `data/sprint-1-sensitivity.json` | Done 78% ở 90%, 70% ở 80%; ở 100% không chạy được (progress-report, ghi chú kỹ thuật) |
-| Vệ sinh issue | `fix-issue-hygiene.mjs`, mặc định dry-run → `data/issue-hygiene-fixes.json` | Dry-run lập kế hoạch 38 issue + 1 comment; user duyệt rồi mới chạy `--apply` (2026-10-15: ghi 39 mục, chạy lại dry-run còn 0) |
+| Vệ sinh issue | `fix-issue-hygiene.mjs`: dry-run ghi kế hoạch ra file tạm `.tmp.json`; `--apply` ghi GitHub và `data/issue-hygiene-fixes.json` | Dry-run lập kế hoạch 38 issue + 1 comment; user duyệt rồi mới chạy `--apply` (2026-10-15: ghi 39 mục, chạy lại dry-run còn 0) |
 | Project public | user quyết; `check-public-access.mjs` | GET không đăng nhập: repo, Project, báo cáo HTML đều 200 (README) |
 
 ## 2. Review output AI
@@ -111,12 +111,12 @@ PREMISE.md trỏ mã `DR-0n` về đây.
 - **Mọi bảng sinh từ dữ liệu.** Bảng trong 4 trên 6 file nộp (README, task-breakdown, estimate, progress-report) sinh từ `data/` bằng script, có chế độ `--check`; PREMISE và AI-report viết tay. Review chỉ cần đối chiếu dữ liệu một lần, sửa dữ liệu thì bảng tự khớp.
 - **Backlog lớn mà vẫn nhất quán.** 5 subagent viết song song theo một hướng dẫn chung (thêm 1 job bổ sung), cổng tự động chặn sai luật; 433 issue lên GitHub kèm sub-issue và blocked-by gốc, chạy lại không tạo trùng.
 - **Review khác model bắt lỗi thật ở mọi phase:** P2a 7 → 9/10, P3 8 → 9/10, P4 8 → 9/10. Thử phá cổng trên bản sao (đổi mốc, xoá vai) cho thấy cổng PASS sai — kiểu lỗi mà chạy cổng bình thường không bao giờ lộ.
-- **User ít phải làm tay.** Khoảng 35 phút cho cả LAB-5: chốt plan, mốc LAB-4, chính sách chép gói, duyệt đẩy lên GitHub, xác nhận 5 điểm SWP. Mọi quyết định có đánh đổi đều có brief phản biện để đọc nhanh.
+- **User ít phải làm tay.** Khoảng 45 phút cho cả LAB-5: chốt plan, mốc LAB-4, chính sách chép gói, duyệt đẩy lên GitHub, xác nhận 5 điểm SWP. Mọi quyết định có đánh đổi đều có brief phản biện để đọc nhanh.
 
 **Chỗ chưa tốt, cần cải thiện khi làm thật**
 
-- **Thời gian.** Cả LAB-5 (plan + P0–P6): agent khoảng 13 giờ (P0–P5 11,8 giờ, sửa theo cross review 1,2 giờ), máy chạy nền thêm 2,1 giờ, user khoảng 35 phút (tạo issue ~10,6 giây/issue vì mỗi issue cần nhiều mutation và có hãm tốc để tránh hạn mức GitHub; ghi một field cho cả Project là 433 lượt). Khi làm thật nên ghi field theo lô và dùng Project template.
-- **Công sức.** User chỉ chốt quyết định và duyệt (khoảng 35 phút cho cả LAB-5) nhưng phải duyệt từng lần đẩy lên GitHub, nên mỗi phase dừng chờ một lần. Khi làm thật nên duyệt một lần cho cả nhóm thao tác đã xem trước bằng `--dry-run`.
+- **Thời gian.** Cả LAB-5 (plan + P0–P6): agent khoảng 14 giờ (P0–P5 11,8 giờ, hai vòng sửa theo cross review 2,3 giờ), máy chạy nền thêm 2,1 giờ, user khoảng 45 phút (tạo issue ~10,6 giây/issue vì mỗi issue cần nhiều mutation và có hãm tốc để tránh hạn mức GitHub; ghi một field cho cả Project là 433 lượt). Khi làm thật nên ghi field theo lô và dùng Project template.
+- **Công sức.** User chỉ chốt quyết định và duyệt (khoảng 45 phút cho cả LAB-5, chưa kể thời gian tự chạy hai lượt cross review ngoài phiên) nhưng phải duyệt từng lần đẩy lên GitHub, nên mỗi phase dừng chờ một lần. Khi làm thật nên duyệt một lần cho cả nhóm thao tác đã xem trước bằng `--dry-run`.
 - **Token.** Mỗi subagent tốn sẵn khoảng 55 nghìn token ngữ cảnh trước khi làm gì. Theo số harness báo: P3 dùng khoảng 2,6 triệu token ở subagent (10 worker chấm SWP chiếm 1,4 triệu, mỗi worker batch 70 issue 168–202 nghìn), P4 khoảng 1,1 triệu (tester ~180 nghìn, reviewer Opus ~150 nghìn mỗi lượt). Thay đổi nhỏ không nên đi đủ vòng tester + reviewer + re-review; nên gộp kiểm tài liệu và kiểm code khi cùng một phase.
 - **Skill chấm SWP.** Bảng discipline của skill không có loại cho việc hỏi khách / BrSE nên 39 câu hỏi khách nhận "Unknown", độ tin cậy thấp; tập issue rủi ro mà assessor 2 chấm lại vì thế chủ yếu là câu hỏi khách, còn issue 10 SWP lớn nhất chỉ có một assessor. Worker không tool không hợp với batch lớn.
 - **Giả lập sprint.** Giờ thực tế bằng giờ ước, chỉ một lần sửa có giờ thêm, nên burndown phản ánh hệ số tập trung và 3 sự kiện chứ chưa phản ánh sai số ước lượng. Comment giả lập trên repo public dễ gây hiểu nhầm dù đã ghi rõ.
