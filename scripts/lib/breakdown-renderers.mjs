@@ -40,7 +40,8 @@ function issueCell(list, link) {
 
 function whyNotIssued(src, notIssued) {
   if (src.mergedInto) return `Gộp vào ${src.mergedInto} (bảng chênh lệch LAB-4)`;
-  if (src.notATask) return 'Bảng chênh lệch LAB-4 ghi "không phải task" (chỉ xác nhận)';
+  // Có lý do riêng của job (vd. việc dựng thật nằm ở epic khác) thì dùng lý do đó thay cho câu chung
+  if (src.notATask) return notIssued.get(src.id) ?? 'Bảng chênh lệch LAB-4 ghi "không phải task" (chỉ xác nhận)';
   if (src.project && /^ACC-/.test(src.id)) return 'Tiêu chí nghiệm thu — kiểm ở UAT (việc dự án, PR-D-02); chức năng liên quan đã có issue ở epic nghiệp vụ';
   if (src.project) return 'Việc vận hành / quản trị dự án, không đến từ detail design (PR-D-02)';
   if (src.kind === 'adr' && !src.epic) return 'Quy ước kiến trúc — áp vào DoD của mọi issue, không thành issue riêng';

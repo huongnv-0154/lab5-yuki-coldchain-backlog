@@ -22,7 +22,7 @@ const path = (key) => days.map((d, i) => `${i ? 'L' : 'M'}${x(d.day).toFixed(1)}
 const out = [];
 out.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">`);
 out.push('<title id="t">Burndown Sprint 1 (giả lập)</title>');
-out.push(`<desc id="d">SWP còn lại theo ngày: kế hoạch tuyến tính từ ${days[0].planned} về 0, thực tế còn ${finalPoint.actual} ở ngày ${maxDay}; phạm vi giảm từ ${days[0].scope} xuống ${finalPoint.scope}.</desc>`);
+out.push(`<desc id="d">SWP còn lại theo ngày: kế hoạch tuyến tính từ ${days[0].planned} về 0, mô phỏng còn ${finalPoint.actual} ở ngày ${maxDay}; phạm vi giảm từ ${days[0].scope} xuống ${finalPoint.scope}.</desc>`);
 out.push(`<rect width="${W}" height="${H}" fill="#ffffff"/>`);
 out.push(`<text x="${L}" y="26" font-size="16" font-weight="600" fill="#1f2328">Burndown Sprint 1 — giả lập 2026-11-30 → 2026-12-11</text>`);
 
@@ -59,7 +59,7 @@ for (const d of days) out.push(`<circle cx="${x(d.day)}" cy="${y(d.actual)}" r="
 out.push(`<text x="${x(maxDay) - 8}" y="${y(finalPoint.actual) + 18}" font-size="12" font-weight="600" text-anchor="end" fill="#0969da">còn ${finalPoint.actual}</text>`);
 
 // Chú giải
-const legend = [['#0969da', 'Thực tế', ''], ['#8c959f', 'Kế hoạch tuyến tính', '6 4'], ['#bf8700', 'Phạm vi sprint', '2 4']];
+const legend = [['#0969da', 'Mô phỏng', ''], ['#8c959f', 'Kế hoạch tuyến tính', '6 4'], ['#bf8700', 'Phạm vi sprint', '2 4']];
 legend.forEach(([color, label, dash], i) => {
   const lx = L + i * 180;
   out.push(`<line x1="${lx}" y1="44" x2="${lx + 28}" y2="44" stroke="${color}" stroke-width="2.5"${dash ? ` stroke-dasharray="${dash}"` : ''}/>`);

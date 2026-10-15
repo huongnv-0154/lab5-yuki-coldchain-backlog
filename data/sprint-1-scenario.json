@@ -8,7 +8,8 @@
    ],
    "fromDay": 3,
    "toDay": 5,
-   "note": "Tenant Entra thử của khách chưa cấp (PR-A-04); chờ 3 ngày"
+   "note": "Tenant Entra thử của khách chưa cấp (PR-A-04); chờ 3 ngày",
+   "resumeNote": "Hết chờ tenant"
   }
  ],
  "reopen": [

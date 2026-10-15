@@ -1,0 +1,171 @@
+{
+  "note": "Dự báo tới M-03 (2027-04-02) sau Sprint 1. Năng lực = bảng 要員計画 LAB-1 trừ PM, chia theo ngày làm việc Nhật; 1 MD = 8 giờ; focus = phần giờ dành cho issue. \"Pooled\" = dồn chung năng lực mọi vai; \"byRole\" = mỗi vai LAB-1 chỉ làm issue của vai mình. Giả định: kế hoạch nhân sự LAB-1 còn gánh diễn tập chuyển đổi dữ liệu và giai đoạn test, nên năng lực thật cho backlog thấp hơn. Sinh bởi scripts/project-milestone-capacity.mjs.",
+  "milestone": "M-03",
+  "window": {
+    "from": "2026-12-14",
+    "to": "2027-04-02",
+    "workdays": 72
+  },
+  "workdaysByMonth": {
+    "2026-12": 20,
+    "2027-01": 19,
+    "2027-02": 18,
+    "2027-03": 22,
+    "2027-04": 21
+  },
+  "holidays": [
+    "2027-01-11",
+    "2027-02-11",
+    "2027-02-23",
+    "2027-03-22",
+    "2027-04-29",
+    "2027-05-03",
+    "2027-05-04",
+    "2027-05-05",
+    "2027-07-19",
+    "2027-08-11",
+    "2027-09-20",
+    "2027-09-23"
+  ],
+  "yearEndBreak": [
+    "2026-12-29",
+    "2027-01-03"
+  ],
+  "lastStaffingMonth": "2027-04",
+  "sprint1Focus": 0.8,
+  "hoursPerMD": 8,
+  "remaining": {
+    "hours": 1986.5,
+    "md": 248.3,
+    "leaves": 353,
+    "doneLeaves": 28,
+    "sprint1Unfinished": {
+      "issues": 17,
+      "hours": 39.5
+    },
+    "byRoleHours": {
+      "Backend": 1016.4,
+      "Frontend": 282.5,
+      "QA (Manual)": 0,
+      "QA (Auto)": 392.4,
+      "Infra": 138.9,
+      "Design": 29.4,
+      "BrSE": 126.9
+    }
+  },
+  "runs": [
+    {
+      "focus": 1,
+      "capacityHours": 2301.9,
+      "remainingHours": 1986.5,
+      "marginMD": 39.4,
+      "finishDatePooled": "2027-03-18",
+      "shortRoles": [
+        "Backend",
+        "QA (Auto)"
+      ],
+      "finishDateByRole": "2027-06-09",
+      "byRole": {
+        "Backend": {
+          "capacityMD": 105.5,
+          "remainingMD": 127.1,
+          "marginMD": -21.6,
+          "finishDate": "2027-05-06"
+        },
+        "Frontend": {
+          "capacityMD": 67,
+          "remainingMD": 35.3,
+          "marginMD": 31.7,
+          "finishDate": "2027-02-10"
+        },
+        "QA (Manual)": {
+          "capacityMD": 40.5,
+          "remainingMD": 0,
+          "marginMD": 40.5,
+          "finishDate": null
+        },
+        "QA (Auto)": {
+          "capacityMD": 27.4,
+          "remainingMD": 49.1,
+          "marginMD": -21.7,
+          "finishDate": "2027-06-09"
+        },
+        "Infra": {
+          "capacityMD": 21.3,
+          "remainingMD": 17.4,
+          "marginMD": 3.9,
+          "finishDate": "2027-03-15"
+        },
+        "Design": {
+          "capacityMD": 5.7,
+          "remainingMD": 3.7,
+          "marginMD": 2,
+          "finishDate": "2027-01-21"
+        },
+        "BrSE": {
+          "capacityMD": 20.2,
+          "remainingMD": 15.9,
+          "marginMD": 4.3,
+          "finishDate": "2027-03-10"
+        }
+      }
+    },
+    {
+      "focus": 0.8,
+      "capacityHours": 1841.5,
+      "remainingHours": 1986.5,
+      "marginMD": -18.1,
+      "finishDatePooled": "2027-04-12",
+      "shortRoles": [
+        "Backend",
+        "QA (Auto)",
+        "Infra"
+      ],
+      "finishDateByRole": "2027-07-14",
+      "byRole": {
+        "Backend": {
+          "capacityMD": 84.4,
+          "remainingMD": 127.1,
+          "marginMD": -42.7,
+          "finishDate": "2027-06-17"
+        },
+        "Frontend": {
+          "capacityMD": 53.6,
+          "remainingMD": 35.3,
+          "marginMD": 18.3,
+          "finishDate": "2027-02-24"
+        },
+        "QA (Manual)": {
+          "capacityMD": 32.4,
+          "remainingMD": 0,
+          "marginMD": 32.4,
+          "finishDate": null
+        },
+        "QA (Auto)": {
+          "capacityMD": 22,
+          "remainingMD": 49.1,
+          "marginMD": -27.1,
+          "finishDate": "2027-07-14"
+        },
+        "Infra": {
+          "capacityMD": 17,
+          "remainingMD": 17.4,
+          "marginMD": -0.4,
+          "finishDate": "2027-04-06"
+        },
+        "Design": {
+          "capacityMD": 4.6,
+          "remainingMD": 3.7,
+          "marginMD": 0.9,
+          "finishDate": "2027-02-09"
+        },
+        "BrSE": {
+          "capacityMD": 16.2,
+          "remainingMD": 15.9,
+          "marginMD": 0.3,
+          "finishDate": "2027-04-01"
+        }
+      }
+    }
+  ]
+}

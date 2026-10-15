@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Thay nội dung giữa <!-- GENERATED:<tên> [k=v ...] --> và <!-- /GENERATED --> trong các file nộp
 // bằng bảng sinh từ data/project-snapshot.json (+ data/*.json). Tên lạ → dừng (không bỏ qua im lặng).
-// Dùng: node scripts/render-tables.mjs [--check]   (--check: chỉ báo file nào lệch, exit 1 nếu lệch)
+// Dùng: node scripts/render-tables.mjs [--check] [--only <file.md>]   (--check: chỉ báo file nào lệch, exit 1 nếu lệch;
+//       --only: chỉ xử lý một file nộp)
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { readJson, parseArgs } from './lib/gh-graphql.mjs';
 import { renderers } from './lib/table-renderers.mjs';
@@ -22,7 +23,8 @@ function parseOptions(rawOpts) {
 
 let drift = 0;
 let blocks = 0;
-for (const file of FILES.filter((f) => existsSync(f))) {
+if (args.only && !FILES.includes(args.only)) throw new Error(`--only ${args.only}: không phải file nộp (${FILES.join(', ')})`);
+for (const file of FILES.filter((f) => existsSync(f) && (!args.only || f === args.only))) {
   const before = readFileSync(file, 'utf8');
   // Thẻ viết sai cú pháp sẽ không khớp BLOCK → đếm thẻ mở/đóng để dừng thay vì bỏ qua im lặng
   const opens = (before.match(/<!--\s*GENERATED:/g) || []).length;

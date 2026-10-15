@@ -1,0 +1,795 @@
+{
+  "note": "Kế hoạch sửa vệ sinh issue (X-16, X-17, X-12); sinh bởi scripts/fix-issue-hygiene.mjs — mặc định chỉ đọc",
+  "totals": {
+    "issues": 38,
+    "lines": 68,
+    "comments": 1
+  },
+  "x16": [
+    {
+      "issue": 103,
+      "oldText": "- Phụ thuộc: CORE_MASTER_DB customers.notification_email (FG-01) cho bước thông báo",
+      "newText": "- Phụ thuộc: CORE_MASTER_DB customers.notification_email (FG-01) cho bước thông báo — migration cột này làm ở #284 (thay đổi đích T4 của CORE_MASTER_DB, LAB-4)",
+      "rationale": "LAB-4 đã thiết kế cột (CORE_MASTER_DB.md:439, thay đổi đích T4 tại c3cf20d) nhưng backlog không có issue migration nó (chỉ #103/#104 nhắc tới) → gộp vào #284.",
+      "mapping": "ổn"
+    },
+    {
+      "issue": 104,
+      "oldText": "- Phụ thuộc: CORE_MASTER_DB customers.notification_email (FG-01)",
+      "newText": "- Phụ thuộc: CORE_MASTER_DB customers.notification_email (FG-01) — migration cột này làm ở #284 (thay đổi đích T4 của CORE_MASTER_DB, LAB-4)",
+      "rationale": "LAB-4 đã thiết kế cột (CORE_MASTER_DB.md:439, thay đổi đích T4 tại c3cf20d) nhưng backlog không có issue migration nó (chỉ #103/#104 nhắc tới) → gộp vào #284.",
+      "mapping": "ổn"
+    },
+    {
+      "issue": 284,
+      "oldText": "- RLS như 5 bảng recall",
+      "newText": "- RLS như 5 bảng recall\n- Migration cột `customers.notification_email` (CORE_MASTER_DB thay đổi đích T4 của LAB-4) — #103, #104 đọc cột này để gửi thông báo",
+      "rationale": "Chỗ sót của backlog phát hiện khi kiểm X-16: LAB-4 đã thiết kế cột, chưa issue nào làm migration.",
+      "mapping": "ổn"
+    },
+    {
+      "issue": 78,
+      "oldText": "- Ảnh hưởng: GAP-14",
+      "newText": "- Ảnh hưởng: #65 (GAP-14)",
+      "rationale": "GAP-14 là dòng lệch trong deviation-table LAB-4, do chính issue này xử lý; issue chịu tác động là #65, đã nêu ở dòng \"Issue bị ảnh hưởng\" ngay trên.",
+      "mapping": "ổn"
+    },
+    {
+      "issue": 168,
+      "oldText": "- Ảnh hưởng: DEV-005",
+      "newText": "- Ảnh hưởng: #31 (DEV-005)",
+      "rationale": "DEV-005 là dòng lệch trong deviation-table LAB-4, do chính issue này xử lý; issue chịu tác động là #31, đã nêu ở dòng \"Issue bị ảnh hưởng\" ngay trên.",
+      "mapping": "ổn"
+    },
+    {
+      "issue": 169,
+      "oldText": "- Ảnh hưởng: DEV-011",
+      "newText": "- Ảnh hưởng: #56 (DEV-011)",
+      "rationale": "DEV-011 là dòng lệch trong deviation-table LAB-4, do chính issue này xử lý; issue chịu tác động là #56, đã nêu ở dòng \"Issue bị ảnh hưởng\" ngay trên.",
+      "mapping": "ổn"
+    },
+    {
+      "issue": 170,
+      "oldText": "- Ảnh hưởng: DEV-012",
+      "newText": "- Ảnh hưởng: #33 (DEV-012)",
+      "rationale": "DEV-012 là dòng lệch trong deviation-table LAB-4, do chính issue này xử lý; issue chịu tác động là #33, đã nêu ở dòng \"Issue bị ảnh hưởng\" ngay trên.",
+      "mapping": "ổn"
+    },
+    {
+      "issue": 172,
+      "oldText": "- Ảnh hưởng: DEV-035",
+      "newText": "- Ảnh hưởng: #33 (DEV-035)",
+      "rationale": "DEV-035 là dòng lệch trong deviation-table LAB-4, do chính issue này xử lý; issue chịu tác động là #33, đã nêu ở dòng \"Issue bị ảnh hưởng\" ngay trên.",
+      "mapping": "ổn"
+    },
+    {
+      "issue": 175,
+      "oldText": "- Ảnh hưởng: MOCK-15",
+      "newText": "- Ảnh hưởng: #146 (MOCK-15)",
+      "rationale": "MOCK-15 là dòng lệch trong deviation-table LAB-4, do chính issue này xử lý; issue chịu tác động là #146, đã nêu ở dòng \"Issue bị ảnh hưởng\" ngay trên.",
+      "mapping": "ổn"
+    },
+    {
+      "issue": 176,
+      "oldText": "- Ảnh hưởng: MOCK-16",
+      "newText": "- Ảnh hưởng: #59 (MOCK-16)",
+      "rationale": "MOCK-16 là dòng lệch trong deviation-table LAB-4, do chính issue này xử lý; issue chịu tác động là #59, đã nêu ở dòng \"Issue bị ảnh hưởng\" ngay trên.",
+      "mapping": "ổn"
+    }
+  ],
+  "x17": {
+    "closedOnGitHub": 28,
+    "doneInLog": 28,
+    "mismatch": {
+      "closedNotDone": [],
+      "doneNotClosed": []
+    }
+  },
+  "issues": [
+    {
+      "number": 33,
+      "baseSha": "5c59bbfb212605d5",
+      "targetSha": "598866a4563cdeb1",
+      "target": "**ID:** `FG02-03` · **Epic:** FG-02 入荷・検品・ロット生成 · **Owner (giả định):** BrSE · **Parent:** #17 (EP-FG-02)\n\n**Mục tiêu:** Tài liệu nguồn LAB-1 khớp code: 品質管理者 được ghi kiểm và 入荷確定 (GAP-03).\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-032 (EXTRACTED)\n**Spec:** `specs/_common/deviation-table.md (GAP-03, DEV-037, L5-032)`\n\n**Phạm vi**\n- Sửa role-list của LAB-1: F-010 / F-011 thêm ROLE-003, F-012 ghi người bấm 入荷確定 là ROLE-001 hoặc ROLE-003\n- Không đổi code\n\n**Ngoài phạm vi**\n- Câu hỏi khách về người duyệt ticket — #44 (E15-FG02-02)\n\n**Định nghĩa xong (DoD)**\n- [x] Diff chỉ chạm ba dòng chức năng nói trên\n- [x] Ma trận vai × màn trong specs/_common/role-screen-matrix.md khớp\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Diff chỉ chạm ba dòng chức năng nói trên",
+          "new": "- [x] Diff chỉ chạm ba dòng chức năng nói trên"
+        },
+        {
+          "old": "- [ ] Ma trận vai × màn trong specs/_common/role-screen-matrix.md khớp",
+          "new": "- [x] Ma trận vai × màn trong specs/_common/role-screen-matrix.md khớp"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 36,
+      "baseSha": "95891de2d7c69c03",
+      "targetSha": "2bc69e6729172158",
+      "target": "**ID:** `FG02-06` · **Epic:** FG-02 入荷・検品・ロット生成 · **Owner (giả định):** FE-1 · **Parent:** #17 (EP-FG-02)\n\n**Mục tiêu:** Để trống ô bắt buộc thì có thông báo dưới ô, không còn lỗi im lặng ở client (GAP-29).\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-056 (EXTRACTED)\n**Spec:** `specs/receiving/screen-specification/YC_RECEIVING_APPOINTMENT_SPEC.md §6` · `specs/_common/deviation-table.md (GAP-29, L5-056)`\n**PREMISE:** [PR-A-08](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Kiểm ô trống trước khi đổi giờ localDateTimeToJstIso\n- Hiện lỗi dưới ô cùng cách D10\n\n**Định nghĩa xong (DoD)**\n- [x] Test component: để trống từng ô → lỗi dưới đúng ô, không gọi API\n- [x] Không còn RangeError ném ra client\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Test component: để trống từng ô → lỗi dưới đúng ô, không gọi API",
+          "new": "- [x] Test component: để trống từng ô → lỗi dưới đúng ô, không gọi API"
+        },
+        {
+          "old": "- [ ] Không còn RangeError ném ra client",
+          "new": "- [x] Không còn RangeError ném ra client"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 47,
+      "baseSha": "5c62e60dfd6fb34b",
+      "targetSha": "08aee6f9f6de97ec",
+      "target": "**ID:** `FG03-02` · **Epic:** FG-03 在庫・ロケーション・隔離 · **Owner (giả định):** FE-2 · **Parent:** #18 (EP-FG-03)\n\n**Mục tiêu:** Luồng 入荷結果確認 → put-away nối bằng link theo lô vừa nhập (GAP-04).\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-033 (INFERRED)\n**Spec:** `specs/receiving/screen-specification/YC_RECEIVING_RESULT_SPEC.md §6` · `specs/inventory/screen-specification/YC_INVENTORY_LOT_DETAIL_SPEC.md §6` · `specs/_common/deviation-table.md (GAP-04, L5-033)`\n**PREMISE:** [PR-A-08](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Link ?lot=<lot_no> ở YC_RECEIVING_RESULT cho mỗi lô vừa tạo\n- Link cùng dạng ở YC_INVENTORY_LOT_DETAIL\n- Ẩn link với vai không có quyền put-away\n\n**Định nghĩa xong (DoD)**\n- [x] Test component: link đúng tham số, ẩn đúng vai\n- [x] E2E: từ kết quả nhập bấm link → put-away mở đúng lô\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Test component: link đúng tham số, ẩn đúng vai",
+          "new": "- [x] Test component: link đúng tham số, ẩn đúng vai"
+        },
+        {
+          "old": "- [ ] E2E: từ kết quả nhập bấm link → put-away mở đúng lô",
+          "new": "- [x] E2E: từ kết quả nhập bấm link → put-away mở đúng lô"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 48,
+      "baseSha": "b04a1d589362abb6",
+      "targetSha": "f5b3bf3c0c6c80c7",
+      "target": "**ID:** `FG03-03` · **Epic:** FG-03 在庫・ロケーション・隔離 · **Owner (giả định):** FE-2 · **Parent:** #18 (EP-FG-03)\n\n**Mục tiêu:** Ô số đếm để trống không còn bị ghi thành 0 sinh chênh lệch giả (GAP-17).\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-045 (EXTRACTED)\n**Spec:** `specs/inventory/screen-specification/YC_INVENTORY_COUNT_SPEC.md` · `specs/_common/deviation-table.md (GAP-17, L5-045)`\n**PREMISE:** [PR-A-08](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Dùng parseNumberInput cho countedQty, chặn ô trống trên form\n- Mở rộng test quét tĩnh sang countedQty\n\n**Ngoài phạm vi**\n- Ô 受入数量 ở 入荷検査入力 cùng lớp lỗi — #181 (FG02-13), #194 (FG02-16)\n\n**Định nghĩa xong (DoD)**\n- [x] Test component: ô trống → lỗi, không gọi API\n- [x] Test quét tĩnh đỏ nếu countedQty dùng Number() trực tiếp\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Test component: ô trống → lỗi, không gọi API",
+          "new": "- [x] Test component: ô trống → lỗi, không gọi API"
+        },
+        {
+          "old": "- [ ] Test quét tĩnh đỏ nếu countedQty dùng Number() trực tiếp",
+          "new": "- [x] Test quét tĩnh đỏ nếu countedQty dùng Number() trực tiếp"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 67,
+      "baseSha": "b7625e91139b9c15",
+      "targetSha": "b9432ee6cec390af",
+      "target": "**ID:** `FG04-04` · **Epic:** FG-04 受注・アロケーション・ピッキング · **Owner (giả định):** FE-1 · **Parent:** #19 (EP-FG-04)\n\n**Mục tiêu:** Sau khi bấm 登録, người dùng thấy đơn nào vừa tạo và kết quả phân bổ từng dòng, bấm lại không sinh đơn trùng.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-040 (INFERRED) · L5-050 (EXTRACTED)\n**Spec:** `specs/_common/deviation-table.md (L5-040, L5-050, GAP-11, GAP-23)` · `specs/order-shipping/screen-specification/YC_ORDER_ENTRY_SPEC.md`\n**PREMISE:** [PR-A-08](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Client giữ body 201 của POST /api/orders (run-write-request) thay vì bỏ\n- Hiện outcome từng dòng: ALLOCATED / 除外 / BUSINESS_REVIEW kèm link tới allocation-result, allocation-failed-queue, business-review-queue\n- Dòng phân bổ lỗi (vd. STOCK_CHANGED) hiện ngay trên màn\n- Sau 201: xoá form, hiện số đơn; khoá nút tới khi người dùng sửa form\n\n**Ngoài phạm vi**\n- Nút 新規受注 ở order-list — #68 (FG04-05)\n\n**Định nghĩa xong (DoD)**\n- [x] Test component: 201 hiện số đơn và outcome từng dòng, form được xoá\n- [x] Bấm 登録 hai lần liên tiếp không tạo hai đơn\n- [x] E2E luồng nhập đơn → xem kết quả phân bổ (thêm vào #77 (FG04-14))\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Test component: 201 hiện số đơn và outcome từng dòng, form được xoá",
+          "new": "- [x] Test component: 201 hiện số đơn và outcome từng dòng, form được xoá"
+        },
+        {
+          "old": "- [ ] Bấm 登録 hai lần liên tiếp không tạo hai đơn",
+          "new": "- [x] Bấm 登録 hai lần liên tiếp không tạo hai đơn"
+        },
+        {
+          "old": "- [ ] E2E luồng nhập đơn → xem kết quả phân bổ (thêm vào #77 (FG04-14))",
+          "new": "- [x] E2E luồng nhập đơn → xem kết quả phân bổ (thêm vào #77 (FG04-14))"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 78,
+      "baseSha": "8d305873dde34291",
+      "targetSha": "2833d7fe098f03bb",
+      "target": "**ID:** `E15-FG04-01` · **Epic:** E-15 顧客確認 · **Owner (giả định):** BrSE · **Parent:** #30 (EP-E-15)\n\n**Mục tiêu:** Có đáp án của khách về việc áp tỷ lệ cửa sổ giao cho lô USE_BY để chốt code stage 4.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-030 (INFERRED) · L5-043 (INFERRED)\n**Spec:** `specs/_common/deviation-table.md (L5-030, GAP-01)` · `specs/order-shipping/function-specifications/DELIVERY_WINDOW_FUNC.md` · `specs/_common/deviation-table.md (GAP-14, L5-043)`\n**PREMISE:** [PR-D-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Gửi câu hỏi (giả lập) kèm ví dụ lô USE_BY và BEST_BEFORE\n- Ghi đáp án vào spec hoặc PREMISE\n\n**Ngoài phạm vi**\n- Sửa code — #65 (FG04-02)\n\n**Định nghĩa xong (DoD)**\n- [ ] Câu hỏi đã gửi; khi khách trả lời: ghi vào spec/PREMISE và đóng issue\n- [ ] Còn chờ thì để Blocked kèm ngày hỏi lại\n\n**Phụ thuộc**\n- Issue bị ảnh hưởng: #65 (FG04-02)\n\n**Ghi chú**\n- Ảnh hưởng: #65 (GAP-14)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- Ảnh hưởng: GAP-14",
+          "new": "- Ảnh hưởng: #65 (GAP-14)"
+        }
+      ],
+      "fixes": [
+        "X-16"
+      ]
+    },
+    {
+      "number": 103,
+      "baseSha": "60eddb9d89bb2d32",
+      "targetSha": "08fe81a66c9d4618",
+      "target": "**ID:** `FG08-01` · **Epic:** FG-08 トレーサビリティ・回収 · **Owner (giả định):** BE-2 · **Parent:** #23 (EP-FG-08)\n\n**Mục tiêu:** ROLE-003 mở case, chốt phạm vi (chụp số + tự cách ly), ghi kết quả 返品/未解決/廃棄, đối soát 差異 = 0 và đóng case; ROLE-008 chỉ xem.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** SPEC-YC-148 (INFERRED) · SPEC-YC-418 (INFERRED) · SPEC-YC-529 (INFERRED) · SPEC-YC-243 (INFERRED) · SPEC-YC-244 (INFERRED) · SPEC-YC-245 (INFERRED) · SPEC-YC-246 (INFERRED) · SPEC-YC-247 (INFERRED) · SPEC-YC-248 (INFERRED) · SPEC-YC-315 (INFERRED) · FR-TRC-02 (INFERRED) · F-049 (EXTRACTED)\n**Spec:** `specs/trace-recall/screen-specification/YC_RECALL_CASE_SPEC.md` · `specs/trace-recall/technical-design/TRC_RECALL_CASE_TECH.md §3, §4.1–4.4, §4.6–4.7` · `specs/trace-recall/function-specifications/RECALL_RECONCILIATION_FUNC.md` · `specs/system-design/database-design/trace-recall/TRACE_RECALL_DB.md` · `specs/system-design/api-design/trace-recall/ (RECALL_CASES_*_API.md, 6 API)`\n**PREMISE:** [PR-D-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md) · [PR-A-08](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Case OPENED → SCOPED → NOTIFIED → RECONCILED → CLOSED, chỉ tiến; mỗi bước một RPC security definer, khoá recall_cases, ghi recall_case_events + audit_events cùng giao dịch\n- Chụp 現在庫 và 出荷済み theo lô lúc 範囲確定 và cách ly phần tồn trong cùng giao dịch\n- Đối soát theo lô: 差異 = 0 ở mọi lô mới RECONCILED; sai thì thêm dòng bù\n- Màn YC_RECALL_CASE + đường vào từ YC_TRACE_SEARCH; quyền ROLE-003 ghi, ROLE-008 xem, ROLE-006 không đọc (A-8)\n\n**Ngoài phạm vi**\n- Thông báo thu hồi — #104 (FG08-02)\n- Huỷ soạn trả tồn cho đơn đã soạn lô thu hồi — L5-065\n- Gói bằng chứng audit của case — #111 (FG09-01)\n\n**Định nghĩa xong (DoD)**\n- [ ] Đủ DoD của 7 con; luồng 5 bước chạy end-to-end ở môi trường test\n- [ ] Assert SQL + E2E đạt các AC của YC_RECALL_CASE / TRC_RECALL_CASE\n\n**Phụ thuộc**\n- Câu hỏi khách liên quan (không chặn — PR-D-04): #102 (E15-FG08-02)\n\n**Ghi chú**\n- Phụ thuộc: CORE_MASTER_DB customers.notification_email (FG-01) cho bước thông báo — migration cột này làm ở #284 (thay đổi đích T4 của CORE_MASTER_DB, LAB-4)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- Phụ thuộc: CORE_MASTER_DB customers.notification_email (FG-01) cho bước thông báo",
+          "new": "- Phụ thuộc: CORE_MASTER_DB customers.notification_email (FG-01) cho bước thông báo — migration cột này làm ở #284 (thay đổi đích T4 của CORE_MASTER_DB, LAB-4)"
+        }
+      ],
+      "fixes": [
+        "X-16"
+      ]
+    },
+    {
+      "number": 104,
+      "baseSha": "8013785d01351485",
+      "targetSha": "14a61355abff61a2",
+      "target": "**ID:** `FG08-02` · **Epic:** FG-08 トレーサビリティ・回収 · **Owner (giả định):** BE-2 · **Parent:** #23 (EP-FG-08)\n\n**Mục tiêu:** ROLE-003 sinh thông báo từ case, xin duyệt (người duyệt ≠ người lập), phát hành thành mail xếp hàng đợi và gửi lại cho người nhận thất bại.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** SPEC-YC-149 (INFERRED) · SPEC-YC-530 (INFERRED) · SPEC-YC-249 (INFERRED) · SPEC-YC-250 (INFERRED) · SPEC-YC-251 (INFERRED) · SPEC-YC-252 (INFERRED) · SPEC-YC-253 (INFERRED) · SPEC-YC-315 (INFERRED) · FR-TRC-03 (INFERRED) · F-050 (EXTRACTED)\n**Spec:** `specs/trace-recall/screen-specification/YC_RECALL_NOTICE_SPEC.md` · `specs/trace-recall/function-specifications/RECALL_NOTICE_VERSION_FUNC.md` · `specs/trace-recall/technical-design/TRC_RECALL_CASE_TECH.md §4.5, §4.8` · `specs/system-design/database-design/trace-recall/TRACE_RECALL_DB.md §4.6–4.7` · `specs/system-design/api-design/trace-recall/ (RECALL_NOTICES_*, RECALL_CASES_BY_ID_NOTICES_POST)`\n**PREMISE:** [PR-D-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md) · [PR-A-08](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Bản thông báo DRAFT → PENDING_APPROVAL → APPROVED → ISSUED, bản đã duyệt bất biến, sửa = bản mới\n- Chụp danh sách người nhận (khách đã nhận lô + nội bộ), chặn khi thiếu notification_email\n- Phát hành xếp mail vào mail_outbox qua enqueue_mail, khoá chống gửi trùng; gửi lại cho người 送信失敗\n- Màn YC_RECALL_NOTICE, đường vào từ case ?case=\n\n**Ngoài phạm vi**\n- Hàng đợi mail, SMTP relay, thử lại — #125 (FG10-04) và E-13 outbox/worker\n- Bảng recall_cases — #277 (FG08-01.1)\n\n**Định nghĩa xong (DoD)**\n- [ ] Đủ DoD của 6 con\n- [ ] Một thông báo đi hết DRAFT → ISSUED và mail xếp hàng đợi ở môi trường test\n\n**Phụ thuộc**\n- Chặn bởi: #277 (FG08-01.1), #125 (FG10-04)\n\n**Ghi chú**\n- Phụ thuộc: CORE_MASTER_DB customers.notification_email (FG-01) — migration cột này làm ở #284 (thay đổi đích T4 của CORE_MASTER_DB, LAB-4)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- Phụ thuộc: CORE_MASTER_DB customers.notification_email (FG-01)",
+          "new": "- Phụ thuộc: CORE_MASTER_DB customers.notification_email (FG-01) — migration cột này làm ở #284 (thay đổi đích T4 của CORE_MASTER_DB, LAB-4)"
+        }
+      ],
+      "fixes": [
+        "X-16"
+      ]
+    },
+    {
+      "number": 130,
+      "baseSha": "de21600866d48744",
+      "targetSha": "e22e7c18d28ba078",
+      "target": "**ID:** `FG11-04` · **Epic:** FG-11 認証・権限・監査ログ · **Owner (giả định):** QA-Auto · **Parent:** #26 (EP-FG-11)\n\n**Mục tiêu:** Bảng quyền 42 màn × 8 vai trò luôn khớp nguồn LAB-1; lệch là CI đỏ.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** ADR-0004 (INFERRED)\n**Spec:** `architecture/adr/ADR-0004-generated-role-screen-access.md`\n\n**Phạm vi**\n- gen-screen-access --check chạy trong CI\n- Test luật: ROLE-008 ≥ xem ở mọi dòng có trong ma trận, không bao giờ thao tác\n- Test override: chỉ nâng quyền, có reason + source; sourceMandated cần đủ 4 điều kiện\n\n**Ngoài phạm vi**\n- Xác nhận override với khách (L5-004, L5-012) — job khác\n- Bổ sung 5 dòng ma trận F-066..F-070 — L5-005\n\n**Định nghĩa xong (DoD)**\n- [x] Sửa nguồn LAB-1 mà không chạy lại generator → check đỏ\n- [x] Test 3 nhánh sourceMandated xanh; ROLE-008 operate bị chặn\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Sửa nguồn LAB-1 mà không chạy lại generator → check đỏ",
+          "new": "- [x] Sửa nguồn LAB-1 mà không chạy lại generator → check đỏ"
+        },
+        {
+          "old": "- [ ] Test 3 nhánh sourceMandated xanh; ROLE-008 operate bị chặn",
+          "new": "- [x] Test 3 nhánh sourceMandated xanh; ROLE-008 operate bị chặn"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 168,
+      "baseSha": "caa27a7d59e23e11",
+      "targetSha": "c008ba31e849ccb5",
+      "target": "**ID:** `E15-01` · **Epic:** E-15 顧客確認 · **Owner (giả định):** BrSE · **Parent:** #30 (EP-E-15)\n\n**Mục tiêu:** Khách xác nhận ảnh khi kiểm hàng nhập là bắt buộc để sửa lại story LAB-1 cho khớp code và RFP.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-002 (EXTRACTED)\n**Spec:** `specs/_common/deviation-table.md (DEV-005, L5-002)`\n**PREMISE:** [PR-D-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md) · [PR-A-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Hỏi: ảnh kiểm hàng nhập có bắt buộc không, không ngoại lệ nào?\n- Nếu xác nhận: sửa story-E-02-S02 dòng 67 (tài liệu LAB-1)\n- Trong lúc chờ: giữ theo code (photo_path not null, đúng RFP), theo DEV-005.\n\n**Ngoài phạm vi**\n- Sửa code — thuộc issue ở mục affects\n\n**Định nghĩa xong (DoD)**\n- [ ] Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại\n- [ ] Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại\n\n**Phụ thuộc**\n- Issue bị ảnh hưởng: #31 (FG02-01)\n\n**Ghi chú**\n- Ảnh hưởng: #31 (DEV-005)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- Ảnh hưởng: DEV-005",
+          "new": "- Ảnh hưởng: #31 (DEV-005)"
+        }
+      ],
+      "fixes": [
+        "X-16"
+      ]
+    },
+    {
+      "number": 169,
+      "baseSha": "83cbd6f3f197a10c",
+      "targetSha": "3f1160a1548f83b5",
+      "target": "**ID:** `E15-02` · **Epic:** E-15 顧客確認 · **Owner (giả định):** BrSE · **Parent:** #30 (EP-E-15)\n\n**Mục tiêu:** Khách xác nhận vai nào được thao tác màn nạp CSV nhiệt (temp-import) hiện đang là giả định.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-004 (EXTRACTED)\n**Spec:** `specs/_common/deviation-table.md (DEV-011, L5-004)` · `docs/screen-access-overrides.json (theo DEV-011)`\n**PREMISE:** [PR-D-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md) · [PR-A-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Hỏi: vai trò nào được nạp / sửa nạp logger; 5 màn システム実行 có ai thao tác tay không\n- Trong lúc chờ: giữ quyền theo override đã duyệt 26/9 (ADR-0004), theo DEV-011.\n\n**Ngoài phạm vi**\n- Sửa code — thuộc issue ở mục affects\n\n**Định nghĩa xong (DoD)**\n- [ ] Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại\n- [ ] Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại\n\n**Phụ thuộc**\n- Issue bị ảnh hưởng: #56 (FG07-03)\n\n**Ghi chú**\n- Ảnh hưởng: #56 (DEV-011)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- Ảnh hưởng: DEV-011",
+          "new": "- Ảnh hưởng: #56 (DEV-011)"
+        }
+      ],
+      "fixes": [
+        "X-16"
+      ]
+    },
+    {
+      "number": 170,
+      "baseSha": "2f497d5523ffff8c",
+      "targetSha": "d39017b1a1f51d52",
+      "target": "**ID:** `E15-04` · **Epic:** E-15 顧客確認 · **Owner (giả định):** BrSE · **Parent:** #30 (EP-E-15)\n\n**Mục tiêu:** Ma trận vai trò × chức năng của LAB-1 đủ 70 chức năng.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-005 (EXTRACTED)\n**Spec:** `specs/_common/deviation-table.md (DEV-012, L5-005)`\n**PREMISE:** [PR-D-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md) · [PR-A-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Yêu cầu bổ sung dòng ma trận cho F-066..F-070 vào role-list (không sửa bản chụp lab1-source)\n- Trong lúc chờ: quyền theo giả định A-7 (print agent), A-8 và A-20 của LAB-4.\n\n**Ngoài phạm vi**\n- Sửa bản chụp lab1-source/ — không làm\n\n**Định nghĩa xong (DoD)**\n- [ ] Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại\n- [ ] Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại\n\n**Phụ thuộc**\n- Issue bị ảnh hưởng: #33 (FG02-03)\n\n**Ghi chú**\n- Ảnh hưởng: #33 (DEV-012)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- Ảnh hưởng: DEV-012",
+          "new": "- Ảnh hưởng: #33 (DEV-012)"
+        }
+      ],
+      "fixes": [
+        "X-16"
+      ]
+    },
+    {
+      "number": 172,
+      "baseSha": "fa875243137863ad",
+      "targetSha": "5f4e6298e4e3baa7",
+      "target": "**ID:** `E15-06` · **Epic:** E-15 顧客確認 · **Owner (giả định):** BrSE · **Parent:** #30 (EP-E-15)\n\n**Mục tiêu:** Khách xác nhận ROLE-003 có quyền ở claim-detail / claim-list để bỏ đánh dấu ngoại lệ.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-012 (EXTRACTED)\n**Spec:** `specs/_common/deviation-table.md (DEV-035, L5-012)` · `specs/_common/role-screen-matrix.md`\n**PREMISE:** [PR-D-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md) · [PR-A-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Hỏi: đổi ô ma trận ROLE-003 × F-036 sang ✅?\n- Nếu xác nhận: sửa role-list LAB-1, bỏ ‡ ngoại lệ\n- Trong lúc chờ: giữ override sourceMandated và RPC add_claim_event hiện có, theo DEV-035.\n\n**Ngoài phạm vi**\n- Sửa code — thuộc issue ở mục affects\n\n**Định nghĩa xong (DoD)**\n- [ ] Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại\n- [ ] Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại\n\n**Phụ thuộc**\n- Issue bị ảnh hưởng: #33 (FG02-03)\n\n**Ghi chú**\n- Ảnh hưởng: #33 (DEV-035)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- Ảnh hưởng: DEV-035",
+          "new": "- Ảnh hưởng: #33 (DEV-035)"
+        }
+      ],
+      "fixes": [
+        "X-16"
+      ]
+    },
+    {
+      "number": 175,
+      "baseSha": "38793dad577882be",
+      "targetSha": "d88737d9a370205b",
+      "target": "**ID:** `E15-09` · **Epic:** E-15 顧客確認 · **Owner (giả định):** BrSE · **Parent:** #30 (EP-E-15)\n\n**Mục tiêu:** Master vị trí có sức chứa và thiết bị thật thay giá trị seed cố định.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-027 (INFERRED)\n**Spec:** `specs/_common/deviation-table.md (MOCK-15, L5-027)`\n**PREMISE:** [PR-D-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md) · [PR-A-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Hỏi: sức chứa, thiết bị từng vị trí — đo đạc hoặc xuất từ WMS của khách\n- Trong lúc chờ: dùng seed cố định theo khu vực (1000 / 600 / 800, cách ly 100), theo MOCK-15.\n\n**Ngoài phạm vi**\n- Sửa code — thuộc issue ở mục affects\n\n**Định nghĩa xong (DoD)**\n- [ ] Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại\n- [ ] Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại\n\n**Phụ thuộc**\n- Issue bị ảnh hưởng: #146 (E15-FG12-01)\n\n**Ghi chú**\n- Ảnh hưởng: #146 (MOCK-15)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- Ảnh hưởng: MOCK-15",
+          "new": "- Ảnh hưởng: #146 (MOCK-15)"
+        }
+      ],
+      "fixes": [
+        "X-16"
+      ]
+    },
+    {
+      "number": 176,
+      "baseSha": "cf56be326eb3ca8f",
+      "targetSha": "3d245605203bd410",
+      "target": "**ID:** `E15-10` · **Epic:** E-15 顧客確認 · **Owner (giả định):** BrSE · **Parent:** #30 (EP-E-15)\n\n**Mục tiêu:** Luật haccp_cadence dùng giá trị đã audit của khách và đặt source_verified = true.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-028 (INFERRED)\n**Spec:** `specs/_common/deviation-table.md (MOCK-16, L5-028)`\n**PREMISE:** [PR-D-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md) · [PR-A-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Hỏi: tần suất / ca vệ sinh bắt buộc và chu kỳ review HACCP đã audit\n- Trong lúc chờ: dùng bản seed (AM, PM) trong rule_versions, source_verified = false.\n\n**Ngoài phạm vi**\n- Sửa code — thuộc issue ở mục affects\n\n**Định nghĩa xong (DoD)**\n- [ ] Câu hỏi đã gửi (giả lập), ghi ngày gửi và ngày hỏi lại\n- [ ] Khi khách trả lời: ghi vào spec hoặc PREMISE, đổi tham số nếu cần, đóng issue; còn chờ thì để Blocked kèm ngày hỏi lại\n\n**Phụ thuộc**\n- Issue bị ảnh hưởng: #59 (FG07-06)\n\n**Ghi chú**\n- Ảnh hưởng: #59 (MOCK-16)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- Ảnh hưởng: MOCK-16",
+          "new": "- Ảnh hưởng: #59 (MOCK-16)"
+        }
+      ],
+      "fixes": [
+        "X-16"
+      ]
+    },
+    {
+      "number": 181,
+      "baseSha": "7e1a041c2194a486",
+      "targetSha": "3db857af29b10434",
+      "target": "**ID:** `FG02-13` · **Epic:** FG-02 入荷・検品・ロット生成 · **Owner (giả định):** FE-1 · **Parent:** #17 (EP-FG-02)\n\n**Mục tiêu:** Ô 受入数量 để trống không còn bị gửi thành 0 mà bị chặn ngay trên form (cùng lớp lỗi GAP-17).\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** GAP-L5-04 (INFERRED) · L5-045 (INFERRED)\n**Spec:** `specs/receiving/screen-specification/YC_RECEIVING_INSPECTION_SPEC.md §4 (D-2 receivedQty)` · `specs/_common/deviation-table.md (GAP-16, GAP-17, L5-045)`\n**PREMISE:** [PR-A-08](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md) · [PR-A-10](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Form kiểm hàng dùng parseNumberInput cho receivedQty; ô trống hoặc không phải số nguyên dương hiện lỗi trên ô, không gọi API\n- Thông báo lỗi tiếng Nhật theo mẫu của ô 実測温度 (D-6)\n- Mở rộng test quét tĩnh no-blank-*-to-zero sang receivedQty\n\n**Ngoài phạm vi**\n- Ô countedQty ở kiểm kê — #48 (FG03-03) (L5-045)\n- Chặn 0 ở RPC record_inspection khi gọi thẳng — #194 (FG02-16)\n\n**Định nghĩa xong (DoD)**\n- [x] Test component: ô trống → lỗi trên form, không gọi API\n- [x] Test quét tĩnh đỏ nếu receivedQty dùng Number() trực tiếp\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Test component: ô trống → lỗi trên form, không gọi API",
+          "new": "- [x] Test component: ô trống → lỗi trên form, không gọi API"
+        },
+        {
+          "old": "- [ ] Test quét tĩnh đỏ nếu receivedQty dùng Number() trực tiếp",
+          "new": "- [x] Test quét tĩnh đỏ nếu receivedQty dùng Number() trực tiếp"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 202,
+      "baseSha": "2c6a6ae6e90c40f5",
+      "targetSha": "a1bdc5ce5abdf471",
+      "target": "**ID:** `FG02-07.1` · **Epic:** FG-02 入荷・検品・ロット生成 · **Owner (giả định):** BE-1 · **Parent:** #37 (FG02-07)\n\n**Mục tiêu:** RPC từ chối mọi vai khác ROLE-003.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-064 (INFERRED)\n**Spec:** `specs/system-design/api-design/receiving/TEMP_ZONE_TICKETS_BY_ID_APPROVE_POST_API.md`\n\n**Phạm vi**\n- Đổi has_role thành ROLE-003\n- Giữ chặn người duyệt = người lập\n- Cập nhật API spec và ma trận quyền\n\n**Định nghĩa xong (DoD)**\n- [x] Assert SQL: ROLE-001 duyệt → 42501; ROLE-003 khác người lập → thành công\n- [x] Tự duyệt vẫn bị chặn\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Assert SQL: ROLE-001 duyệt → 42501; ROLE-003 khác người lập → thành công",
+          "new": "- [x] Assert SQL: ROLE-001 duyệt → 42501; ROLE-003 khác người lập → thành công"
+        },
+        {
+          "old": "- [ ] Tự duyệt vẫn bị chặn",
+          "new": "- [x] Tự duyệt vẫn bị chặn"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 210,
+      "baseSha": "cd9e09ee12c86c3e",
+      "targetSha": "6e4efb26737370ef",
+      "target": "**ID:** `FG02-10.7` · **Epic:** FG-02 入荷・検品・ロット生成 · **Owner (giả định):** Design · **Parent:** #40 (FG02-10)\n\n**Mục tiêu:** Có thiết kế UI chi tiết cho màn YC_LOT_LABEL.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** SPEC-YC-130 (INFERRED)\n**Spec:** `specs/_common/wireframe/ia-spec.json (screen lot-label)` · `specs/receiving/screen-specification/YC_LOT_LABEL_SPEC.md §2`\n\n**Phạm vi**\n- Thiết kế bố cục, trạng thái 未発行 / 印刷待ち / 印刷中 / 印刷完了 / 印刷失敗\n- Mẫu xem trước nhãn\n- Kiểm khả năng truy cập\n\n**Định nghĩa xong (DoD)**\n- [x] Bản thiết kế được FE-1 xác nhận khớp Screen Spec\n- [x] Đủ trạng thái lỗi và rỗng\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Bản thiết kế được FE-1 xác nhận khớp Screen Spec",
+          "new": "- [x] Bản thiết kế được FE-1 xác nhận khớp Screen Spec"
+        },
+        {
+          "old": "- [ ] Đủ trạng thái lỗi và rỗng",
+          "new": "- [x] Đủ trạng thái lỗi và rỗng"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 223,
+      "baseSha": "6cded89ab41e7156",
+      "targetSha": "be94328f4d6d804b",
+      "target": "**ID:** `FG03-05.4` · **Epic:** FG-03 在庫・ロケーション・隔離 · **Owner (giả định):** Design · **Parent:** #50 (FG03-05)\n\n**Mục tiêu:** Có thiết kế UI cho màn YC_INVENTORY_MOVE phù hợp thao tác ở dock.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** SPEC-YC-133 (INFERRED)\n**Spec:** `specs/_common/wireframe/ia-spec.json (screen inventory-move)` · `specs/inventory/screen-specification/YC_INVENTORY_MOVE_SPEC.md §2`\n\n**Phạm vi**\n- Bố cục khối ghi và sổ lịch sử\n- Số to, nút ≥ 44px, đường quay lại\n- Trạng thái lỗi, rỗng\n\n**Định nghĩa xong (DoD)**\n- [x] Bản thiết kế được FE-2 xác nhận khớp Screen Spec\n- [x] Đủ trạng thái lỗi và rỗng\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Bản thiết kế được FE-2 xác nhận khớp Screen Spec",
+          "new": "- [x] Bản thiết kế được FE-2 xác nhận khớp Screen Spec"
+        },
+        {
+          "old": "- [ ] Đủ trạng thái lỗi và rỗng",
+          "new": "- [x] Đủ trạng thái lỗi và rỗng"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 255,
+      "baseSha": "0122f374a6979270",
+      "targetSha": "dbad26660732f20d",
+      "target": "**ID:** `FG05-02.6` · **Epic:** FG-05 配送・POD・クレーム · **Owner (giả định):** Design · **Parent:** #82 (FG05-02)\n\n**Mục tiêu:** Màn mới có thiết kế UI cho FE dựng.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-017 (INFERRED)\n**Spec:** `specs/delivery/screen-specification/YC_POD_QUEUE_SPEC.md` · `specs/_common/wireframe/ia-spec.json`\n**PREMISE:** [PR-A-08](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Thiết kế màn theo wireframe và Screen Spec\n- Trạng thái rỗng, lỗi, quá 8 giờ, CONFLICT\n\n**Định nghĩa xong (DoD)**\n- [x] Bản thiết kế được FE-2 và BrSE duyệt\n- [x] Đủ các trạng thái trong Screen Spec\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Bản thiết kế được FE-2 và BrSE duyệt",
+          "new": "- [x] Bản thiết kế được FE-2 và BrSE duyệt"
+        },
+        {
+          "old": "- [ ] Đủ các trạng thái trong Screen Spec",
+          "new": "- [x] Đủ các trạng thái trong Screen Spec"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 282,
+      "baseSha": "5ed7fa8b005fffc5",
+      "targetSha": "a04c43d44808a1de",
+      "target": "**ID:** `FG08-01.6` · **Epic:** FG-08 トレーサビリティ・回収 · **Owner (giả định):** Design · **Parent:** #103 (FG08-01)\n\n**Mục tiêu:** Có thiết kế UI màn recall case để FE dựng.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** SPEC-YC-148 (INFERRED)\n**Spec:** `specs/trace-recall/screen-specification/YC_RECALL_CASE_SPEC.md §2 Layout, assets/` · `specs/_common/wireframe/ia-design.html`\n\n**Phạm vi**\n- Thiết kế danh sách, chi tiết, khối 数量照合, trạng thái từng bước theo wireframe\n- Trạng thái lỗi/trống/đọc-chỉ (ROLE-008)\n\n**Định nghĩa xong (DoD)**\n- [x] Design được BrSE/PM xem và khớp Layout + item của spec\n- [x] Bàn giao FE (Figma hoặc tương đương) trước khi #281 (FG08-01.5) bắt đầu\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Design được BrSE/PM xem và khớp Layout + item của spec",
+          "new": "- [x] Design được BrSE/PM xem và khớp Layout + item của spec"
+        },
+        {
+          "old": "- [ ] Bàn giao FE (Figma hoặc tương đương) trước khi #281 (FG08-01.5) bắt đầu",
+          "new": "- [x] Bàn giao FE (Figma hoặc tương đương) trước khi #281 (FG08-01.5) bắt đầu"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 284,
+      "baseSha": "d05e84994415da25",
+      "targetSha": "e0332a23ec0dbf87",
+      "target": "**ID:** `FG08-02.1` · **Epic:** FG-08 トレーサビリティ・回収 · **Owner (giả định):** BE-2 · **Parent:** #104 (FG08-02)\n\n**Mục tiêu:** Có bảng phiên bản và người nhận với trạng thái gửi theo từng người.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** SPEC-YC-315 (INFERRED) · SPEC-YC-149 (INFERRED)\n**Spec:** `specs/system-design/database-design/trace-recall/TRACE_RECALL_DB.md §4.6–4.7`\n\n**Phạm vi**\n- Migration 2 bảng, unique (case, version), cột người lập/người duyệt/ISSUED\n- Bảng recipients giữ chụp người nhận và trạng thái gửi theo người\n- RLS như 5 bảng recall\n- Migration cột `customers.notification_email` (CORE_MASTER_DB thay đổi đích T4 của LAB-4) — #103, #104 đọc cột này để gửi thông báo\n\n**Định nghĩa xong (DoD)**\n- [ ] Migration chạy dev → test\n- [ ] Assert SQL: bản đã duyệt không UPDATE được, unique version\n\n**Phụ thuộc**\n- Chặn bởi: #277 (FG08-01.1)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": null,
+          "new": "- Migration cột `customers.notification_email` (CORE_MASTER_DB thay đổi đích T4 của LAB-4) — #103, #104 đọc cột này để gửi thông báo"
+        }
+      ],
+      "fixes": [
+        "X-16"
+      ]
+    },
+    {
+      "number": 288,
+      "baseSha": "c79072ce33cf9f81",
+      "targetSha": "2b7b01487c925c3d",
+      "target": "**ID:** `FG08-02.5` · **Epic:** FG-08 トレーサビリティ・回収 · **Owner (giả định):** Design · **Parent:** #104 (FG08-02)\n\n**Mục tiêu:** Có thiết kế UI màn thông báo thu hồi.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** SPEC-YC-149 (INFERRED)\n**Spec:** `specs/trace-recall/screen-specification/YC_RECALL_NOTICE_SPEC.md §2 Layout, assets/` · `specs/_common/wireframe/ia-design.html`\n\n**Phạm vi**\n- Thiết kế soạn/duyệt/phát hành, bảng người nhận với trạng thái gửi\n- Trạng thái lỗi, bản đã duyệt chỉ đọc\n\n**Định nghĩa xong (DoD)**\n- [x] Design khớp Layout và item của spec\n- [x] Bàn giao FE trước khi #287 (FG08-02.4) bắt đầu\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Design khớp Layout và item của spec",
+          "new": "- [x] Design khớp Layout và item của spec"
+        },
+        {
+          "old": "- [ ] Bàn giao FE trước khi #287 (FG08-02.4) bắt đầu",
+          "new": "- [x] Bàn giao FE trước khi #287 (FG08-02.4) bắt đầu"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 318,
+      "baseSha": "e6d0d52d7fbf3405",
+      "targetSha": "35935d19c125efb2",
+      "target": "**ID:** `FG10-01.4` · **Epic:** FG-10 外部インターフェース · **Owner (giả định):** Design · **Parent:** #122 (FG10-01)\n\n**Mục tiêu:** Có thiết kế UI màn monitor tích hợp.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** SPEC-YC-154 (INFERRED)\n**Spec:** `specs/administration/screen-specification/YC_INTEGRATION_MONITOR_SPEC.md §2 Layout, assets/` · `specs/_common/wireframe/ia-design.html`\n\n**Phạm vi**\n- Thiết kế bảng 4 kết nối, chi tiết job, trạng thái 要対応/RETRY_WAIT/FAILED_FINAL\n\n**Định nghĩa xong (DoD)**\n- [x] Design khớp Layout và item của spec\n- [x] Bàn giao FE trước khi #317 (FG10-01.3) bắt đầu\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Design khớp Layout và item của spec",
+          "new": "- [x] Design khớp Layout và item của spec"
+        },
+        {
+          "old": "- [ ] Bàn giao FE trước khi #317 (FG10-01.3) bắt đầu",
+          "new": "- [x] Bàn giao FE trước khi #317 (FG10-01.3) bắt đầu"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 349,
+      "baseSha": "131dcbcbc9d2dc63",
+      "targetSha": "b3a79116cdd97fc5",
+      "target": "**ID:** `FG11-09.1` · **Epic:** FG-11 認証・権限・監査ログ · **Owner (giả định):** BrSE · **Parent:** #135 (FG11-09)\n\n**Mục tiêu:** Có danh sách cạnh được chọn, kèm lý do, trước khi FE nối link.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-042 (INFERRED)\n**Spec:** `specs/_common/deviation-table.md (GAP-13)` · `docs/design/wireframe/ia-spec.json (transitions, trong repo prototype)`\n\n**Phạm vi**\n- Rà 19 cạnh, chọn cạnh cần cho vận hành, ghi cạnh bỏ kèm lý do\n- Ghi kết quả vào spec các màn liên quan\n\n**Định nghĩa xong (DoD)**\n- [x] Danh sách chốt, FE-1 xác nhận đã đọc\n- [x] Mỗi cạnh có trạng thái nối / bỏ + lý do\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Danh sách chốt, FE-1 xác nhận đã đọc",
+          "new": "- [x] Danh sách chốt, FE-1 xác nhận đã đọc"
+        },
+        {
+          "old": "- [ ] Mỗi cạnh có trạng thái nối / bỏ + lý do",
+          "new": "- [x] Mỗi cạnh có trạng thái nối / bỏ + lý do"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 350,
+      "baseSha": "61d11ebae604fa32",
+      "targetSha": "0d4fac72f35eacad",
+      "target": "**ID:** `FG11-09.2` · **Epic:** FG-11 認証・権限・監査ログ · **Owner (giả định):** FE-1 · **Parent:** #135 (FG11-09)\n\n**Mục tiêu:** Đăng nhập xong người dùng vào đúng màn chính của vai trò.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** L5-042 (INFERRED)\n**Spec:** `specs/administration/screen-specification/YC_LOGIN_SPEC.md (Landing theo vai trò)` · `specs/administration/technical-design/ADM_SSO_LOGIN_TECH.md §4.4`\n**PREMISE:** [PR-A-08](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Bảng vai trò → màn: ROLE-006 → order-list, ROLE-001 → receiving-appointment, ROLE-007 → master-sku, ROLE-008 → audit-log, ROLE-002 → location-status\n- Áp khi next là / ở login Server Action; callback gọi cùng hàm\n\n**Định nghĩa xong (DoD)**\n- [x] Unit test mỗi vai trò có landing; vai trò không có dòng → menu /\n- [x] next hợp lệ khác / vẫn thắng landing\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Unit test mỗi vai trò có landing; vai trò không có dòng → menu /",
+          "new": "- [x] Unit test mỗi vai trò có landing; vai trò không có dòng → menu /"
+        },
+        {
+          "old": "- [ ] next hợp lệ khác / vẫn thắng landing",
+          "new": "- [x] next hợp lệ khác / vẫn thắng landing"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 369,
+      "baseSha": "0b7763606dd82af9",
+      "targetSha": "a67d888812e1d409",
+      "target": "**ID:** `E13-01.2` · **Epic:** E-13 外部連携基盤 · **Owner (giả định):** BE-1 · **Parent:** #148 (E13-01)\n\n**Mục tiêu:** Chứng minh JWT role idp_sync_agent qua PostgREST chỉ gọi được sync_profile_from_idp và khoá ký riêng cấp / thu hồi được trên gói Supabase thật.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** ADR-0009 (INFERRED) · ADR-0007 (INFERRED)\n**Spec:** `architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md §7 điểm 4–5` · `architecture/target-architecture.md §2`\n**PREMISE:** [PR-D-03](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Tạo role nologin, cấp cho authenticator, chỉ EXECUTE sync_profile_from_idp\n- Ký JWT bằng khoá riêng, thử gọi RPC khác và bảng → phải bị từ chối\n- Thử cấp và thu hồi khoá ký trên gói Supabase dùng thật\n\n**Ngoài phạm vi**\n- Role job_worker — #149 (E13-02) (dùng chung kết quả điểm 5)\n\n**Định nghĩa xong (DoD)**\n- [x] Assert SQL / HTTP: gọi đúng 1 RPC thành công, mọi RPC và bảng khác bị từ chối\n- [x] Thu hồi khoá làm JWT cũ hết hiệu lực, ghi lại các bước\n- [x] Trượt: ghi nhận dừng, không có đường nào dùng service_role\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Assert SQL / HTTP: gọi đúng 1 RPC thành công, mọi RPC và bảng khác bị từ chối",
+          "new": "- [x] Assert SQL / HTTP: gọi đúng 1 RPC thành công, mọi RPC và bảng khác bị từ chối"
+        },
+        {
+          "old": "- [ ] Thu hồi khoá làm JWT cũ hết hiệu lực, ghi lại các bước",
+          "new": "- [x] Thu hồi khoá làm JWT cũ hết hiệu lực, ghi lại các bước"
+        },
+        {
+          "old": "- [ ] Trượt: ghi nhận dừng, không có đường nào dùng service_role",
+          "new": "- [x] Trượt: ghi nhận dừng, không có đường nào dùng service_role"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 371,
+      "baseSha": "df0f459344cde373",
+      "targetSha": "0a1b0cb6eda42b8c",
+      "target": "**ID:** `E13-02.1` · **Epic:** E-13 外部連携基盤 · **Owner (giả định):** BE-1 · **Parent:** #149 (E13-02)\n\n**Mục tiêu:** Role và policy cấp quyền tối thiểu cho route worker.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** ADR-0007 (INFERRED)\n**Spec:** `architecture/adr/ADR-0007-background-worker-pg-cron-pg-net-internal-route.md` · `specs/administration/technical-design/ADM_JOB_WORKER_TECH.md §4.2`\n**PREMISE:** [PR-D-03](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Migration tạo role job_worker nologin, GRANT cho authenticator\n- GRANT EXECUTE chỉ trên RPC worker (claim_integration_job, settle_integration_attempt…)\n- Policy Storage: ghi / xoá theo bucket cần cho ERP, gói xuất, purge\n\n**Ngoài phạm vi**\n- Nội dung RPC worker — #151 (E13-04), #152 (E13-05)\n\n**Định nghĩa xong (DoD)**\n- [x] Migration chạy qua dev → test, forward-only\n- [x] Biến môi trường chứa JWT khai báo trong tài liệu môi trường (không có giá trị thật trong repo)\n\n**Phụ thuộc**\n- Chặn bởi: #369 (E13-01.2)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Migration chạy qua dev → test, forward-only",
+          "new": "- [x] Migration chạy qua dev → test, forward-only"
+        },
+        {
+          "old": "- [ ] Biến môi trường chứa JWT khai báo trong tài liệu môi trường (không có giá trị thật trong repo)",
+          "new": "- [x] Biến môi trường chứa JWT khai báo trong tài liệu môi trường (không có giá trị thật trong repo)"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 383,
+      "baseSha": "3e88dadb76ccc0ab",
+      "targetSha": "24cef5054fd15a65",
+      "target": "**ID:** `E13-06.1` · **Epic:** E-13 外部連携基盤 · **Owner (giả định):** BrSE · **Parent:** #153 (E13-06)\n\n**Mục tiêu:** Khách nhận danh sách rõ việc cần cấp và hạn cần có; có ngày hỏi lại.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** OPS-ENV-01 (INFERRED)\n**Spec:** `architecture/target-architecture.md §3 bảng môi trường` · `architecture/adr/ADR-0009-sso-oidc-entra-id-mfa-role-sync.md §8`\n**PREMISE:** [PR-A-04](https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/PREMISE.md)\n\n**Phạm vi**\n- Danh sách theo giao diện: loại tài khoản, môi trường (test / UAT), hạn cần\n- Ghi rõ Entra: app registration riêng cho từng môi trường, nhóm test\n- Theo dõi ngày hỏi lại (kịch bản cấp trễ 3 ngày)\n\n**Ngoài phạm vi**\n- Câu hỏi làm rõ thiết kế — E15-*\n\n**Định nghĩa xong (DoD)**\n- [x] Bản yêu cầu đã gửi (giả lập), ghi ngày gửi và hạn trả lời\n- [x] Bảng theo dõi từng tài khoản: đã cấp / chưa\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Bản yêu cầu đã gửi (giả lập), ghi ngày gửi và hạn trả lời",
+          "new": "- [x] Bản yêu cầu đã gửi (giả lập), ghi ngày gửi và hạn trả lời"
+        },
+        {
+          "old": "- [ ] Bảng theo dõi từng tài khoản: đã cấp / chưa",
+          "new": "- [x] Bảng theo dõi từng tài khoản: đã cấp / chưa"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 389,
+      "baseSha": "17381f08708df65c",
+      "targetSha": "917dc8c0b2f5e1d5",
+      "target": "**ID:** `E13-06.7` · **Epic:** E-13 外部連携基盤 · **Owner (giả định):** QA-Auto · **Parent:** #153 (E13-06)\n\n**Mục tiêu:** Có file logger mẫu: đúng, lệch hash, thiếu quãng, để test nạp file.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** env:test (INFERRED)\n**Spec:** `architecture/target-architecture.md §5 (IF-LOG-01), §3` · `specs/temperature-quality/function-specifications/LOGGER_FILE_FUNC.md`\n\n**Phạm vi**\n- Fixture hợp lệ, trùng hash, khoảng trống sinh MISSING_READING, dòng sai định dạng\n- Dữ liệu giả, không dùng dữ liệu thật\n\n**Ngoài phạm vi**\n- Nạp dữ liệu logger thật — FG-12 (L5-019)\n\n**Định nghĩa xong (DoD)**\n- [x] Fixture nằm trong repo, mỗi file có mô tả kỳ vọng\n- [x] Test nạp ở FG-07 dùng lại được\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Fixture nằm trong repo, mỗi file có mô tả kỳ vọng",
+          "new": "- [x] Fixture nằm trong repo, mỗi file có mô tả kỳ vọng"
+        },
+        {
+          "old": "- [ ] Test nạp ở FG-07 dùng lại được",
+          "new": "- [x] Test nạp ở FG-07 dùng lại được"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 392,
+      "baseSha": "06b52409c45ee181",
+      "targetSha": "1978b5d0bebe30a9",
+      "target": "**ID:** `E14-01.1` · **Epic:** E-14 環境・運用基盤 · **Owner (giả định):** Infra · **Parent:** #155 (E14-01)\n\n**Mục tiêu:** Hạ tầng 4 môi trường tồn tại và tách nhau.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** OPS-ENV-01 (INFERRED) · ADR-0001 (INFERRED) · env:dev (INFERRED) · env:test (INFERRED) · env:UAT (INFERRED) · env:prod (INFERRED)\n**Spec:** `architecture/target-architecture.md §3` · `architecture/adr/ADR-0001-supabase-tokyo-and-vercel-hnd1.md`\n\n**Phạm vi**\n- Tạo project Supabase ap-northeast-1 và môi trường Vercel regions hnd1 cho từng môi trường\n- Domain / URL và redirect URI /auth/callback riêng từng môi trường\n- Ghi bảng môi trường vào tài liệu vận hành\n\n**Ngoài phạm vi**\n- Secret và Vault — #393 (E14-01.2)\n\n**Định nghĩa xong (DoD)**\n- [x] Mỗi môi trường mở được trang đăng nhập ở URL riêng\n- [x] Bảng môi trường khớp TA §3\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Mỗi môi trường mở được trang đăng nhập ở URL riêng",
+          "new": "- [x] Mỗi môi trường mở được trang đăng nhập ở URL riêng"
+        },
+        {
+          "old": "- [ ] Bảng môi trường khớp TA §3",
+          "new": "- [x] Bảng môi trường khớp TA §3"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 393,
+      "baseSha": "b76521c319798fc3",
+      "targetSha": "b41aaa11ed7bc2db",
+      "target": "**ID:** `E14-01.2` · **Epic:** E-14 環境・運用基盤 · **Owner (giả định):** Infra · **Parent:** #155 (E14-01)\n\n**Mục tiêu:** Mỗi môi trường có bộ secret riêng, xoay được theo runbook.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** OPS-ENV-01 (INFERRED)\n**Spec:** `architecture/target-architecture.md §3`\n\n**Phạm vi**\n- Biến server cho SFTP, SMTP, Entra, JWT các role máy\n- Vault cho URL / secret worker (cùng #378 (E13-04.3))\n- Chặn preview theo nhánh khỏi khoá idp_sync_agent\n\n**Ngoài phạm vi**\n- Giá trị thật của tài khoản thử — #153 (E13-06)\n\n**Định nghĩa xong (DoD)**\n- [x] Quét repo và log CI không thấy secret\n- [x] Preview không đọc được khoá idp_sync_agent (test)\n\n**Phụ thuộc**\n- Chặn bởi: #392 (E14-01.1)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Quét repo và log CI không thấy secret",
+          "new": "- [x] Quét repo và log CI không thấy secret"
+        },
+        {
+          "old": "- [ ] Preview không đọc được khoá idp_sync_agent (test)",
+          "new": "- [x] Preview không đọc được khoá idp_sync_agent (test)"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 394,
+      "baseSha": "dcdcd5f1c194a71b",
+      "targetSha": "0d063326e2e8b968",
+      "target": "**ID:** `E14-01.3` · **Epic:** E-14 環境・運用基盤 · **Owner (giả định):** BE-2 · **Parent:** #155 (E14-01)\n\n**Mục tiêu:** Dev và test có dữ liệu giả đúng quy mô, tái tạo được.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** env:dev (INFERRED) · env:test (INFERRED) · OPS-ENV-01 (INFERRED)\n**Spec:** `architecture/target-architecture.md §3, §4 (NFR-PERF-02)`\n\n**Phạm vi**\n- Seed giả theo fixture R-06 cho dev\n- Bộ sinh dataset khối lượng R-03 (lô 3 năm) cho test\n- Lệnh nạp / làm mới một bước\n\n**Ngoài phạm vi**\n- Dữ liệu thật đã che cho UAT — FG-12\n\n**Định nghĩa xong (DoD)**\n- [x] Nạp lại từ đầu ở dev và test chạy được bằng một lệnh\n- [x] Số dòng dataset R-03 ghi trong README của bộ sinh\n\n**Phụ thuộc**\n- Chặn bởi: #392 (E14-01.1)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Nạp lại từ đầu ở dev và test chạy được bằng một lệnh",
+          "new": "- [x] Nạp lại từ đầu ở dev và test chạy được bằng một lệnh"
+        },
+        {
+          "old": "- [ ] Số dòng dataset R-03 ghi trong README của bộ sinh",
+          "new": "- [x] Số dòng dataset R-03 ghi trong README của bộ sinh"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 398,
+      "baseSha": "5d58acb9118a0517",
+      "targetSha": "797b7cbf688d5a3f",
+      "target": "**ID:** `E14-02.3` · **Epic:** E-14 環境・運用基盤 · **Owner (giả định):** BE-2 · **Parent:** #156 (E14-02)\n\n**Mục tiêu:** Deploy ban ngày không cần dừng hệ thống.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** ADR-0013 (INFERRED) · OPS-ENV-01 (INFERRED)\n**Spec:** `architecture/adr/ADR-0013-bcp-availability-pitr-file-copy.md`\n\n**Phạm vi**\n- Tài liệu quy ước cho BE: đổi schema 3 bước\n- Lint: chặn DROP / đổi kiểu cột phá tương thích trong cùng một migration với code mới\n- Ví dụ một đổi tên cột theo 3 bước\n\n**Ngoài phạm vi**\n- Viết migration của từng FG\n\n**Định nghĩa xong (DoD)**\n- [x] Lint chạy trong CI, có ca xanh và ca đỏ\n- [x] Quy ước ≤ 2 trang, BE-1 / BE-2 đồng ý\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Lint chạy trong CI, có ca xanh và ca đỏ",
+          "new": "- [x] Lint chạy trong CI, có ca xanh và ca đỏ"
+        },
+        {
+          "old": "- [ ] Quy ước ≤ 2 trang, BE-1 / BE-2 đồng ý",
+          "new": "- [x] Quy ước ≤ 2 trang, BE-1 / BE-2 đồng ý"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 400,
+      "baseSha": "991b34c7e3098521",
+      "targetSha": "74218f9c3e4e140a",
+      "target": "**ID:** `E14-03.1` · **Epic:** E-14 環境・運用基盤 · **Owner (giả định):** BE-2 · **Parent:** #157 (E14-03)\n\n**Mục tiêu:** Mọi route dùng chung một cách sinh và truyền correlation ID, không nhận id từ client.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** NFR-OPS-01 (INFERRED) · ADR-0014 (INFERRED)\n**Spec:** `architecture/adr/ADR-0014-observability-correlation-id-structured-logs.md` · `specs/_common/api-conventions.md`\n\n**Phạm vi**\n- Sinh UUID mới mỗi request, bỏ qua header client\n- Đặt vào log, truyền vào RPC, trả ở header phản hồi\n- Màn hiện mã khi báo lỗi\n\n**Ngoài phạm vi**\n- Correlation ID của việc nền — #377 (E13-04.2) (id lần thử)\n\n**Định nghĩa xong (DoD)**\n- [x] Unit test: header client gửi lên bị bỏ qua\n- [x] Mẫu một route ghi → audit_events.correlation_id khớp header\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Unit test: header client gửi lên bị bỏ qua",
+          "new": "- [x] Unit test: header client gửi lên bị bỏ qua"
+        },
+        {
+          "old": "- [ ] Mẫu một route ghi → audit_events.correlation_id khớp header",
+          "new": "- [x] Mẫu một route ghi → audit_events.correlation_id khớp header"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 401,
+      "baseSha": "34f6ff3537d7d495",
+      "targetSha": "ac942d337887d17c",
+      "target": "**ID:** `E14-03.2` · **Epic:** E-14 環境・運用基盤 · **Owner (giả định):** BE-2 · **Parent:** #157 (E14-03)\n\n**Mục tiêu:** Log có đủ trường và không rò dữ liệu.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** NFR-OPS-01 (INFERRED) · nfr:NFR-OPS-01 (INFERRED) · ADR-0014 (INFERRED)\n**Spec:** `architecture/adr/ADR-0014-observability-correlation-id-structured-logs.md (Lựa chọn 2)` · `specs/_common/log-convention.md`\n\n**Phạm vi**\n- Trường ts, level, correlationId, route / jobKind, userId, rpc, durationMs, outcome / code\n- Danh sách cấm: tên, email, ghi chú tự do, token, chữ ký, URL ký, byte tệp\n- Test quét log mẫu\n\n**Ngoài phạm vi**\n- Đích log — #402 (E14-03.3)\n\n**Định nghĩa xong (DoD)**\n- [x] Unit test: chuỗi cấm không xuất hiện trong dòng log\n- [x] Log đo được durationMs của route, RPC, gọi ngoài\n\n**Phụ thuộc**\n- Chặn bởi: #400 (E14-03.1)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Unit test: chuỗi cấm không xuất hiện trong dòng log",
+          "new": "- [x] Unit test: chuỗi cấm không xuất hiện trong dòng log"
+        },
+        {
+          "old": "- [ ] Log đo được durationMs của route, RPC, gọi ngoài",
+          "new": "- [x] Log đo được durationMs của route, RPC, gọi ngoài"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 420,
+      "baseSha": "543505281e7449ca",
+      "targetSha": "a458ca9f39a57db9",
+      "target": "**ID:** `E14-10.1` · **Epic:** E-14 環境・運用基盤 · **Owner (giả định):** QA-Auto · **Parent:** #164 (E14-10)\n\n**Mục tiêu:** Phát hiện lỗi truy cập cơ bản tự động.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** NFR-ACC-01 (INFERRED) · nfr:NFR-ACC-01 (INFERRED)\n**Spec:** `architecture/target-architecture.md §4`\n\n**Phạm vi**\n- Quét từng màn theo danh sách route\n- Báo cáo lỗi theo màn, ngưỡng chặn có thể đặt\n- Chạy trong CI\n\n**Ngoài phạm vi**\n- Đánh giá tay — #421 (E14-10.2)\n\n**Định nghĩa xong (DoD)**\n- [x] Job CI chạy và xuất báo cáo theo màn\n- [x] Cố tình bỏ nhãn một ô thì quét bắt được\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Job CI chạy và xuất báo cáo theo màn",
+          "new": "- [x] Job CI chạy và xuất báo cáo theo màn"
+        },
+        {
+          "old": "- [ ] Cố tình bỏ nhãn một ô thì quét bắt được",
+          "new": "- [x] Cố tình bỏ nhãn một ô thì quét bắt được"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    },
+    {
+      "number": 421,
+      "baseSha": "a1f939fc694bcaeb",
+      "targetSha": "0f240fb9fb925ca5",
+      "target": "**ID:** `E14-10.2` · **Epic:** E-14 環境・運用基盤 · **Owner (giả định):** QA-1 · **Parent:** #164 (E14-10)\n\n**Mục tiêu:** Phần không tự động hoá được có người kiểm và có bằng chứng.\n\n**Nguồn (gói LAB-4 tại `c3cf20d`):** NFR-ACC-01 (INFERRED) · nfr:NFR-ACC-01 (INFERRED)\n**Spec:** `architecture/target-architecture.md §4`\n\n**Phạm vi**\n- Checklist bàn phím, focus, thông báo lỗi, tương phản, màn kho số to và quét trước\n- Chạy thử trên một mẫu màn mỗi FG\n- Mẫu báo cáo kèm bằng chứng\n\n**Ngoài phạm vi**\n- Sửa lỗi — issue của FG\n\n**Định nghĩa xong (DoD)**\n- [x] Checklist và một báo cáo mẫu đã điền cho các màn mẫu\n- [x] Lỗi tìm thấy được ghi thành issue gắn đúng FG\n\n**Phụ thuộc**\n- Chặn bởi: #420 (E14-10.1)\n\n<sub>Sinh từ `data/backlog.json` của repo này; sửa trên Project, không sửa tay file.</sub>",
+      "changes": [
+        {
+          "old": "- [ ] Checklist và một báo cáo mẫu đã điền cho các màn mẫu",
+          "new": "- [x] Checklist và một báo cáo mẫu đã điền cho các màn mẫu"
+        },
+        {
+          "old": "- [ ] Lỗi tìm thấy được ghi thành issue gắn đúng FG",
+          "new": "- [x] Lỗi tìm thấy được ghi thành issue gắn đúng FG"
+        }
+      ],
+      "fixes": [
+        "X-17"
+      ]
+    }
+  ],
+  "comments": [
+    {
+      "issue": 368,
+      "commentId": 6169579381,
+      "baseSha": "98115a28245186b0",
+      "targetSha": "44592f05fb4ccf7d",
+      "target": "**Giả lập Sprint 1 · ngày 6 (2026-12-07)**\n\n- Blocked → Todo: Hết chờ tenant; vẫn chờ #384\n\n<sub>Lịch sử giả lập theo PREMISE PR-A-13 / progress-report.md — không phải việc đã làm thật.</sub>\n<!-- sim:sprint-1:368:6 -->",
+      "changes": [
+        {
+          "old": "- Blocked → Todo: Hết chặn, làm tiếp",
+          "new": "- Blocked → Todo: Hết chờ tenant; vẫn chờ #384"
+        }
+      ]
+    }
+  ]
+}

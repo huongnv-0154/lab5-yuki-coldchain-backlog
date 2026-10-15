@@ -3,7 +3,8 @@
 // theo thứ tự trong data/sprint-plan.json; issue chỉ bắt đầu khi mọi lá chặn nó đã Done. Câu hỏi E-15: làm xong phần gửi → Blocked chờ
 // khách (PR-A-04: khách chưa trả lời trong Sprint 1), hỏi lại sau 3 ngày làm việc (sự kiện followup, vẫn Blocked).
 // Sự kiện lệch lấy từ data/sprint-1-scenario.json:
-//   block   { ids, fromDay, toDay, note } — không làm được (Blocked) trong các ngày đó
+//   block   { ids, fromDay, toDay, note, resumeNote } — không làm được (Blocked) trong các ngày đó; resumeNote là lý do hết chặn
+//           ghi ở sự kiện quay lại (nếu issue còn chờ lá chặn khác, thêm "; vẫn chờ #n")
 //   reopen  { id, day, reworkRatio, note } — issue đã Done mở lại, thêm giờ sửa = ratio × giờ ước
 //   carry   { id, day, note }              — chuyển sang sprint sau cuối ngày đó (rời phạm vi, vẫn In Progress)
 // Ra: data/sprint-1-log.json (mọi lần đổi trạng thái / sprint / hỏi lại theo ngày, trạng thái cuối kèm giờ còn lại,
@@ -40,6 +41,11 @@ const isQuestion = (l) => l.epicId === 'E-15';
 const activeBlock = (l, day) => scenario.block.find((b) => b.ids.includes(l.id) && day >= b.fromDay && day <= b.toDay);
 const blockedToday = (l, day) => Boolean(activeBlock(l, day));
 const depsDone = (l) => l.blockers.every((n) => state.get(n)?.status === 'Done');
+const resumeNote = (l) => {
+  const waiting = l.blockers.filter((n) => state.get(n)?.status !== 'Done');
+  const why = scenario.block.find((b) => b.ids.includes(l.id)).resumeNote;
+  return waiting.length ? `${why}; vẫn chờ ${waiting.map((n) => `#${n}`).join(', ')}` : `${why}, làm tiếp`;
+};
 const focusFactor = Number(args.focus ?? cfg.focusFactor ?? 1);
 const dailyHours = Object.fromEntries(Object.entries(cfg.roleHoursPerSprint).map(([r, h]) => [r, (h / days.length) * focusFactor]));
 for (const e of [...scenario.reopen, ...scenario.carry]) need(e.id);
@@ -73,7 +79,7 @@ for (let day = 1; day <= days.length; day++) {
     if (s.sprint !== SPRINT || s.status === 'Done' || isQuestion(l)) continue;
     const block = activeBlock(l, day);
     if (block) move(l, day, 'Blocked', block.note);
-    else if (s.status === 'Blocked') move(l, day, s.left < l.hours ? 'In Progress' : 'Todo', 'Hết chặn, làm tiếp');
+    else if (s.status === 'Blocked') move(l, day, s.left < l.hours ? 'In Progress' : 'Todo', resumeNote(l));
   }
   for (const [role, hours] of Object.entries(dailyHours)) {
     let free = hours;

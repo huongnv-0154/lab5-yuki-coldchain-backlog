@@ -450,7 +450,7 @@
       "id": "E13-06.2",
       "from": "Blocked",
       "to": "Todo",
-      "note": "Hết chặn, làm tiếp"
+      "note": "Hết chờ tenant, làm tiếp"
     },
     {
       "day": 6,
@@ -459,7 +459,7 @@
       "id": "E13-01.1",
       "from": "Blocked",
       "to": "Todo",
-      "note": "Hết chặn, làm tiếp"
+      "note": "Hết chờ tenant; vẫn chờ #384"
     },
     {
       "day": 6,

@@ -1,0 +1,31 @@
+{
+ "note": "Độ nhạy của kết quả Sprint 1 theo focus (phần giờ dành cho issue). Mỗi lần chạy dùng đủ 3 sự kiện của data/sprint-1-scenario.json; script chỉ có --focus và --dry-run, không bật / tắt từng sự kiện được. --dry-run không ghi file (đã kiểm: shasum data/sprint-1-log.json và data/sprint-1-burndown.json giống trước và sau). Kết quả chép nguyên từ dòng tóm tắt script in ra, chạy ngày 2026-10-15.",
+ "runs": [
+  {
+   "command": "node scripts/simulate-sprint.mjs --dry-run --focus 1.0",
+   "focus": 1,
+   "exitCode": 1,
+   "output": "Error: FG05-02.4 đã Done ở ngày 9, không chuyển sprint được",
+   "reading": "Ở 100% giờ, #253 (FG05-02.4) đã Done trước ngày 9 nên sự kiện chuyển sang Sprint 2 không xảy ra được; không có % Done cho tổ hợp này."
+  },
+  {
+   "command": "node scripts/simulate-sprint.mjs --dry-run --focus 0.9",
+   "focus": 0.9,
+   "exitCode": 0,
+   "output": "Sprint 1: phạm vi cuối 44 issue / 129 SWP — Done 32 (100 SWP, 78%), In Progress 5, Blocked 5, Todo 2; 92 sự kiện; giờ rảnh BE-1 6.3, FE-2 2.43, QA-1 19.8, BrSE 0.3",
+   "doneSWP": 100,
+   "scopeSWP": 129,
+   "donePercent": 78
+  },
+  {
+   "command": "node scripts/simulate-sprint.mjs --dry-run --focus 0.8",
+   "focus": 0.8,
+   "exitCode": 0,
+   "output": "Sprint 1: phạm vi cuối 44 issue / 129 SWP — Done 28 (90 SWP, 70%), In Progress 6, Blocked 5, Todo 5; 85 sự kiện; giờ rảnh BE-1 3.6, FE-2 2.16, QA-1 17.1",
+   "doneSWP": 90,
+   "scopeSWP": 129,
+   "donePercent": 70
+  }
+ ],
+ "notReproduced": "Các số 88% (100% giờ, chỉ giữ sự kiện tenant trễ) và 65% (80% giờ, chỉ giữ sự kiện tenant trễ) từng ghi trong báo cáo cần kịch bản chỉ có một sự kiện; script hiện không có tuỳ chọn đó nên không tái lập được từ repo."
+}
