@@ -1,5 +1,5 @@
 {
- "note": "Cấu hình giả lập Sprint (DR-07, PREMISE PR-A-13). Năng lực: 34 MD/sprint (PR-A-02) chia đều 10 người theo vai (PR-A-03) → 27 giờ/người/sprint; PM không nhận issue lá. Câu hỏi E-15 tính vào giờ của BrSE. pinned: chuỗi đường găng nhận trước mọi ưu tiên khác (môi trường → yêu cầu tài khoản thử → tenant Entra thử → spike PoC SSO, ADR-0009). focusFactor: giả lập chỉ dùng 80% giờ danh nghĩa cho issue (họp, review, khởi động sprint đầu); kế hoạch vẫn lập theo giờ danh nghĩa.",
+ "note": "Cấu hình giả lập Sprint (DR-07, PREMISE PR-A-13). Năng lực: 34 MD/sprint (PR-A-02) chia đều 10 người theo vai (PR-A-03) → 27 giờ/người/sprint; PM không nhận issue lá. Câu hỏi E-15 tính vào giờ của BrSE. pinned: chuỗi đường găng nhận trước mọi ưu tiên khác (môi trường → yêu cầu tài khoản thử → tenant Entra thử → spike PoC SSO, ADR-0009). focusFactor: giả lập chỉ dùng 80% giờ danh nghĩa cho issue (phần còn lại cho họp sprint, trao đổi, chờ phụ thuộc — việc không nằm trong giờ issue); kế hoạch vẫn lập theo giờ danh nghĩa.",
  "sprints": {
   "Sprint 1": {
    "start": "2026-11-30",
@@ -80,7 +80,7 @@
   "M-09": "2027-06-28"
  },
  "lab1Staffing": {
-  "source": "LAB-1 project/01_management/schedule.md, bảng 要員計画 (役割別・月別, MD) ở cuối §3 — chép các tháng 26-12 … 27-04. Cả bảng 26-10 … 27-06 là 648,8 MD, chưa gồm buffer lịch PJ.92 của estimate LAB-1.",
+  "source": "LAB-1 project/01_management/schedule.md, bảng 要員計画 (役割別・月別, MD) ở cuối §3 — chép các tháng 26-12 … 27-06 (hết bảng; sau 2027-06 không còn kế hoạch nhân sự nên dự báo dừng ở 2027-06-30). Cả bảng 26-10 … 27-06 là 648,8 MD, chưa gồm buffer lịch PJ.92 của estimate LAB-1.",
   "workingDays": "Ngày làm việc theo lịch Nhật như LAB-1: nghỉ 土日祝日 và 12/29〜1/3.",
   "unit": "MD",
   "hoursPerMD": 8,
@@ -162,6 +162,26 @@
     "QA (Auto)": 10.4,
     "Infra": 6.4,
     "Design": 0.3
+   },
+   "2027-05": {
+    "Backend": 14,
+    "Frontend": 8.6,
+    "QA (Manual)": 21.8,
+    "PM": 10.1,
+    "BrSE": 8.5,
+    "QA (Auto)": 7.4,
+    "Infra": 6.4,
+    "Design": 0.3
+   },
+   "2027-06": {
+    "Backend": 7.1,
+    "Frontend": 4.3,
+    "QA (Manual)": 9.5,
+    "PM": 9.2,
+    "BrSE": 4.7,
+    "QA (Auto)": 3,
+    "Infra": 4.5,
+    "Design": 0.1
    }
   }
  }

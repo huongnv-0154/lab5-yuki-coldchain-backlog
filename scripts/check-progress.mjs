@@ -53,7 +53,7 @@ if (!rows.length || rows.length > 6) errors.push(`bảng rủi ro có ${rows.len
 const projected = new Set();
 (function collect(v) {
   if (typeof v === 'number') projected.add(Math.abs(v).toFixed(1).replace('.', ','));
-  else if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)) projected.add(v);
+  else if (typeof v === 'string') for (const [d] of v.matchAll(/\d{4}-\d{2}-\d{2}/g)) projected.add(d); // gồm 'sau <ngày>'
   else if (v && typeof v === 'object') Object.values(v).forEach(collect);
 })(readJson('data/milestone-projection.json').runs); // chỉ kết quả dự báo — không lấy ngày lễ / khung thời gian
 for (const [k, row] of rows.entries()) {

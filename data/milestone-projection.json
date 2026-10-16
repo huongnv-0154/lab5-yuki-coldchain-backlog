@@ -16,7 +16,9 @@
     "2027-01": 19,
     "2027-02": 18,
     "2027-03": 22,
-    "2027-04": 21
+    "2027-04": 21,
+    "2027-05": 18,
+    "2027-06": 22
   },
   "holidays": [
     "2027-01-11",
@@ -36,7 +38,7 @@
     "2026-12-29",
     "2027-01-03"
   ],
-  "lastStaffingMonth": "2027-04",
+  "planEnd": "2027-06-30",
   "sprint1Focus": 0.8,
   "hoursPerMD": 8,
   "remaining": {
@@ -69,49 +71,56 @@
         "Backend",
         "QA (Auto)"
       ],
-      "finishDateByRole": "2027-06-09",
+      "finishDateByRole": "sau 2027-06-30",
       "byRole": {
         "Backend": {
           "capacityMD": 105.5,
           "remainingMD": 127.1,
           "marginMD": -21.6,
-          "finishDate": "2027-05-06"
+          "finishDate": "2027-05-07",
+          "shortAtPlanEndMD": 0
         },
         "Frontend": {
           "capacityMD": 67,
           "remainingMD": 35.3,
           "marginMD": 31.7,
-          "finishDate": "2027-02-10"
+          "finishDate": "2027-02-10",
+          "shortAtPlanEndMD": 0
         },
         "QA (Manual)": {
           "capacityMD": 40.5,
           "remainingMD": 0,
           "marginMD": 40.5,
-          "finishDate": null
+          "finishDate": null,
+          "shortAtPlanEndMD": 0
         },
         "QA (Auto)": {
           "capacityMD": 27.4,
           "remainingMD": 49.1,
           "marginMD": -21.7,
-          "finishDate": "2027-06-09"
+          "finishDate": "sau 2027-06-30",
+          "shortAtPlanEndMD": 1.9
         },
         "Infra": {
           "capacityMD": 21.3,
           "remainingMD": 17.4,
           "marginMD": 3.9,
-          "finishDate": "2027-03-15"
+          "finishDate": "2027-03-15",
+          "shortAtPlanEndMD": 0
         },
         "Design": {
           "capacityMD": 5.7,
           "remainingMD": 3.7,
           "marginMD": 2,
-          "finishDate": "2027-01-21"
+          "finishDate": "2027-01-21",
+          "shortAtPlanEndMD": 0
         },
         "BrSE": {
           "capacityMD": 20.2,
           "remainingMD": 15.9,
           "marginMD": 4.3,
-          "finishDate": "2027-03-10"
+          "finishDate": "2027-03-10",
+          "shortAtPlanEndMD": 0
         }
       },
       "codePhase": {
@@ -136,49 +145,56 @@
         "QA (Auto)",
         "Infra"
       ],
-      "finishDateByRole": "2027-07-14",
+      "finishDateByRole": "sau 2027-06-30",
       "byRole": {
         "Backend": {
           "capacityMD": 84.4,
           "remainingMD": 127.1,
           "marginMD": -42.7,
-          "finishDate": "2027-06-17"
+          "finishDate": "sau 2027-06-30",
+          "shortAtPlanEndMD": 9.4
         },
         "Frontend": {
           "capacityMD": 53.6,
           "remainingMD": 35.3,
           "marginMD": 18.3,
-          "finishDate": "2027-02-24"
+          "finishDate": "2027-02-24",
+          "shortAtPlanEndMD": 0
         },
         "QA (Manual)": {
           "capacityMD": 32.4,
           "remainingMD": 0,
           "marginMD": 32.4,
-          "finishDate": null
+          "finishDate": null,
+          "shortAtPlanEndMD": 0
         },
         "QA (Auto)": {
           "capacityMD": 22,
           "remainingMD": 49.1,
           "marginMD": -27.1,
-          "finishDate": "2027-07-14"
+          "finishDate": "sau 2027-06-30",
+          "shortAtPlanEndMD": 11.3
         },
         "Infra": {
           "capacityMD": 17,
           "remainingMD": 17.4,
           "marginMD": -0.4,
-          "finishDate": "2027-04-06"
+          "finishDate": "2027-04-06",
+          "shortAtPlanEndMD": 0
         },
         "Design": {
           "capacityMD": 4.6,
           "remainingMD": 3.7,
           "marginMD": 0.9,
-          "finishDate": "2027-02-09"
+          "finishDate": "2027-02-09",
+          "shortAtPlanEndMD": 0
         },
         "BrSE": {
           "capacityMD": 16.2,
           "remainingMD": 15.9,
           "marginMD": 0.3,
-          "finishDate": "2027-04-01"
+          "finishDate": "2027-04-01",
+          "shortAtPlanEndMD": 0
         }
       },
       "codePhase": {

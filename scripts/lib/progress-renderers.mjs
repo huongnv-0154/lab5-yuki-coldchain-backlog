@@ -10,7 +10,6 @@ const isQuestion = (i) => /^E15-/.test(i.title);
 const ROLE_NAME = { 'QA (Auto)': 'QA tự động', 'QA (Manual)': 'QA thủ công' };
 const roleName = (g) => ROLE_NAME[g] ?? g;
 const pct = (focus) => `${Math.round(focus * 100)}%`;
-const monthVi = (ym) => `${Number(ym.slice(5))}/${ym.slice(0, 4)}`; // '2027-04' → '4/2027'
 const listVi = (xs) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} và ${xs.at(-1)}`);
 
 // Ghi chú: nhóm nhỏ liệt kê số issue; nhóm có câu hỏi khách E-15 thì đếm riêng
@@ -58,15 +57,19 @@ export const progressRenderers = {
       '',
       'Dồn chung mọi vai thì ' + p.runs.map((r) => `${gap(r.marginMD)} ở ${pct(r.focus)} (xong khoảng ${r.finishDatePooled})`).join(', ') + '.',
     ];
+    // Ngày xong theo vai; 'sau <ngày>' = chưa xong khi hết kế hoạch nhân sự → ghi phần còn thiếu lúc đó
+    const done = (v) => (String(v.finishDate).startsWith('sau ')
+      ? `chưa xong khi hết kế hoạch nhân sự ${p.planEnd}, còn thiếu ${num(v.shortAtPlanEndMD)} MD`
+      : `xong khoảng ${v.finishDate}`);
     const short = full.shortRoles.map(roleName);
     if (short.length) {
       const spare = Object.entries(full.byRole).filter(([, v]) => v.marginMD > 0).sort((x, y) => y[1].marginMD - x[1].marginMD)
         .slice(0, 2).map(([g]) => roleName(g));
       lines.push('', `Tách theo vai thì không kịp ngay cả ở ${pct(full.focus)}: `
-        + full.shortRoles.map((g) => `${roleName(g)} ${gap(full.byRole[g].marginMD)} (xong khoảng ${full.byRole[g].finishDate})`).join(', ') + '. '
-        + rest.map((r) => `Ở ${pct(r.focus)}: ${r.shortRoles.map((g) => `${roleName(g)} xong khoảng ${r.byRole[g].finishDate}`).join(', ')}.`).join(' ')
+        + full.shortRoles.map((g) => `${roleName(g)} ${gap(full.byRole[g].marginMD)} (${done(full.byRole[g])})`).join(', ') + '. '
+        + rest.map((r) => `Ở ${pct(r.focus)}: ${r.shortRoles.map((g) => `${roleName(g)} ${done(r.byRole[g])}`).join(', ')}.`).join(' ')
         + ` Phần dư nhiều nhất nằm ở ${listVi(spare)}, không chuyển ngay sang ${listVi(short)} được.`
-        + ` Ngày xong sau tháng ${monthVi(p.lastStaffingMonth)} tính với mức nhân sự tháng ${monthVi(p.lastStaffingMonth)}.`);
+        + ` Kế hoạch nhân sự của bản đề xuất kết thúc ${p.planEnd} nên dự báo dừng ở đó.`);
     }
     // Biến thể chặt hơn: vai viết code phải xong trước khi pha phát triển của bản đề xuất kết thúc
     const cw = p.codePhaseWindow;
