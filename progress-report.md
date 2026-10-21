@@ -38,6 +38,8 @@ Done 28 issue · 90 SWP = 70% phạm vi cuối. Năm issue Blocked đều là c�
 | 10 | 2026-12-11 | 0 | 39 | +39 | 129 |
 <!-- /GENERATED -->
 
+Burndown dựng từ nhật ký của sprint mô phỏng: mỗi thay đổi trong ngày có comment "Giả lập Sprint 1 · ngày N" trên đúng issue, và trạng thái cuối khớp Project (bảng mục 1).
+
 Kịch bản mô phỏng lệch kế hoạch ở bốn chỗ:
 
 1. **Ngày 1–2 gần như đứng yên.** Các việc lớn chạy song song từ ngày 1 — dựng 4 môi trường (#392, 9 giờ) và spike JWT cho PoC SSO (#369, 9 giờ) — chưa việc nào xong trước ngày 5. Burndown chỉ giảm khi issue Done, nên việc lớn ở đầu sprint làm đường đi ngang.
@@ -83,19 +85,3 @@ Ngoài bảng:
 - Một số việc lộ ra sau khi lập backlog (rà prototype và rà thiết kế: kiểm 960 giờ làm thêm mỗi năm, ngày hiệu lực của vị trí và đối tác, dữ liệu vị trí khi chụp POD, 4 lỗi prototype) chưa nằm trong ước lượng: PM tạo issue và ước lượng ở buổi tinh chỉnh đầu Sprint 2 (2026-12-14); phần thiếu năng lực ở dòng rủi ro đầu sẽ lớn thêm tương ứng (danh sách ở estimate.md mục 4).
 - Góc nhìn bảo mật yêu cầu route worker nội bộ #377 chỉ merge khi bộ assert phủ định quyền job_worker (#372) đã Done — ghi vào điều kiện hoàn thành của #377 khi lập lại Sprint 2.
 - Lỗi hồi quy #181 tới tay QA mới lộ, sửa muộn tốn hơn sửa sớm: QA-Auto thêm ca "受入数量 = 0" vào bộ kiểm của #34 ngày 2026-12-14; cổng CI #399 (unit + E2E smoke trước khi merge) xong trong Sprint 2, trước 2026-12-25.
-
-## Ghi chú kỹ thuật (cho người review bài, không gửi khách)
-
-Phần này giữ chi tiết mô hình và nguồn số liệu; thân báo cáo phía trên không cần đến nó để đọc.
-
-<!-- GENERATED:snapshot-time -->
-Bảng §1 sinh từ snapshot Project lúc 2026-10-14T13:37Z.
-<!-- /GENERATED -->
-
-- Chọn issue Sprint 1: `scripts/plan-sprint.mjs` theo năng lực 27 giờ/người/sprint và chuỗi đường găng (PREMISE PR-A-02, PR-A-03, PR-A-13; DR-07). Giả lập: `scripts/simulate-sprint.mjs` với ba sự kiện khai trước trong `data/sprint-1-scenario.json`; tenant cấp trễ theo PR-A-04. Câu hỏi E-15 Blocked khi chờ khách là theo DoD của E-15 (PR-A-04).
-- Hệ số 0,8 (phần giờ dành cho issue) là giả định của mô hình, chưa đo được trên đội thật (PR-A-13). Độ nhạy, lưu kèm lệnh ở `data/sprint-1-sensitivity.json` (luôn đủ ba sự kiện, script không bật / tắt từng sự kiện): 90% → Done 78% (100 / 129 SWP); 80% → Done 70% (90 / 129 SWP); 100% → không chạy được vì #253 Done trước ngày 9 nên không chuyển sprint được. Hai số 88% và 65% ở bản trước (chỉ giữ sự kiện tenant trễ) không tái lập được bằng tuỳ chọn hiện có của script nên đã bỏ.
-- Giờ thực tế trong giả lập bằng giờ ước (trừ phần sửa của #181), nên Sprint 1 chưa kiểm được hệ số giờ k = 1,5 của estimate.md mục 2.
-- Giờ rảnh theo người ở Sprint 1 (`data/sprint-1-log.json`, idleHoursByRole): QA-1 17,1 giờ (backlog gần như không có việc kiểm thủ công, estimate.md mục 4), BE-1 3,6 giờ ngày 9–10 vì #368 phải chờ #384, FE-2 2,2 giờ ngày 10 vì #253 đã chuyển sprint.
-- Rủi ro §3 (trừ dòng dự báo) rút bằng `tkm:predict-risks`, 3 góc nhìn: kiến trúc, bảo mật, phản biện. Dòng câu hỏi khách: giả định có tham số theo PR-D-04, ghi vào PREMISE.
-- Dự báo §3: `scripts/project-milestone-capacity.mjs` → `data/milestone-projection.json` (tất định). Nhân sự theo tháng chép từ bảng 要員計画 của LAB-1 schedule.md vào `data/sprint-config.json` (`lab1Staffing`, có ghi nguồn); ngày lễ Nhật ghi cứng trong script. Việc còn lại = mọi lá trong `data/hours.final.json`: lá Done tính 0, lá Sprint 1 chưa xong tính hoursLeft, lá khác đủ giờ. Không dùng phép chiếu phẳng 139 SWP/sprint vì nhân sự LAB-1 tăng dần từ 68,8 MD (tháng 12) lên 95,4 MD (tháng 3).
-- Phương án thêm người: 2027-01-04 → 2027-04-02 có 61 ngày làm việc; ở 80% mỗi người được 48,8 MD, lớn hơn phần thiếu của Backend (42,7 MD) và QA tự động (27,1 MD).

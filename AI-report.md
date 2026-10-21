@@ -46,9 +46,25 @@ Comment và issue đóng trên GitHub là **lịch sử giả lập** của Spri
 | Bước | Skill / agent | Ra gì |
 |---|---|---|
 | Dự báo tới M-03 | `project-milestone-capacity.mjs` (tất định, không gọi mạng) → `data/milestone-projection.json`; `check-progress.mjs` chặn số MD và ngày ở dòng rủi ro lệch dự báo | Bảng dự báo trong progress-report §3 và dòng rủi ro đầu tiên |
-| Độ nhạy hệ số tập trung | `simulate-sprint.mjs` → `data/sprint-1-sensitivity.json` | Done 78% ở 90%, 70% ở 80%; ở 100% không chạy được (progress-report, ghi chú kỹ thuật) |
+| Độ nhạy hệ số tập trung | `simulate-sprint.mjs` → `data/sprint-1-sensitivity.json` | Done 78% ở 90%, 70% ở 80%; ở 100% không chạy được (mục "Ghi chú kỹ thuật của báo cáo tiến độ" bên dưới) |
 | Vệ sinh issue | `fix-issue-hygiene.mjs`: dry-run ghi kế hoạch ra file tạm `.tmp.json`; `--apply` ghi GitHub và `data/issue-hygiene-fixes.json` | Dry-run lập kế hoạch 38 issue + 1 comment; user duyệt rồi mới chạy `--apply` (2026-10-15: ghi 39 mục, chạy lại dry-run còn 0) |
 | Project public | user quyết; `check-public-access.mjs` | GET không đăng nhập: repo, Project, báo cáo HTML đều 200 (README) |
+
+### Ghi chú kỹ thuật của báo cáo tiến độ
+
+Chi tiết mô hình giả lập và nguồn số liệu của [progress-report.md](progress-report.md), tách ra đây để báo cáo tiến độ gửi được khách nguyên văn.
+
+<!-- GENERATED:snapshot-time -->
+Bảng §1 sinh từ snapshot Project lúc 2026-10-14T13:37Z.
+<!-- /GENERATED -->
+
+- Chọn issue Sprint 1: `scripts/plan-sprint.mjs` theo năng lực 27 giờ/người/sprint và chuỗi đường găng (PREMISE PR-A-02, PR-A-03, PR-A-13; DR-07). Giả lập: `scripts/simulate-sprint.mjs` với ba sự kiện khai trước trong `data/sprint-1-scenario.json`; tenant cấp trễ theo PR-A-04. Câu hỏi E-15 Blocked khi chờ khách là theo DoD của E-15 (PR-A-04).
+- Hệ số 0,8 (phần giờ dành cho issue) là giả định của mô hình, chưa đo được trên đội thật (PR-A-13). Độ nhạy, lưu kèm lệnh ở `data/sprint-1-sensitivity.json` (luôn đủ ba sự kiện, script không bật / tắt từng sự kiện): 90% → Done 78% (100 / 129 SWP); 80% → Done 70% (90 / 129 SWP); 100% → không chạy được vì #253 Done trước ngày 9 nên không chuyển sprint được. Hai số 88% và 65% ở bản trước (chỉ giữ sự kiện tenant trễ) không tái lập được bằng tuỳ chọn hiện có của script nên đã bỏ.
+- Giờ thực tế trong giả lập bằng giờ ước (trừ phần sửa của #181), nên Sprint 1 chưa kiểm được hệ số giờ k = 1,5 của estimate.md mục 2.
+- Giờ rảnh theo người ở Sprint 1 (`data/sprint-1-log.json`, idleHoursByRole): QA-1 17,1 giờ (backlog gần như không có việc kiểm thủ công, estimate.md mục 4), BE-1 3,6 giờ ngày 9–10 vì #368 phải chờ #384, FE-2 2,2 giờ ngày 10 vì #253 đã chuyển sprint.
+- Rủi ro §3 (trừ dòng dự báo) rút bằng `tkm:predict-risks`, 3 góc nhìn: kiến trúc, bảo mật, phản biện. Dòng câu hỏi khách: giả định có tham số theo PR-D-04, ghi vào PREMISE.
+- Dự báo §3: `scripts/project-milestone-capacity.mjs` → `data/milestone-projection.json` (tất định). Nhân sự theo tháng chép từ bảng 要員計画 của LAB-1 schedule.md vào `data/sprint-config.json` (`lab1Staffing`, có ghi nguồn); ngày lễ Nhật ghi cứng trong script. Việc còn lại = mọi lá trong `data/hours.final.json`: lá Done tính 0, lá Sprint 1 chưa xong tính hoursLeft, lá khác đủ giờ. Không dùng phép chiếu phẳng 139 SWP/sprint vì nhân sự LAB-1 tăng dần từ 68,8 MD (tháng 12) lên 95,4 MD (tháng 3).
+- Phương án thêm người: 2027-01-04 → 2027-04-02 có 61 ngày làm việc; ở 80% mỗi người được 48,8 MD, lớn hơn phần thiếu của Backend (42,7 MD) và QA tự động (27,1 MD).
 
 ### Ví dụ trọn một lần giao việc cho agent con
 
@@ -93,6 +109,7 @@ Giao đối chiếu kết quả chấm LAB-4 với bài LAB-5 (2026-10-21), mộ
 | Sau P6 | Bài chấm LAB-3 (2026-10-15) tìm 6 lỗi chưa có trong backlog: 2 là chỗ hở / mơ hồ của spec LAB-4 (tự mở hồ sơ sai lệch khi kiểm hàng, cách làm tròn quy tắc 1/3), 4 là lỗi hành vi prototype | người chấm LAB-3, chuyển sang qua session LAB-3/4; DR-09 | 2 dòng GAP-L5-54/55 (để mở, có người và ngày); 4 lỗi prototype ghi riêng dưới bảng mục 4 của task-breakdown; chưa tạo issue, effort ngoài 1437 SWP |
 | Sau P6 | Codex vòng 2: dự báo sau tháng 4 lặp mức nhân sự tháng 4 trong khi kế hoạch LAB-1 có tháng 5–6 ít người hơn; lý do của hệ số 0,8 đếm trùng phần review và dựng môi trường đã có trong giờ issue | Codex (cross review vòng 2) | Chép đủ tháng 5–6, dừng dự báo ở 2027-06-30 và ghi phần còn thiếu khi hết kế hoạch nhân sự; sửa lý do hệ số 0,8, số không đổi |
 | Sau P6 | Kết quả chấm LAB-4 (2026-10-19, 158,5/200) về sau khi đã break; đề yêu cầu dùng góp ý review LAB-4 để quyết chỗ sửa thiết kế. Đối chiếu 27 góp ý: 7 đã đáp ứng (có cả phụ thuộc giữa việc: 325 quan hệ blocked-by), 9 chỉ thuộc tài liệu LAB-4, phần còn lại thiếu mặc định hoặc thiếu việc; PREMISE PR-A-01 ghi sai "không có góp ý LAB-4"; thêm phát hiện #13/#14 theo spec màn SKU, khác DB design LAB-4. Codex vòng 3 cùng lúc xếp major việc đã biết mà không có trên Project | user nhắc (AI không tự đặt nhắc khi kết quả chấm về); agent đối chiếu; DR-10 | Sửa PR-A-01; PR-S-07 (960 giờ 超勤), PR-A-14…18 (mặc định chờ khách chốt), GAP-L5-56…60; một danh sách "việc đã biết nằm ngoài 1437 SWP" giống nhau ở estimate.md và task-breakdown.md; không tạo issue mới (DR-10: trần 450 item, chấm SWP lượt riêng không cùng thang) |
+| Sau P6 | Rà soát toàn bộ yêu cầu đề (57 yêu cầu: 48 đạt, 9 một phần, 0 chưa làm). Bắt thêm: commit `3e79738` ghi "fix #246" làm GitHub tự đóng #246 và Project chuyển nó sang Done (board 29 Done ≠ báo cáo 28); các cổng không thấy vì đọc snapshot cũ | agent rà soát (đọc Project thật) | Mở lại #246, đặt Status Todo như trước; không viết "fix #số" trong commit nữa; tách phần ghi chú kỹ thuật khỏi progress-report sang mục 1 của file này; thêm link xem HTML qua htmlpreview |
 
 ### Quyết định đã review (DR)
 

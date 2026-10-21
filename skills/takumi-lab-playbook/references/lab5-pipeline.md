@@ -27,3 +27,4 @@ Một phase = một phiên, chạy bằng `/tkm:takumi plans/…/plan.md --auto`
 - Cross review bằng model khác theo một brief chung (đề nguyên văn, checklist, luật chỉ đọc) bắt được lỗi mà review nội bộ cùng họ model bỏ sót: khai sai so với gói LAB-4, báo cáo tiến độ thiếu dự báo tới mốc.
 - Dự báo tới mốc tính theo từng vai, không dồn chung: dồn chung che mất vai thiếu người.
 - Kết quả chấm của lab trước có thể về giữa chừng: ghi nó thành một mốc trong plan (ai theo dõi, khi nào đối chiếu). Về thì đối chiếu từng góp ý, khai PREMISE, ghi danh sách việc đã biết mà chưa thành issue ở cả estimate và task-breakdown.
+- Không viết `fix #n` / `close #n` trong commit của repo có issue thật: GitHub tự đóng issue đó và Project chuyển sang Done. Cổng đọc snapshot sẽ không thấy — sau push nên đọc lại Project thật.

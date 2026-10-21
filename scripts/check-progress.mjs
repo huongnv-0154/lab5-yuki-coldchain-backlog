@@ -45,7 +45,7 @@ const openSWP = open.reduce((t, i) => t + (i.storyPoint ?? 0), 0);
 if (burndown.at(-1).actual !== openSWP) errors.push(`burndown ngày cuối ${burndown.at(-1).actual} ≠ SWP Sprint 1 chưa Done trên Project ${openSWP}`);
 
 // 4. Bảng rủi ro §3
-// §3 tới mục ## kế tiếp (phần ghi chú kỹ thuật cuối file không tính)
+// §3 tới mục ## kế tiếp hoặc hết file
 const section = (text.split(/^## 3\. /m)[1] ?? '').split(/^## /m)[0];
 const rows = section.split('\n').filter((l) => l.startsWith('|') && !/^\|\s*(Rủi ro|---)/.test(l));
 if (!rows.length || rows.length > 6) errors.push(`bảng rủi ro có ${rows.length} dòng, cần 1–6`);

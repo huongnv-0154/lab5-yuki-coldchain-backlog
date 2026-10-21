@@ -18,11 +18,13 @@
 |---|---|
 | Repo | https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog |
 | GitHub Project | https://github.com/users/huongnv-0154/projects/2 — view Board, Backlog, Sprint 1 |
-| Báo cáo HTML của skill chấm SWP | [swp-report/report.html](swp-report/report.html) — tải file về mở bằng trình duyệt (một file, không cần mạng) |
+| Báo cáo HTML của skill chấm SWP | [swp-report/report.html](swp-report/report.html) — tải file về mở bằng trình duyệt (một file, không cần mạng), hoặc xem ngay qua [htmlpreview](https://htmlpreview.github.io/?https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/swp-report/report.html) |
 
 <!-- GENERATED:incognito-check -->
 Đã mở thử không đăng nhập (như cửa sổ ẩn danh — GET không cookie, không token), 2026-10-15 01:49 UTC: Repo 200 ✓ · GitHub Project 200 ✓ · Báo cáo HTML (raw) 200 ✓.
 <!-- /GENERATED -->
+
+Mở lại ngày 2026-10-21 bằng trình duyệt không có phiên đăng nhập GitHub: board Project hiện đủ 433 item (Todo 393 · In Progress 7 · Blocked 5 · Done 28), báo cáo HTML xem được qua link htmlpreview ở trên.
 
 ## Cấu trúc repo
 
@@ -32,7 +34,7 @@
 | `PREMISE.md` | Khác biệt so với LAB-4: spec thêm / sửa, giả định bổ sung, hướng đã chốt |
 | `task-breakdown.md` | Nguyên tắc chia task, Spec → issue, hạng mục chịu ràng buộc giờ lái, chỗ hở / mâu thuẫn của spec LAB-4 |
 | `estimate.md` | Issue mẫu skill chọn để kiểm, cách quy ra giờ, tổng theo epic, so với estimate LAB-1 |
-| `progress-report.md` | Báo cáo tiến độ Sprint 1 giả lập: trạng thái, burndown, dự báo tới M-03, rủi ro trễ; cuối file là ghi chú kỹ thuật về mô hình giả lập |
+| `progress-report.md` | Báo cáo tiến độ Sprint 1 giả lập: trạng thái, burndown, dự báo tới M-03, rủi ro trễ; gửi được khách nguyên văn (chi tiết mô hình giả lập ở AI-report.md mục 1) |
 | `AI-report.md` | Skill và prompt cho từng việc, cách review output AI, điểm đặc biệt |
 | `premise-revisions/` | Bản sửa thiết kế lớn được PREMISE trỏ tới (kiểm đảo ngày xuất hàng) |
 | `swp-report/` | Báo cáo HTML của skill `estimate-swp` (payload kiểm toán nhúng trong file) |

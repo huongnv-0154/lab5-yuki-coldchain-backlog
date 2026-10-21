@@ -80,6 +80,6 @@ export const progressRenderers = {
     return lines.join('\n');
   },
 
-  // Thời điểm lấy snapshot Project (đưa xuống phần ghi chú kỹ thuật, không để trong bảng §1)
+  // Thời điểm lấy snapshot Project (đặt ở phần ghi chú kỹ thuật, không để trong bảng §1)
   'snapshot-time': ({ snapshot }) => `Bảng §1 sinh từ snapshot Project lúc ${snapshot.fetchedAt.slice(0, 16)}Z.`,
 };
