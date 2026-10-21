@@ -56,6 +56,8 @@ Bộ hiệu chuẩn không có vai Design và BrSE, nên mình kiểm nhanh thê
 
 **Lưu ý:** báo cáo HTML có khung đổi SWP ↔ giờ cho người đọc tự chỉnh hệ số — chỉ để tham khảo; k ở đây là quy ước riêng của estimate này (PREMISE PR-A-05). Giờ hiệu chuẩn do AI ước, chưa có số thực tế của đội. Giả lập Sprint 1 lấy giờ ước làm giờ thực tế nên không kiểm được k (progress-report.md mục 2); phải có giờ đo của đội thật mới so được.
 
+Độ nhạy của k: k hiệu chuẩn từ giờ do AI ước trên 6 issue, chưa có giờ thật của đội. Nếu k thật là 2,0 (lệch +33 %, bằng issue lệch nhiều nhất lúc hiệu chuẩn) thì tổng là khoảng 2874 giờ ≈ 359 MD — vẫn thấp hơn LAB-1 nhiều, nên kết luận ở mục 4 không đổi; còn dự báo tới mốc M-03 (progress-report.md mục 3) thì thiếu người nhiều hơn. k được xem lại khi có giờ thật của Sprint 1.
+
 ## 3. Tổng theo epic
 
 <!-- GENERATED:estimate-by-epic -->
@@ -108,7 +110,7 @@ Cột LAB-5 làm tròn 0,1 ở từng dòng; dòng Tổng quy từ tổng giờ 
 
 LAB-5 thấp hơn LAB-1 khoảng 509 MD vì bốn nguyên nhân, xếp theo độ lớn:
 
-1. **Prototype đã chạy** (LAB-3/4): 53/70 chức năng đã dựng, tương đương 356/496,3 MD phần chức năng của LAB-1. Con số này chưa trừ effort sửa các lỗi prototype tìm sau khi đăng issue (danh sách "Việc đã biết nằm ngoài 1437 SWP" ở cuối mục này). Backlog LAB-5 chỉ gồm phần còn lại theo detail design LAB-4: sửa theo bảng chênh lệch (task L5), làm thật phần mock (6 chức năng, 44,4 MD) và phần ngoài prototype (11 chức năng, 95,9 MD), cùng hồi quy E2E. Vì vậy các FG đã dựng hết (FG-01, 03, 04, 07) chỉ còn 21–32% so với LAB-1, còn FG-09 và FG-10 (phần lớn là mock hoặc ngoài prototype) còn khoảng 3/4.
+1. **Prototype đã chạy** (LAB-3/4): 53/70 chức năng đã dựng, tương đương 356/496,3 MD phần chức năng của LAB-1. "Đã dựng" nghĩa là phần chức năng đã chạy trên prototype; việc đưa lên production (hoá cứng, NFR, tích hợp thật) nằm ở E-13, E-14 và các task L5, đã có trong 1437 SWP. Con số này chưa trừ effort sửa các lỗi prototype tìm sau khi đăng issue (danh sách "Việc đã biết nằm ngoài 1437 SWP" ở cuối mục này). Backlog LAB-5 chỉ gồm phần còn lại theo detail design LAB-4: sửa theo bảng chênh lệch (task L5), làm thật phần mock (6 chức năng, 44,4 MD) và phần ngoài prototype (11 chức năng, 95,9 MD), cùng hồi quy E2E. Vì vậy các FG đã dựng hết (FG-01, 03, 04, 07) chỉ còn 21–32% so với LAB-1, còn FG-09 và FG-10 (phần lớn là mock hoặc ngoài prototype) còn khoảng 3/4.
 2. **Việc dự án và buffer nằm ngoài backlog** (PREMISE PR-D-02): UAT, đào tạo, hypercare, diễn tập di trú + cutover, quản trị và buffer 20% của LAB-1 không thành issue. Chỉ PJ.85–90 (tải, threat model, SBOM, restore, accessibility, quan sát — 34,5 MD) vào E-14.
 3. **Cách tính khác:** dòng FG của LAB-1 gồm cả PM 57,4 + BrSE 37,2 + QA thủ công 64,2 = 158,8 MD. Backlog chỉ có việc gắn với issue — PM chỉ đứng tên 15 epic, không có issue lá; BrSE có 48 issue (42 câu hỏi E-15 và 6 việc viết spec, chốt danh sách, gửi yêu cầu cho khách); QA thủ công chỉ có 1 issue (checklist WCAG), phần còn lại dồn vào UAT.
 4. **PREMISE thêm việc:** 10 việc thiết kế đích có mà bảng chênh lệch bỏ sót (PR-S-05), cột nguồn cho receipts (PR-S-06), tách kiểm giờ lái nhiều ngày (PR-S-04), kiểm đảo ngày lúc xuất GAP-41 (PR-S-01, PR-D-01), và tách nền tích hợp / vận hành thành E-13, E-14 — phần này làm LAB-5 tăng lên, không giảm.

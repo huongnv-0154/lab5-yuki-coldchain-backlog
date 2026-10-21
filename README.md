@@ -21,7 +21,7 @@
 | Báo cáo HTML của skill chấm SWP | [swp-report/report.html](swp-report/report.html) — tải file về mở bằng trình duyệt (một file, không cần mạng), hoặc xem ngay qua [htmlpreview](https://htmlpreview.github.io/?https://github.com/huongnv-0154/lab5-yuki-coldchain-backlog/blob/main/swp-report/report.html) |
 
 <!-- GENERATED:incognito-check -->
-Đã mở thử không đăng nhập (như cửa sổ ẩn danh — GET không cookie, không token), 2026-10-15 01:49 UTC: Repo 200 ✓ · GitHub Project 200 ✓ · Báo cáo HTML (raw) 200 ✓.
+Đã mở thử không đăng nhập (như cửa sổ ẩn danh — GET không cookie, không token), 2026-10-21 16:06 UTC: Repo 200 ✓ · GitHub Project 200 ✓ · Báo cáo HTML (raw) 200 ✓.
 <!-- /GENERATED -->
 
 Mở lại ngày 2026-10-21 bằng trình duyệt không có phiên đăng nhập GitHub: board Project hiện đủ 433 item (Todo 393 · In Progress 7 · Blocked 5 · Done 28), báo cáo HTML xem được qua link htmlpreview ở trên.
