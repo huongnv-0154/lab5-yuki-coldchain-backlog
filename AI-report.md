@@ -50,6 +50,14 @@ Comment và issue đóng trên GitHub là **lịch sử giả lập** của Spri
 | Vệ sinh issue | `fix-issue-hygiene.mjs`: dry-run ghi kế hoạch ra file tạm `.tmp.json`; `--apply` ghi GitHub và `data/issue-hygiene-fixes.json` | Dry-run lập kế hoạch 38 issue + 1 comment; user duyệt rồi mới chạy `--apply` (2026-10-15: ghi 39 mục, chạy lại dry-run còn 0) |
 | Project public | user quyết; `check-public-access.mjs` | GET không đăng nhập: repo, Project, báo cáo HTML đều 200 (README) |
 
+### Ví dụ trọn một lần giao việc cho agent con
+
+Giao đối chiếu kết quả chấm LAB-4 với bài LAB-5 (2026-10-21), một agent Opus, chỉ đọc:
+
+- **Yêu cầu (rút gọn từ prompt thật, giữ đủ ý):** đọc file kết quả chấm LAB-4 và đề LAB-5 mục III, IV.3; với **mỗi** góp ý, ghi một dòng: góp ý chỉ thuộc tài liệu LAB-4 hay ảnh hưởng LAB-5; LAB-5 đang có gì (số issue + phạm vi đọc trong thân issue, không chỉ tiêu đề; dòng PREMISE; dòng chỗ hở) hoặc "không có"; cách xử lý đề xuất trong 7 loại cố định (đã đáp ứng · PR-S mới · PR-A mới · dòng chỗ hở · thêm phạm vi vào issue có sẵn · issue mới cần chấm SWP · không làm); mọi khẳng định về spec LAB-4 phải kèm `path:dòng` tại `c3cf20d`; nêu có đổi SWP / giờ / HTML không. Không sửa file, không ghi GitHub, chỉ ghi một file báo cáo.
+- **Nhận về:** bảng 27 dòng — 7 đã đáp ứng, 4 PR-A mới, 3 issue mới (ước 42–51 SWP), 3 dòng chỗ hở, 1 sửa AI-report, 9 không làm; thêm một phát hiện ngoài yêu cầu (#13/#14 theo spec màn SKU, khác DB design LAB-4).
+- **Chỗ tôi kiểm và đổi:** kiểm lại 4 khẳng định nặng nhất trên file thật (PR-A-01, DoD của #94, `DRIVER_HOURS_FUNC` §3, cặp spec SKU) — đều đúng. Không theo đề xuất "tạo 3 issue mới" sau review quyết định DR-10 (trần 450 item, chấm SWP lượt riêng không cùng thang với 1437 SWP); thay bằng dòng PREMISE, dòng chỗ hở và danh sách việc ngoài 1437 SWP ở estimate.md mục 4.
+
 ## 2. Review output AI
 
 ### Ai review, ở bước nào
@@ -84,6 +92,7 @@ Comment và issue đóng trên GitHub là **lịch sử giả lập** của Spri
 | P6 | PREMISE lệch gói LAB-4 ở 2 dòng (PR-S-06, PR-A-08) và chưa khai mâu thuẫn 回収照合; báo cáo tiến độ thiếu dự báo tới M-03, còn mã nội bộ; 9 issue ghi phụ thuộc bằng mã spec, 28 issue Done chưa tick DoD; Project private trái luật đề | cross review Fable 5.1 (0 critical · 5 major · 22 minor) | Sửa PREMISE theo gói LAB-4; thêm dự báo M-03 theo nhân sự LAB-1 — tách theo vai thì Backend, QA tự động thiếu người, thành rủi ro số 1; dời chi tiết nội bộ xuống ghi chú kỹ thuật; sửa thân 38 issue + 1 comment bằng `fix-issue-hygiene.mjs` (dry-run trước, ghi sau khi user duyệt); khi kiểm lại thấy migration `customers.notification_email` chưa có issue → thêm một dòng Phạm vi vào #284; Project chuyển public |
 | Sau P6 | Bài chấm LAB-3 (2026-10-15) tìm 6 lỗi chưa có trong backlog: 2 là chỗ hở / mơ hồ của spec LAB-4 (tự mở hồ sơ sai lệch khi kiểm hàng, cách làm tròn quy tắc 1/3), 4 là lỗi hành vi prototype | người chấm LAB-3, chuyển sang qua session LAB-3/4; DR-09 | 2 dòng GAP-L5-54/55 (để mở, có người và ngày); 4 lỗi prototype ghi riêng dưới bảng mục 4 của task-breakdown; chưa tạo issue, effort ngoài 1437 SWP |
 | Sau P6 | Codex vòng 2: dự báo sau tháng 4 lặp mức nhân sự tháng 4 trong khi kế hoạch LAB-1 có tháng 5–6 ít người hơn; lý do của hệ số 0,8 đếm trùng phần review và dựng môi trường đã có trong giờ issue | Codex (cross review vòng 2) | Chép đủ tháng 5–6, dừng dự báo ở 2027-06-30 và ghi phần còn thiếu khi hết kế hoạch nhân sự; sửa lý do hệ số 0,8, số không đổi |
+| Sau P6 | Kết quả chấm LAB-4 (2026-10-19, 158,5/200) về sau khi đã break; đề yêu cầu dùng góp ý review LAB-4 để quyết chỗ sửa thiết kế. Đối chiếu 27 góp ý: 7 đã đáp ứng (có cả phụ thuộc giữa việc: 325 quan hệ blocked-by), 9 chỉ thuộc tài liệu LAB-4, phần còn lại thiếu mặc định hoặc thiếu việc; PREMISE PR-A-01 ghi sai "không có góp ý LAB-4"; thêm phát hiện #13/#14 theo spec màn SKU, khác DB design LAB-4. Codex vòng 3 cùng lúc xếp major việc đã biết mà không có trên Project | user nhắc (AI không tự đặt nhắc khi kết quả chấm về); agent đối chiếu; DR-10 | Sửa PR-A-01; PR-S-07 (960 giờ 超勤), PR-A-14…18 (mặc định chờ khách chốt), GAP-L5-56…60; một danh sách "việc đã biết nằm ngoài 1437 SWP" giống nhau ở estimate.md và task-breakdown.md; không tạo issue mới (DR-10: trần 450 item, chấm SWP lượt riêng không cùng thang) |
 
 ### Quyết định đã review (DR)
 
@@ -100,6 +109,7 @@ PREMISE.md trỏ mã `DR-0n` về đây.
 | DR-07 | Phạm vi + kịch bản giả lập Sprint 1 | quick · tech | Sửa có điều kiện: công khai hệ số tập trung, thay "tách sub" bằng "mở lại sau lỗi hồi quy" |
 | DR-08 | Go / no-go nộp bài | quick · qa | Giữ (go): cổng kiểm và review đều đạt; Project private là quyết định của user (sau cross review, user đổi Project sang public ngày 2026-10-15); kết luận estimate mục 4 vẫn đứng khi k lệch +33% |
 | DR-09 | Đưa phát hiện của bài chấm LAB-3 vào bài đã push | standard · ba | Sửa có điều kiện: tách chỗ hở spec khỏi lỗi prototype, không ngụ ý issue cũ đã phủ, nói rõ effort ngoài 1437 SWP |
+| DR-10 | Dùng kết quả chấm LAB-4 + Codex vòng 3: tạo issue mới hay khai nhất quán | standard · ba | Sửa có điều kiện: khai PREMISE + chỗ hở + danh sách việc ngoài 1437 SWP; không tạo issue (trần 450, thang SWP) |
 
 ### Chỗ lệch quy trình đã khai
 
@@ -114,18 +124,19 @@ PREMISE.md trỏ mã `DR-0n` về đây.
 - **Mọi bảng sinh từ dữ liệu.** Bảng trong 4 trên 6 file nộp (README, task-breakdown, estimate, progress-report) sinh từ `data/` bằng script, có chế độ `--check`; PREMISE và AI-report viết tay. Review chỉ cần đối chiếu dữ liệu một lần, sửa dữ liệu thì bảng tự khớp.
 - **Backlog lớn mà vẫn nhất quán.** 5 subagent viết song song theo một hướng dẫn chung (thêm 1 job bổ sung), cổng tự động chặn sai luật; 433 issue lên GitHub kèm sub-issue và blocked-by gốc, chạy lại không tạo trùng.
 - **Review khác model bắt lỗi thật ở mọi phase:** P2a 7 → 9/10, P3 8 → 9/10, P4 8 → 9/10. Thử phá cổng trên bản sao (đổi mốc, xoá vai) cho thấy cổng PASS sai — kiểu lỗi mà chạy cổng bình thường không bao giờ lộ.
-- **User ít phải làm tay.** Khoảng 45 phút cho cả LAB-5: chốt plan, mốc LAB-4, chính sách chép gói, duyệt đẩy lên GitHub, xác nhận 5 điểm SWP. Mọi quyết định có đánh đổi đều có brief phản biện để đọc nhanh.
+- **User ít phải làm tay.** Khoảng 50 phút cho cả LAB-5: chốt plan, mốc LAB-4, chính sách chép gói, duyệt đẩy lên GitHub, xác nhận 5 điểm SWP. Mọi quyết định có đánh đổi đều có brief phản biện để đọc nhanh.
 
 **Chỗ chưa tốt, cần cải thiện khi làm thật**
 
-- **Thời gian.** Cả LAB-5 (plan + P0–P6): agent khoảng 15 giờ (P0–P5 11,8 giờ, bốn vòng sửa sau cross review và bài chấm LAB-3 3,3 giờ), máy chạy nền thêm 2,1 giờ, user khoảng 45 phút (tạo issue ~10,6 giây/issue vì mỗi issue cần nhiều mutation và có hãm tốc để tránh hạn mức GitHub; ghi một field cho cả Project là 433 lượt). Khi làm thật nên ghi field theo lô và dùng Project template.
-- **Công sức.** User chỉ chốt quyết định và duyệt (khoảng 45 phút cho cả LAB-5, chưa kể thời gian tự chạy hai lượt cross review ngoài phiên) nhưng phải duyệt từng lần đẩy lên GitHub, nên mỗi phase dừng chờ một lần. Khi làm thật nên duyệt một lần cho cả nhóm thao tác đã xem trước bằng `--dry-run`.
+- **Thời gian.** Cả LAB-5 (plan + P0–P6): agent khoảng 16 giờ (P0–P5 11,8 giờ, năm vòng sửa sau cross review và hai kết quả chấm LAB-3 / LAB-4 4,1 giờ), máy chạy nền thêm 2,1 giờ, user khoảng 50 phút (tạo issue ~10,6 giây/issue vì mỗi issue cần nhiều mutation và có hãm tốc để tránh hạn mức GitHub; ghi một field cho cả Project là 433 lượt). Khi làm thật nên ghi field theo lô và dùng Project template.
+- **Công sức.** User chỉ chốt quyết định và duyệt (khoảng 50 phút cho cả LAB-5, chưa kể thời gian tự chạy hai lượt cross review ngoài phiên) nhưng phải duyệt từng lần đẩy lên GitHub, nên mỗi phase dừng chờ một lần. Khi làm thật nên duyệt một lần cho cả nhóm thao tác đã xem trước bằng `--dry-run`.
 - **Token.** Mỗi subagent tốn sẵn khoảng 55 nghìn token ngữ cảnh trước khi làm gì. Theo số harness báo: P3 dùng khoảng 2,6 triệu token ở subagent (10 worker chấm SWP chiếm 1,4 triệu, mỗi worker batch 70 issue 168–202 nghìn), P4 khoảng 1,1 triệu (tester ~180 nghìn, reviewer Opus ~150 nghìn mỗi lượt). Thay đổi nhỏ không nên đi đủ vòng tester + reviewer + re-review; nên gộp kiểm tài liệu và kiểm code khi cùng một phase.
 - **Skill chấm SWP.** Bảng discipline của skill không có loại cho việc hỏi khách / BrSE nên 39 câu hỏi khách nhận "Unknown", độ tin cậy thấp; tập issue rủi ro mà assessor 2 chấm lại vì thế chủ yếu là câu hỏi khách, còn issue 10 SWP lớn nhất chỉ có một assessor. Worker không tool không hợp với batch lớn.
 - **Giả lập sprint.** Giờ thực tế bằng giờ ước, chỉ một lần sửa có giờ thêm, nên burndown phản ánh hệ số tập trung và 3 sự kiện chứ chưa phản ánh sai số ước lượng. Comment giả lập trên repo public dễ gây hiểu nhầm dù đã ghi rõ.
 - **Độ hạt chưa đều.** Cross review chỉ ra 8 lá 13,5–15 giờ (gộp RPC + route cùng vai) và một số lá 1,5 giờ tách khỏi story nhỏ, cùng 13 câu hỏi khách tách một dòng một issue. Bài này không tách / gộp lại vì đổi số issue sẽ lệch báo cáo SWP đã chấm; khi làm thật nên gom hoặc tách lúc xếp sprint (task-breakdown.md mục 1).
 - **Lỗi nhỏ còn để lại ở script.** Giả lập đặt Blocked cả issue chưa bắt đầu đang chờ phụ thuộc; cổng tiến độ chưa bắt issue ngoài kế hoạch bị gán sprint; cổng nộp chỉ chống chép RFP qua trích 「…」 dài và chưa bỏ qua tiêu đề nằm trong khối code. Không làm sai số trong file nộp (tester và reviewer kiểm trên dữ liệu cuối), nhưng cần sửa trước khi dùng lại script cho dự án khác.
 - **Giới hạn GitHub.** API không đặt được nhóm view theo Parent issue; tên field `Type` bị giữ chỗ; Project của user không có Insights nên phải tự vẽ burndown.
+- **Quên dùng kết quả chấm lab trước.** Đề LAB-5 yêu cầu dùng góp ý review LAB-4; lúc break chưa có kết quả chấm nên plan dùng bản review độc lập, nhưng không đặt nhắc "khi kết quả chấm về thì đối chiếu lại". Kết quả về ngày 2026-10-19, user phải tự nhắc ngày 2026-10-21. Khi làm thật: đưa "đầu vào sẽ về sau" vào plan như một mốc có người theo dõi.
 
 **Ý tưởng**
 

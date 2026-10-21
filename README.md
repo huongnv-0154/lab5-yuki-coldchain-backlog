@@ -7,7 +7,7 @@
 ## Tổng quan
 
 - **Mốc LAB-4:** backlog break từ gói detail design LAB-4 bản đã nộp ngày **2026-10-13** (commit `c3cf20d` của repo LAB-3/4). Gói LAB-4 không chép vào repo này; spec được trỏ bằng mã và đường dẫn file của gói (luật repo public: không chép đoạn RFP hay đề gốc).
-- **PREMISE.md có thay đổi:** 6 dòng thêm / sửa spec (PR-S-01…06, lớn nhất là kiểm đảo ngày xuất hàng GAP-41, bản sửa ở `premise-revisions/`), 12 giả định bổ sung (PR-A-01…13, trừ PR-A-08 là mã trỏ quy ước LAB-4), 4 hướng đã chốt (PR-D-01…04).
+- **PREMISE.md có thay đổi:** 7 dòng thêm / sửa spec (PR-S-01…07, lớn nhất là kiểm đảo ngày xuất hàng GAP-41, bản sửa ở `premise-revisions/`), 17 giả định bổ sung (PR-A-01…18, trừ PR-A-08 là mã trỏ quy ước LAB-4), 4 hướng đã chốt (PR-D-01…04). Kết quả chấm LAB-4 (2026-10-19) đã đối chiếu và khai ở PR-S-07, PR-A-14…18; việc đã biết nhưng chưa thành issue liệt kê ở [estimate.md](estimate.md) mục 4.
 - **Backlog:** 15 epic (12 nhóm chức năng FG-01…FG-12 của LAB-1, thêm E-13 外部連携基盤, E-14 環境・運用基盤, E-15 顧客確認) → 65 story → 353 issue lá, tổng **433 issue**, dùng sub-issue gốc của GitHub. Hạng mục chịu giới hạn giờ lái xe tải từ 2024 mang nhãn `constraint:driver-hours-2024` (task-breakdown.md mục 3).
 - **Ước lượng:** 1437 SWP chấm bằng skill `estimate-swp` (đã kiểm 5 issue mẫu), quy ra 2155,5 giờ ≈ 269,4 MD theo 1,5 giờ/SWP (estimate.md).
 - **Sprint giả lập đã chạy:** Sprint 1 (2026-11-30 → 2026-12-11): 45 issue / 139 SWP theo kế hoạch; cuối sprint Done 90 / 129 SWP (70% phạm vi cuối, sau khi chuyển một issue sang Sprint 2); Sprint 2 đã xếp sơ bộ (progress-report.md).
