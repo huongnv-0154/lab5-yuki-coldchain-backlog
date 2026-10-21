@@ -1,5 +1,5 @@
 {
-  "count": 52,
+  "count": 57,
   "dropped": {
     "GAP-L5-09": "Lỗi gắn nhãn của backlog, không phải chỗ hở spec — đã sửa nhãn",
     "GAP-L5-13": "Quy ước mã của job, không phải chỗ hở spec",
@@ -577,6 +577,61 @@
       "handling": "open",
       "premise": null,
       "note": "BrSE hỏi thêm cách làm tròn ở lượt hỏi lại E15-FG04-01 đầu Sprint 2 (2026-12-14); giữ 33 % làm tròn xuống tới khi khách trả lời; nếu đổi thì sửa cùng #65"
+    },
+    {
+      "id": "GAP-L5-56",
+      "spec": "CORE_MASTER_DB T1–T3; YC_MASTER_LOCATION_SPEC",
+      "text": "Góp ý chấm LAB-4 (2026-10-19): DB đích có 発効日 và vòng đời (新規 / 廃止, job áp theo ngày, chặn mã RETIRED) cho vị trí, khách, nhà cung cấp, nhưng màn chỉ ghi hiện trạng; backlog chỉ làm phần này cho SKU.",
+      "suggestedHandling": "open",
+      "ref": null,
+      "job": "LAB4-GRADE",
+      "handling": "open",
+      "premise": null,
+      "note": "chưa có issue, ngoài 1437 SWP; PM tạo issue và chấm SWP ở buổi tinh chỉnh đầu Sprint 2 (2026-12-14)"
+    },
+    {
+      "id": "GAP-L5-57",
+      "spec": "ORDERS_ALLOCATION_DELIVERY_DB T2–T3; YC_POD_CAPTURE_SPEC",
+      "text": "Góp ý chấm LAB-4: DB đích ghi thiết bị, toạ độ hoặc lý do thiếu toạ độ khi chụp POD, sửa bằng chứng thành phiên bản mới; màn POD chưa có item lý do thiếu toạ độ; backlog chỉ gắn tệp bằng chứng.",
+      "suggestedHandling": "open",
+      "ref": null,
+      "job": "LAB4-GRADE",
+      "handling": "open",
+      "premise": null,
+      "note": "chưa có issue, ngoài 1437 SWP; PM tạo issue và chấm SWP ở buổi tinh chỉnh đầu Sprint 2 (2026-12-14)"
+    },
+    {
+      "id": "GAP-L5-58",
+      "spec": "YC_MASTER_SKU_SPEC §6; CORE_MASTER_DB T1–T2",
+      "text": "Mâu thuẫn trong LAB-4, lộ ra khi đối chiếu góp ý chấm LAB-4: spec màn SKU ghi phiên bản có 発効日 và vòng đời created → review → active → retired; DB design ghi vòng đời ngay trên bảng (CREATED · ACTIVE · RETIRED), không có trạng thái đang xét, thay đổi tương lai giữ ở master_change_requests. #13, #14 làm theo spec màn.",
+      "suggestedHandling": "open",
+      "ref": "FG01-05",
+      "job": "LAB4-GRADE",
+      "handling": "open",
+      "premise": null,
+      "note": "chốt một thiết kế ở buổi tinh chỉnh FG01-05 trước khi làm #13; theo DB design thì sửa phạm vi #13, #14 và chấm lại SWP"
+    },
+    {
+      "id": "GAP-L5-59",
+      "spec": "error-codes; SHIPPING_CHECKS_POST_API",
+      "text": "Góp ý chấm LAB-4 (trục K): bảng giá trị rule ở error-codes §3 chưa có BR-TEMP-02 và E-03-S07 mà API kiểm xuất trả khi chặn.",
+      "suggestedHandling": "open",
+      "ref": null,
+      "job": "LAB4-GRADE",
+      "handling": "open",
+      "premise": null,
+      "note": "bổ sung bảng mã lỗi khi làm #85 (dịch mã vi phạm), theo DoD chung cập nhật spec khi code khác"
+    },
+    {
+      "id": "GAP-L5-60",
+      "spec": "error-codes; DSP_DRIVER_HOURS_TECH",
+      "text": "Góp ý chấm LAB-4 (trục K): mô tả mã thiếu dữ liệu khi kiểm tuyến ở bảng mã lỗi khác thiết kế kỹ thuật.",
+      "suggestedHandling": "open",
+      "ref": null,
+      "job": "LAB4-GRADE",
+      "handling": "open",
+      "premise": null,
+      "note": "làm theo thiết kế kỹ thuật khi dựng #96, #98 và sửa bảng mã lỗi cùng lúc"
     }
   ]
 }

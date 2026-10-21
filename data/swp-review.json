@@ -42,7 +42,7 @@
    "verdictLevel": "dễ",
    "changed": true,
    "issueSpecific": true,
-   "reason": "Sửa 4 → 5: 4 tổ hợp tham số luật BR-DATE-01 (đã tham số hoá ở DR-02), fixture chuyến COMPLETED và DISPATCHED chưa POD cho hai đơn cùng khách × SKU, dòng audit và phiên bản luật — là thiết kế test cẩn thận (C2). Chỉ issue này: 11 issue cùng nhóm phần lớn là E2E hồi quy theo màn."
+   "reason": "Sửa 4 → 5: 4 tổ hợp tham số luật BR-DATE-01 (đã tham số hoá ở DR-02), fixture chuyến COMPLETED và DISPATCHED chưa POD cho hai đơn cùng khách × SKU, dòng audit và phiên bản luật — là thiết kế test cẩn thận (C2). Chỉ issue này: 12 issue khác cùng nhóm (13 kể cả #246), phần lớn là E2E hồi quy theo màn."
   },
   {
    "ref": "huongnv-0154/lab5-yuki-coldchain-backlog#360",

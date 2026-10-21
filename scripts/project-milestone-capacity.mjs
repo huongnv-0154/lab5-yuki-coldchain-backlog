@@ -4,7 +4,7 @@
 //   chưa xong tính hoursLeft trong data/sprint-1-log.json final, lá khác tính đủ giờ.
 //   Năng lực: bảng 要員計画 LAB-1 (data/sprint-config.json lab1Staffing, trừ PM) từ đầu Sprint 2 tới M-03, mỗi tháng chia
 //   đều theo ngày làm việc Nhật của tháng đó; 1 MD = hoursPerMD giờ; nhân focus (phần giờ dành cho issue).
-//   Ngày xong: cộng dồn năng lực từng ngày làm việc từ đầu Sprint 2; quá tháng cuối của bảng thì giữ mức tháng cuối.
+//   Ngày xong: cộng dồn năng lực từng ngày làm việc từ đầu Sprint 2; dừng ở ngày cuối tháng cuối của bảng (ngoài bảng năng lực bằng 0); vai chưa xong lúc đó ghi 'sau <ngày>' kèm phần còn thiếu.
 // Ra: data/milestone-projection.json (tất định, không ghi thời điểm chạy, không gọi mạng).
 // Dùng: node scripts/project-milestone-capacity.mjs
 import { readJson, writeJson } from './lib/gh-graphql.mjs';
